@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route,   Switch} from "react-router-dom";
 import HomePage from './components/views/index';
-import Header from './components/views/header'
+import Header from './components/views/header';
+import { Provider } from 'react-redux'
+import store from './components/reducers/store';
 const routing = (
     <Router>
       <div >
