@@ -7,7 +7,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { Redirect } from 'react-router';;
+import { Redirect } from 'react-router';
+import Logout from '../user/logout';
+import { connect } from 'react-redux';
+import { loginAction } from '../reducers/action';
 const th = createMuiTheme({
   palette: {
     primary: { main: blue[500] }, 
@@ -21,18 +24,10 @@ class Header extends Component {
         redirect: false,
 
     }
-    // if((this.props.isLogin == false) &&( localStorage.getItem('role_id')==1))
-    // {
-    //     this.props.loginB('','','', true, true,false);
-    // }
-    // if((this.props.isLogin == false) &&( localStorage.getItem('role_id')==2))
-    // {
-    //     this.props.loginB('','', '',true, false,false);
-    // }
-    // if((this.props.isLogin == false) &&( localStorage.getItem('role_id')==3))
-    // {
-    //     this.props.loginB('','','', true, false, true);
-    // }
+   if(localStorage.getItem('user_information')){
+    var user_information = JSON.parse(localStorage.getItem("user_information"));
+    this.props.login(user_information.user_fullname,user_information.user_username,user_information.token, user_information.role);
+   }
 }
  render() {
   const  redirect  = this.state.redirect;
@@ -40,7 +35,7 @@ class Header extends Component {
     return <Redirect to='/'/>;
   }
    
-   if(localStorage.getItem('user_name'))
+   if(localStorage.getItem('user_information') || (this.props.isLogin.length > 0))
    {
      return (
       <div style={{ flexGrow: 1}}>
@@ -50,7 +45,8 @@ class Header extends Component {
           <Typography variant="h6" style={{ flexGrow: 1, color: 'white'}}>
             <Link to='/dashboard' style={{ color: 'white',textDecoration: 'none'}}>T-Invoice</Link>
           </Typography>
-          <Link to='/profile' style={{ color: 'white',textDecoration: 'none'}}><Button color="inherit">{localStorage.getItem('user_name')}</Button></Link>
+          <Link to='/profile' style={{ color: 'white',textDecoration: 'none'}}><Button color="inherit">{this.props.user_fullname}</Button></Link>
+          <Logout />
         </Toolbar>
       </AppBar>
       </ThemeProvider>
@@ -75,14 +71,13 @@ class Header extends Component {
 }
  }
 }
-// const mapStateToProps = state => {
-//   return {
-//     title: state.loginReducer.username,
-//     isLogin: state.loginReducer.isLogin
-//   };
-// };
-//  const mapDispatchToProps = (dispatch) => ({
-//      loginB: (username, password,token, isLogin, isAdmin, isSenior) => dispatch(loginAction(username, password,token, isLogin, isAdmin, isSenior))
- 
-//  });
-export default Header;
+const mapStateToProps = state => {
+  return {
+    user_fullname: state.loginReducer.user_fullname,
+    isLogin: state.loginReducer.role
+  };
+};
+ const mapDispatchToProps = (dispatch) => ({
+  login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+ });
+export default connect(mapStateToProps, mapDispatchToProps)  (Header);

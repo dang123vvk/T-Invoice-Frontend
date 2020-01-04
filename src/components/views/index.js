@@ -9,6 +9,7 @@ import blue from '@material-ui/core/colors/blue';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import logotma from '../share/img/logotma.png';
+import { connect } from 'react-redux';
 
 const th = createMuiTheme({
     palette: {
@@ -26,17 +27,17 @@ class HomePage extends Component {
             <ThemeProvider theme={th}>
                 <Container component="main">
                     <CssBaseline />
-                    <div style={{ marginTop: '80px', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ marginTop: '6%', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
                         <Grid container spacing={3}>
                             <Grid item xs>
                             </Grid>
                             <Grid item xs={8}>
                                 <div className="row">
                                     <div className="col-sm-4">
-                                        <img src={logotma} width="200px" alt="vvn" />
+                                        <img src={logotma} width="60%" alt="vvn" />
                                     </div>
                                     <div className="col-sm-8">
-                                        <Typography variant="h4" style={{ color: 'rgb(23, 105, 170)', marginTop: '10px', marginBottom: '30px' }}>
+                                        <Typography variant="h4" style={{ color: 'rgb(23, 105, 170)', marginTop: '2%', marginBottom: '3%' }}>
                                             TMA Invoice Tracking Tool
                                         </Typography>
                                         <Typography variant="h5" style={{ color: 'rgb(23, 105, 170)' }}>
@@ -59,5 +60,10 @@ class HomePage extends Component {
         );
     }
 }
-
-export default HomePage;
+const mapStateToProps = state => {
+    return {
+      title: state.loginReducer.username,
+      isLogin: state.loginReducer.isLogin
+    };
+  }
+export default  connect(mapStateToProps) (HomePage);
