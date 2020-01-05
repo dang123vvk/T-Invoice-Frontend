@@ -11,7 +11,7 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
 import { Grid } from '@material-ui/core';
-import NotFound from "../views/notfound";
+import NotFound from "../views/NotFound";
 import { th } from "../share/config";
 import {postInformationCurrent } from "../share/services/user.service";
 class Profile extends Component {
@@ -31,6 +31,7 @@ class Profile extends Component {
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
+    document.title = 'Edit Profile';
   }
   componentDidMount() {
   }
@@ -152,11 +153,12 @@ class Profile extends Component {
                       margin="normal"
                       fullWidth
                       name="user_oldpassword"
-                      label="Old Password"
+                      label="Current Password"
                       type="password"
                       id="user_oldpassword"
                       onChange={this.onChange}
                       size='small'
+                      required
                     />
                   </Grid>
                   <Grid item xs={12}>

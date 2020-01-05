@@ -1,9 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
 
 export const th = createMuiTheme({
     palette: {
-        primary: { main: blue[500] },
+        primary: { main: '#3f51b5' },
         secondary: { main: '#2196f3' },
     },
 });

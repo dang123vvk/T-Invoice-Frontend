@@ -36,6 +36,7 @@ class Signin extends Component {
     }
     this.signin = this.signin.bind(this);
     this.onChange = this.onChange.bind(this);
+    document.title = 'Sign In';
   }
   signin(event) {
     event.preventDefault();

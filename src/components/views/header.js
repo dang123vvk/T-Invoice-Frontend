@@ -1,22 +1,15 @@
 import React, {Component} from 'react';
 import { Link } from "react-router-dom";
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router';
-import Logout from '../user/logout';
+import Logout from '../user/Logout';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action';
-const th = createMuiTheme({
-  palette: {
-    primary: { main: blue[500] }, 
-    secondary: { main: '#2196f3' },
-  },
-});
+import { th } from "../share/config";
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +36,7 @@ class Header extends Component {
        <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1, color: 'white'}}>
-            <Link to='/dashboard' style={{ color: 'white',textDecoration: 'none'}}>T-Invoice</Link>
+            <Link to='/' style={{ color: 'white',textDecoration: 'none'}}>T-Invoice</Link>
           </Typography>
           <Link to='/profile' style={{ color: 'white',textDecoration: 'none'}}><Button color="inherit">{this.props.user_fullname}</Button></Link>
           <Logout />

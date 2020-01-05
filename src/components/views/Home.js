@@ -5,22 +5,16 @@ import { Link } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import logotma from '../share/img/logotma.png';
 import { connect } from 'react-redux';
+import { th } from "../share/config";
 
-const th = createMuiTheme({
-    palette: {
-        primary: { main: blue[500] }, // Purple and green play nicely together.
-        secondary: { main: '#2196f3' }, // This is just green.A700 as hex.
-    },
-});
 class HomePage extends Component {
     constructor(props) {
         super(props);
-        this.state = { redirect: false }
+        this.state = { redirect: false };
+        document.title = 'TMA Invoice Tracking Tool';
     }
     render() {
         return (
