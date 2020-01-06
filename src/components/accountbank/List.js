@@ -12,7 +12,7 @@ import { getAccountBankCurrent } from '../share/services/accountbank.service';
 import { Link } from "react-router-dom";
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import _ from 'lodash';
+import  _ from 'lodash';
 
 function PaperComponent(props) {
     return (

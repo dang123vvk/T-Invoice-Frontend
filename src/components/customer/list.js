@@ -1,186 +1,190 @@
-import React from 'react';
-import MaterialTable from 'material-table';
-import { Container, CssBaseline } from '@material-ui/core';
-import axios from 'axios';
+import React from 'react'
+import { Container, CssBaseline, Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, TablePagination, TableFooter, AppBar, Toolbar, Grid, Button, TextField } from '@material-ui/core';
 import { connect } from "react-redux";
-import { Redirect } from 'react-router';
-import ErrorLogin from '../share/error.login';
-import {API} from '../share/api';
-const API_URL = API + 'customers/';
+import { Redirect } from 'react-router'
+import NotFound from '../views/NotFound';
+import EditIcon from '@material-ui/icons/Edit';
+import SearchIcon from '@material-ui/icons/Search';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import IconButton from '@material-ui/core/IconButton';
+import './style.css';
+import { getCustomerUserCurrent } from '../share/services/customer.service';
+import { Link } from "react-router-dom";
+// import _ from 'lodash';
+
+
 class ListCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            columns: [
-                { title: 'Id', field: 'customer_id', hidden: true },
-                { title: 'Name', field: 'customer_name' },
-                { title: 'Email', field: 'customer_email' },
-                { title: 'Phone Number', field: 'customer_number_phone' },
-                { title: 'Address', field: 'customer_address' },
-                { title: 'UserId', field: 'customer_details_id', hidden: true },
-            ],
-            data: [
-            ],
-            users: [],
-            customer_id: null,
+            data: [],
+            account_bank_id: null,
             redirect: false,
-            redirectBillList: false,
-            redirectBillAdd: false,
-            redirectAdd: false,
-            redirectDetail: false,
+            redirectAddAccountBank: false,
+            page: 0,
+            rowsPerPage: 5,
         }
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        document.title = 'Customers';
+        this.openEdit = this.openEdit.bind(this);
+        this.closeEdit = this.closeEdit.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
     componentDidMount() {
-        axios.get(API_URL+localStorage.getItem('user_id'),{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                //   console.log(JSON.stringify(response.data));
-                this.setState({ data: response.data.customers });
+        getCustomerUserCurrent().then(data => {
+            // console.log(data.customers)
+            this.setState({
+                data: data.customers
             })
-            .catch(err => console.log(err));
+        });
     }
-    handleSubmit (event, customer_id) {
-        //   console.log(bill_id);
-        event.preventDefault();
-       this.setState({
-           redirect:true,
-            customer_id: customer_id,
-
-       })
-      }
-      handleSubmitDetail (event, customer_id) {
-        //   console.log(bill_id);
-        event.preventDefault();
-       this.setState({
-           redirectDetail:true,
-            customer_id: customer_id,
-
-       })
-      }
-      handleSubmitTempCustomer (event, customer_id) {
-        //   console.log(bill_id);
-        event.preventDefault();
-       this.setState({
-           redirectBillList:true,
-            customer_id: customer_id,
-
-       })
-      }
-      handleSubmitBillAdd (event, customer_id) {
-        //   console.log(bill_id);
-        event.preventDefault();
-       this.setState({
-           redirectBillAdd:true,
-            customer_id: customer_id,
-
-       })
-      }
-      handleSubmitAdd(event) {
-        //   console.log(bill_id);
+    handleSubmit(event, account_bank_id) {
         event.preventDefault();
         this.setState({
-            redirectAdd: true,
-
+            redirect: true,
+            account_bank_id: account_bank_id,
         })
     }
-    render() {
-        const { redirect, redirectBillList,redirectBillAdd, redirectAdd, redirectDetail } = this.state;
-
-        if (redirect) {
-          return <Redirect to={'/customer-edit/'+this.state.customer_id}/>;
-        }
-        if (redirectDetail) {
-            return <Redirect to={'/customer-detail/'+this.state.customer_id}/>;
-          }
-        if (redirectBillList) {
-            return <Redirect to={'/customer-template/'+this.state.customer_id}/>;
-          }
-          if (redirectBillAdd) {
-            return <Redirect to={'/bill-add-customer/'+this.state.customer_id}/>;
-          }
-          if (redirectAdd) {
-            return <Redirect to={'/customer/add'}/>;
-          }
-
-        if((this.props.isLogin) || (localStorage.getItem('user_name')))
-        {
-        return (
-            <Container component="main" maxWidth="lg">
-                <CssBaseline />
-                <div style={{ marginTop: '20px' }}>
-                    <MaterialTable
-                        title='List Customer'
-                        columns={this.state.columns}
-                        data={this.state.data}
-                        editable={{
-                            onRowDelete: oldData =>
-                                new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        {
-                                            let data = this.state.data;
-                                            const index = data.indexOf(oldData);
-                                            data.splice(index, 1);
-                                            this.setState({ data }, () => resolve());
-                                        }
-                                        resolve()
-                                    }, 1000)
-                                }),
-                        }}
-                        actions={[
-                           
-                            {
-                                icon: 'edit',
-                                tooltip: 'Edit Customer',
-                                onClick: (event, rowData) =>  this.handleSubmit(event,rowData.customer_id)
-                                
-                            },
-                            {
-                                icon: 'view_column',
-                                tooltip: 'Detail Customer',
-                                onClick: (event, rowData) =>  this.handleSubmitDetail(event,rowData.customer_id)
-                                
-                            },
-                            {
-                                icon: 'add',
-                                tooltip: 'Add bill',
-                                onClick: (event, rowData) =>  this.handleSubmitBillAdd(event,rowData.customer_id)
-                                
-                            },
-                            {
-                                icon: 'filter_list',
-                                tooltip: 'Customer Template',
-                                onClick: (event, rowData) =>  this.handleSubmitTempCustomer(event,rowData.customer_id)
-                                
-                            },
-                            {
-                                    icon: 'add',
-                                    tooltip: 'Add A Customer',
-                                    isFreeAction: true,
-                                    onClick: (event) => this.handleSubmitAdd(event)
-
-                                }
-
-    
-                        ]}
-                        options={{
-      search: true,
-      exportButton: true,
-      exportAllData:true,
-      
-    }}
-                    />
-                </div>
-            </Container>
-        )
+    handleSubmitAdd(event) {
+        event.preventDefault();
+        this.setState({
+            redirectAddAccountBank: true,
+        })
     }
-    return (
-     <ErrorLogin />
-    );
+    handleChangePage(event, newPage) {
+        this.setState({
+            page: newPage,
+        })
+    }
+    handleChangeRowsPerPage(event) {
+        this.setState({
+            rowsPerPage: +event.target.value,
+            page: 0
+        })
+    }
+    openEdit(e, account_bank_id) {
+        e.preventDefault();
+        
+    }
+    closeEdit(e) {
+        e.preventDefault();
+        this.setState({
+            edit: false
+        })
+    }
+    onChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value,
+        });
+    }
+    render() {
+        const { redirect, redirectAddAccountBank } = this.state;
+        if (redirect) {
+            return <Redirect to={'/accountbank/' + this.state.account_bank_id} />;
+        }
+        if (redirectAddAccountBank) {
+            return <Redirect to={'/accountbank'} />;
+        }
+        if ((this.props.role) || (localStorage.getItem('user_information'))) {
+            return (
+                <Container component="main" maxWidth="lg">
+                    <CssBaseline />
+                    <div style={{ marginTop: '1%' }}  >
+                        <AppBar position="static" color="default" elevation={0}>
+                            <Toolbar>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item>
+                                        <SearchIcon color="inherit" />
+                                    </Grid>
+                                    <Grid item xs>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Search by name, email, phone number or address"
+                                            InputProps={{
+                                                disableUnderline: true
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Link to='/customers/add' style={{ color: 'white', textDecoration: 'none' }}><Button variant="contained" color="primary" className="btn-without-border" >
+                                            Add Customer
+                                    </Button>
+                                        </Link>
+                                        <Tooltip title="Reload">
+                                            <IconButton className="btn-without-border">
+                                                <RefreshIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                    <div style={{ marginTop: '2%' }}>
+                        <Table style={{ width: '100%' }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align='center'>Name</TableCell>
+                                    <TableCell align="center" >Email</TableCell>
+                                    <TableCell align="center">Phone Number</TableCell>
+                                    <TableCell align="center">Address</TableCell>
+                                    <TableCell align='center'></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(this.state.rowsPerPage > 0 ? this.state.data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage) : this.state.data).map(row => {
+                                    return (
+                                        <TableRow hover role="checkbox" key={row.customer_email} tabIndex={-1} >
+                                            <TableCell align='center'>{row.customer_name}</TableCell>
+                                            <TableCell align='center' >{row.customer_email}</TableCell>
+                                            <TableCell align='center' >{row.customer_number_phone}</TableCell>
+                                            <TableCell align='center' >{row.customer_address}</TableCell>
+                                            <TableCell align="center">
+                                            <Link to='/customers/edit' style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
+                                                 <Fab size="small" color="primary"  className="btn-without-border">
+                                                       <EditIcon style={{ display: 'block' }} />
+                                                    </Fab>
+                                                    
+                                                </Tooltip>
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                            <TableFooter >
+                                <TableRow>
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 15]}
+                                        count={this.state.data.length}
+                                        rowsPerPage={this.state.rowsPerPage}
+                                        page={this.state.page}
+                                        backIconButtonProps={{
+                                            'aria-label': 'previous page',
+                                        }}
+                                        nextIconButtonProps={{
+                                            'aria-label': 'next page',
+                                        }}
+                                        onChangePage={this.handleChangePage}
+                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </div>
+                </Container>
+            )
+        }
+        return (
+            <NotFound />
+        );
+    }
 }
-}
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-      title: state.loginReducer.username,
-      isLogin: state.loginReducer.isLogin
+        user_fullname: state.loginReducer.user_fullname,
+        role: state.loginReducer.role
     };
-  }
-  export default connect(mapStateToProps) (ListCustomer);
+}
+export default connect(mapStateToProps)(ListCustomer);
