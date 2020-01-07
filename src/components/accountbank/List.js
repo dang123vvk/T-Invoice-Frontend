@@ -44,6 +44,7 @@ class ListAccountBank extends React.Component {
         this.openEdit = this.openEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.reload = this.reload.bind(this);
     }
     componentDidMount() {
         getAccountBankCurrent().then(data => {
@@ -99,6 +100,10 @@ class ListAccountBank extends React.Component {
             [e.target.name]: e.target.value,
         });
     }
+    reload(e){
+        e.preventDefault();
+        window.location.reload();
+    }
     render() {
         const { redirect, redirectAddAccountBank } = this.state;
         if (redirect) {
@@ -133,7 +138,7 @@ class ListAccountBank extends React.Component {
                                     </Button>
                                         </Link>
                                         <Tooltip title="Reload">
-                                            <IconButton className="btn-without-border">
+                                            <IconButton className="btn-without-border" onClick={this.reload}>
                                                 <RefreshIcon color="inherit" />
                                             </IconButton>
                                         </Tooltip>

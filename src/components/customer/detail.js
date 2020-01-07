@@ -13,13 +13,10 @@ import { ThemeProvider } from '@material-ui/styles';
 import { FormControl, Paper, Breadcrumbs, Table, TableHead, TableCell, TableBody, TableRow, Fab } from '@material-ui/core';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
-import Axios from 'axios';
-import ErrorLogin from '../share/error.login';
+import NotFound from '../views/NotFound';
 import { Link } from "react-router-dom";
-import MaterialTable from 'material-table';
 import Icon from '@material-ui/core/Icon';
-import { API } from '../share/api';
-const API_URL = API + 'customers/edit/';
+
 const th = createMuiTheme({
     palette: {
         primary: { main: blue[500] }, // Purple and green play nicely together.
@@ -57,38 +54,9 @@ class DetailCustomer extends Component {
         }
         this.onChange = this.onChange.bind(this);
         this.cancel = this.cancel.bind(this);
+        document.title = 'Detail Customer';
     }
     componentDidMount() {
-        Axios.get(API_URL + this.props.match.params.id + "/" + localStorage.getItem('user_id'), { headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                if (response.data.status == true) {
-                    this.setState({
-                        customer_name: response.data.customers.customer_name,
-                        customer_email: response.data.customers.customer_email,
-                        customer_address: response.data.customers.customer_address,
-                        customer_swift_code: response.data.customers.customer_swift_code,
-                        customer_number_phone: response.data.customers.customer_number_phone,
-                        customer_details_id: response.data.customers.customer_details_id,
-                        customer_details_company: response.data.customerDetail.customer_details_company,
-                        customer_details_project: response.data.customerDetail.customer_details_project,
-                        customer_details_country: response.data.customerDetail.customer_details_country,
-                        customer_details_note: response.data.customerDetail.customer_details_note,
-                        user_customer: response.data.customer_user.user_id,
-                        disable: false,
-                        data: response.data.po_nos,
-                        dataBill: response.data.bill,
-                    });
-                }
-                else {
-                    this.setState({
-                        message: 'You do not have permission to edit',
-                        disable: true
-                    });
-                }
-
-            })
-            .catch(err => console.log(err));
-
     }
     handleSubmitForm(event) {
         event.preventDefault();
@@ -106,11 +74,6 @@ class DetailCustomer extends Component {
 
 
         };
-        Axios.post(API_URL + this.props.match.params.id, customer, { headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({ redirect: true })
-            })
-            .catch(err => console.log(err));
     }
     onChange(e) {
         this.setState({
@@ -128,7 +91,7 @@ class DetailCustomer extends Component {
         if (redirect) {
             return <Redirect to='/customer-list' />;
         }
-        if ((this.props.isLogin) || (localStorage.getItem('user_name'))) {
+        if ((this.props.role) || (localStorage.getItem('user_information'))) {
             return (
                 <ThemeProvider theme={th}>
                     <Container component="main" >
@@ -139,7 +102,7 @@ class DetailCustomer extends Component {
                                     <Link color="inherit" to="/" >
                                         Home
                                     </Link>
-                                    <Link to="/customer-list" >
+                                    <Link to="/customers" >
                                         Customer
                                     </Link>
                                     <Typography color="textPrimary">Detail</Typography>
@@ -155,92 +118,92 @@ class DetailCustomer extends Component {
                             <Grid container spacing={1}>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Name:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Name:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_name}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_name}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Email:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Email:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_email}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_email}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Address:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Address:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_address},{this.state.customer_details_country}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_address},{this.state.customer_details_country}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Company:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Company:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_details_company}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_details_company}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Phone Number:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Phone Number:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_number_phone}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_number_phone}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Swift Code:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Swift Code:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_swift_code}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_swift_code}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={4}>
-                                <Typography align="right" style={{fontWeight: 'bold'}}>
-                                    Project:
+                                    <Typography align="right" style={{ fontWeight: 'bold' }}>
+                                        Project:
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4} >
-                                <Typography align="left">
-                                    {this.state.customer_details_project}
-                                </Typography>
+                                    <Typography align="left">
+                                        {this.state.customer_details_project}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={8}>
-                                <Typography align="left" style={{fontWeight: 'bold'}}>
-                                   PO Nos
+                                    <Typography align="left" style={{ fontWeight: 'bold' }}>
+                                        PO Nos
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
@@ -265,9 +228,9 @@ class DetailCustomer extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow >
-                                                    <TableCell align="right" colSpan={5}>
-                                                      <Link to={"/customer-edit/" + this.props.match.params.id}> Edit</Link>
-                                                    </TableCell>
+                                                <TableCell align="right" colSpan={5}>
+                                                    <Link to={"/customer-edit/" + this.props.match.params.id}> Edit</Link>
+                                                </TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -275,8 +238,8 @@ class DetailCustomer extends Component {
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={8}>
-                                <Typography align="left" style={{fontWeight: 'bold'}}>
-                                   Bills
+                                    <Typography align="left" style={{ fontWeight: 'bold' }}>
+                                        Bills
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
@@ -305,9 +268,9 @@ class DetailCustomer extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow >
-                                                    <TableCell align="right" colSpan={5}>
+                                                <TableCell align="right" colSpan={5}>
                                                     <Link to={"/bill-list-customer/" + this.props.match.params.id}>All Bill</Link>
-                                                    </TableCell>
+                                                </TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -326,15 +289,15 @@ class DetailCustomer extends Component {
           </Button>
                                 </Grid>
                                 <Grid item xs={2}>
-                                <Link to={"/customer-edit/" + this.props.match.params.id}>
-                                    <Button style={{ marginTop: '20px' }}
-                                        type="button"
-                                        fullWidth
-                                        variant="contained"
-                                        color="secondary"
-                                        disabled={this.state.disable}
-                                    >
-                                        Edit
+                                    <Link to={"/customer-edit/" + this.props.match.params.id}>
+                                        <Button style={{ marginTop: '20px' }}
+                                            type="button"
+                                            fullWidth
+                                            variant="contained"
+                                            color="secondary"
+                                            disabled={this.state.disable}
+                                        >
+                                            Edit
           </Button></Link>
                                 </Grid>
                                 <Grid item xs={4}></Grid>
@@ -346,14 +309,14 @@ class DetailCustomer extends Component {
             );
         }
         return (
-            <ErrorLogin />
+            <NotFound />
         );
     }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        title: state.loginReducer.username,
-        isLogin: state.loginReducer.isLogin
+      user_fullname: state.loginReducer.user_fullname,
+      role: state.loginReducer.role
     };
-}
+  }
 export default connect(mapStateToProps)(DetailCustomer);

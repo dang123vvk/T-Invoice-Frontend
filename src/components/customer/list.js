@@ -7,6 +7,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
+import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
+import BuildIcon from '@material-ui/icons/BuildOutlined';
+import AddIcon from '@material-ui/icons/Add';
 import './style.css';
 import { getCustomerUserCurrent } from '../share/services/customer.service';
 import { Link } from "react-router-dom";
@@ -30,6 +33,7 @@ class ListCustomer extends React.Component {
         this.openEdit = this.openEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.reload = this.reload.bind(this);
     }
     componentDidMount() {
         getCustomerUserCurrent().then(data => {
@@ -78,6 +82,10 @@ class ListCustomer extends React.Component {
             [e.target.name]: e.target.value,
         });
     }
+    reload(e){
+        e.preventDefault();
+        window.location.reload();
+    }
     render() {
         const { redirect, redirectAddAccountBank } = this.state;
         if (redirect) {
@@ -112,7 +120,7 @@ class ListCustomer extends React.Component {
                                     </Button>
                                         </Link>
                                         <Tooltip title="Reload">
-                                            <IconButton className="btn-without-border">
+                                            <IconButton className="btn-without-border" onClick={this.reload}>
                                                 <RefreshIcon color="inherit" />
                                             </IconButton>
                                         </Tooltip>
@@ -148,6 +156,23 @@ class ListCustomer extends React.Component {
                                                     
                                                 </Tooltip>
                                                 </Link>
+                                                <Link to='/customers/detail' style={{ color: 'white', textDecoration: 'none' }}>
+                                                <Tooltip title="Detail customer" aria-label="add">
+                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
+                                                       <ViewColumnButton style={{ display: 'block' }} />
+                                                    </Fab>
+                                                </Tooltip>
+                                                </Link>
+                                                <Tooltip title="Add Bill" aria-label="add">
+                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
+                                                       <AddIcon style={{ display: 'block' }} />
+                                                    </Fab>
+                                                </Tooltip>
+                                                <Tooltip title="Customer Template" aria-label="add">
+                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
+                                                       <BuildIcon style={{ display: 'block' }} />
+                                                    </Fab>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -1,20 +1,24 @@
 import React from 'react';
-import MaterialTable from 'material-table';
+import {  Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, TablePagination, TableFooter, AppBar, Toolbar, Grid, Button, TextField } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import axios from 'axios';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
-import { API } from '../share/api';
-import ErrorLogin from '../share/error.login';
+import NotFound from '../views/NotFound';
+import { Link } from "react-router-dom";
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import GetAppIcon from '@material-ui/icons/GetAppSharp';
+import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
 import {
     ExcelExport,
     ExcelExportColumn,
     ExcelExportColumnGroup
 } from '@progress/kendo-react-excel-export';
 import {month} from '../share/month';
-const API_URL = API + 'bills/list/user/';
-const API_URL2 = API + 'bills/delete/';
+import { getBillUserCurrent } from '../share/services/bill.service';
 class ListBill extends React.Component {
     _exporter;
     export = () => {
@@ -23,28 +27,26 @@ class ListBill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            columns: [
-                { title: 'Bill ID', field: 'bill_id', hidden: true },
-                { title: 'Month', field: 'month' },
-                { title: 'Monthly', field: 'bill_monthly_cost', hidden: true },
-                { title: 'Customer', field: 'customer_name' },
-                { title: 'Status', field: 'status_bill_name' },
-                { title: 'Sum', field: 'bills_sum', type: 'numeric' },
-                { title: 'Date', field: 'bill_date' },
-            ],
             data: [],
             redirect: false,
             bill_id: null,
             redirectAdd: false,
             reactDetail: false,
-        }
+            page: 0,
+            rowsPerPage: 5,
+        };
+        document.title = 'Bills';
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        axios.get(API_URL + localStorage.getItem('user_id'), { headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({ data: response.data.bill });
+        getBillUserCurrent().then(data => {
+            this.setState({
+                data: data.bill
             })
-            .catch(err => console.log(err));
+        })
+ 
     }
     handleSubmit(event, bill_id) {
         event.preventDefault();
@@ -71,6 +73,21 @@ class ListBill extends React.Component {
         event.preventDefault();
         this._exporter.save();
     }
+    handleChangeRowsPerPage(event) {
+        this.setState({
+            rowsPerPage: +event.target.value,
+            page: 0
+        })
+    }
+    handleChangePage(event, newPage) {
+        this.setState({
+            page: newPage,
+        })
+    }
+    reload(e){
+        e.preventDefault();
+        window.location.reload();
+    }
     render() {
         this.state.data.map((key,index)=>{
             key.in = index +1;
@@ -87,63 +104,110 @@ class ListBill extends React.Component {
         if (redirectAdd) {
             return <Redirect to={'/bill-add/'} />;
         }
-        if ((this.props.isLogin) || (localStorage.getItem('user_name'))) {
+        if ((this.props.role) || (localStorage.getItem('user_information'))) {
             return (
                 <Container component="main">
                     <CssBaseline />
-                    <div style={{ marginTop: '20px' }}>
-                        <MaterialTable
-                            title="List Bill"
-                            columns={this.state.columns}
-                            data={this.state.data}
-                            editable={{
-                                onRowDelete: oldData =>
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            {
-                                                let data = this.state.data;
-                                                const index = data.indexOf(oldData);
-                                                axios.get(API_URL2 + data[index].bill_id, { headers: { Authorization: localStorage.getItem('token') } })
-                                                    .then(response => {
-                                                        //this.setState({ data: response.data.accountsbank });
-                                                    })
-                                                    .catch(err => console.log(err));
-                                                data.splice(index, 1);
-                                                this.setState({ data }, () => resolve());
-                                            }
-                                            resolve()
-                                        }, 1000)
-                                    }),
-                            }}
-                            actions={[
-                                {
-                                    icon: 'edit',
-                                    tooltip: 'Edit Bill',
-                                    onClick: (event, rowData) => this.handleSubmit(event, rowData.bill_id)
-                                },
-                                {
-                                    icon: 'save_alt',
-                                    tooltip: 'Export',
-                                    onClick: (event, rowData) => this.handleSubmitExport(event, rowData.bill_id)
-
-                                },
-                                {
-                                    icon: 'add',
-                                    tooltip: 'Add Bill',
-                                    isFreeAction: true,
-                                    onClick: (event) => this.handleSubmitAdd(event)
-                                },   
-                            ]}
-                            options={{
-      search: true,
-      exportButton: true,
-      exportAllData:true,
-    }}
-                        />
+                    <div style={{ marginTop: '1%' }}  >
+                        <AppBar position="static" color="default" elevation={0}>
+                            <Toolbar>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item>
+                                        <SearchIcon color="inherit" />
+                                    </Grid>
+                                    <Grid item xs>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Search by name, email, phone number or address"
+                                            InputProps={{
+                                                disableUnderline: true
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Link to='/bills/add' style={{ color: 'white', textDecoration: 'none' }}><Button variant="contained" color="primary" className="btn-without-border" >
+                                            Add Bill
+                                    </Button>
+                                        </Link>
+                                        <Tooltip title="Reload">
+                                            <IconButton className="btn-without-border" onClick={this.reload}>
+                                                <RefreshIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Export Excel">
+                                            <IconButton className="btn-without-border" onClick={this.export}>
+                                                <DescriptionSharpIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                    <div style={{ marginTop: '2%' }}>
+                    <Table style={{ width: '100%' }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align='center'>Month</TableCell>
+                                    <TableCell align="center" >Customer</TableCell>
+                                    <TableCell align="center">Status</TableCell>
+                                    <TableCell align="center">Sum</TableCell>
+                                    <TableCell align="center">Date</TableCell>
+                                    <TableCell align='center'></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(this.state.rowsPerPage > 0 ? this.state.data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage) : this.state.data).map(row => {
+                                    return (
+                                        <TableRow hover role="checkbox" key={row.bills_sum} tabIndex={-1} >
+                                            <TableCell align='center'>{row.month}</TableCell>
+                                            <TableCell align='center' >{row.customer_name}</TableCell>
+                                            <TableCell align='center' >{row.status_bill_name}</TableCell>
+                                            <TableCell align='center' >{row.bills_sum}</TableCell>
+                                            <TableCell align='center' >{row.bill_date}</TableCell>
+                                            <TableCell align="center">
+                                            <Link to='/bills/edit' style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
+                                                 <Fab size="small" color="primary"  className="btn-without-border">
+                                                       <EditIcon style={{ display: 'block' }} />
+                                                    </Fab>
+                                                    
+                                                </Tooltip>
+                                                </Link>
+                                                <Link to={'/bills/export/'+ row.bill_id} style={{ color: 'white', textDecoration: 'none' }}>
+                                                <Tooltip title="Export" aria-label="add">
+                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%', backgroundColor:'white'}}>
+                                                       <GetAppIcon style={{ display: 'block', color: '#65819D' }} />
+                                                    </Fab>
+                                                </Tooltip>
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                            <TableFooter >
+                                <TableRow>
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 15]}
+                                        count={this.state.data.length}
+                                        rowsPerPage={this.state.rowsPerPage}
+                                        page={this.state.page}
+                                        backIconButtonProps={{
+                                            'aria-label': 'previous page',
+                                        }}
+                                        nextIconButtonProps={{
+                                            'aria-label': 'next page',
+                                        }}
+                                        onChangePage={this.handleChangePage}
+                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
                     </div>
                     <ExcelExport
                         data={this.state.data}
-                        fileName="abc.xlsx"
+                        fileName="bills.xlsx"
                         ref={(exporter) => { this._exporter = exporter; }}
                     >
                         <ExcelExportColumnGroup title="List Bill" headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
@@ -174,14 +238,14 @@ class ListBill extends React.Component {
             );
         }
         return (
-            <ErrorLogin />
+            <NotFound />
         );
     }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        title: state.loginReducer.username,
-        isLogin: state.loginReducer.isLogin
+        user_fullname: state.loginReducer.user_fullname,
+        role: state.loginReducer.role
     };
 }
 export default connect(mapStateToProps)(ListBill);

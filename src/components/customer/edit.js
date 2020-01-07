@@ -17,7 +17,7 @@ import { th } from "../share/config";
 import EditIcon from '@material-ui/icons/Edit';
 import _ from 'lodash';
 import Draggable from 'react-draggable';
-import {status} from './status';
+import { status } from './status';
 
 function PaperComponent(props) {
   return (
@@ -124,7 +124,7 @@ class EditCustomer extends Component {
   addPoNo(e) {
     e.preventDefault();
     if (this.state.isAdd) {
-      var status1 = status(this.state.status_po_id);
+      var status1 = status(this.state.status_po_id.toString());
       const Po = {
         po_number_description: this.state.po_number_description,
         status_po_id: this.state.status_po_id,
@@ -144,7 +144,7 @@ class EditCustomer extends Component {
       });
     }
     else {
-      var status2 = status(this.state.status_po_id);
+      var status2 = status(this.state.status_po_id.toString());
       const Po = {
         po_number_description: this.state.po_number_description,
         status_po_id: this.state.status_po_id,
@@ -159,7 +159,7 @@ class EditCustomer extends Component {
         isAdd: true,
         data: data,
       })
-}
+    }
 
   }
   closeDialog(e) {
@@ -186,7 +186,7 @@ class EditCustomer extends Component {
                   <Link color="inherit" to="/" >
                     Home
           </Link>
-                  <Link to="/customer-list" >
+                  <Link to="/customers" >
                     Customer
           </Link>
                   <Typography color="textPrimary">Add customer</Typography>

@@ -9,9 +9,12 @@ import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
 import Header from './components/views/Header';
 import ListAccountBank from './components/accountbank/List';
+import ListBill from './components/bill/list';
+import DetailBill from './components/bill/detail';
 import ListCustomer from './components/customer/list';
 import AddCustomer from './components/customer/add';
 import EditCustomer from './components/customer/edit';
+import DetailCustomer from './components/customer/detail';
 import AddAccountBank from './components/accountbank/Add';
 import EditAccountBank from './components/accountbank/Edit';
 import { Provider } from 'react-redux'
@@ -25,9 +28,12 @@ const routing = (
         <Route exact path="/accountbanks" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
+        <Route exact path="/bills" component={ListBill} />
+        <Route exact path="/bills/export/:id" component={DetailBill} />
         <Route exact path="/customers" component={ListCustomer} />
         <Route exact path="/customers/add" component={AddCustomer} />
         <Route exact path="/customers/edit" component={EditCustomer} />
+        <Route exact path="/customers/detail" component={DetailCustomer} />
         <Route exact path="/signin" component={Signin} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/" component={HomePage} />

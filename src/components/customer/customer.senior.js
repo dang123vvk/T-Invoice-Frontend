@@ -4,9 +4,7 @@ import { Container, CssBaseline } from '@material-ui/core';
 import axios from 'axios';
 import { connect } from "react-redux";
 import { Redirect } from 'react-router';
-import ErrorLogin from '../share/error.login';
-import {API} from '../share/api';
-const API_URL = API + 'customers/list/all/senior/';
+import NotFound from '../views/NotFound';
 class ListCustomerSenior extends React.Component {
     constructor(props) {
         super(props);
@@ -30,11 +28,6 @@ class ListCustomerSenior extends React.Component {
         }
     }
     componentDidMount() {
-        axios.get(API_URL+localStorage.getItem('groups_user_id'),{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({ data: response.data.customer });
-            })
-            .catch(err => console.log(err));
     }
       handleSubmitBillCustomer (event, customer_id, user_id) {
         event.preventDefault();
@@ -50,8 +43,7 @@ class ListCustomerSenior extends React.Component {
         if (redirectBillList) {
             return <Redirect to={'/bill-list-senior/'+this.state.customer_id+ '/'+this.state.user_id}/>;
           }
-        if((this.props.isSenior == 'true') || (localStorage.getItem('role_id')==3))
-        {
+          if ((this.props.role) || (localStorage.getItem('user_information'))) {
         return (
             <Container component="main" maxWidth="lg">
                 <CssBaseline />
@@ -78,15 +70,14 @@ class ListCustomerSenior extends React.Component {
         )
     }
     return (
-     <ErrorLogin />
+     <NotFound />
     );
 }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-      title: state.loginReducer.username,
-      isLogin: state.loginReducer.isLogin,
-      isSenior: state.loginReducer.isSenior
+      user_fullname: state.loginReducer.user_fullname,
+      role: state.loginReducer.role
     };
   }
   export default connect(mapStateToProps) (ListCustomerSenior);

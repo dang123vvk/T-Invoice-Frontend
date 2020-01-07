@@ -7,7 +7,6 @@ import blue from '@material-ui/core/colors/blue';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import logotma from './logotma.png';
-import Axios from 'axios';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
 import Doc from './docService';
@@ -17,7 +16,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import PageTemplate from './pagetemlate';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import { Link } from "react-router-dom";
-import ErrorLogin from '../share/error.login';
+import NotFound from '../views/NotFound';
 import {month} from '../share/month';
 import {
     ExcelExport,
@@ -26,9 +25,10 @@ import {
 } from '@progress/kendo-react-excel-export';
 import { aggregateBy } from '@progress/kendo-data-query';
 import { Tooltip, Paper, Breadcrumbs } from '@material-ui/core';
-import {API} from '../share/api';
-const API_URL_CUSTOMER = API + 'customers/';
-const API_URL_EDIT= API + 'bills/edit/';
+import { getCustomerUserCurrent } from '../share/services/customer.service';
+import { getBill } from '../share/services/bill.service';
+
+
 const aggregates = [ { field: 'bill_item_cost', aggregate: 'SUM' } ];
 const total= (props)=>(aggregateBy(props.data, aggregates));
 const URL_EDIT="/bill-edit/";
@@ -95,49 +95,44 @@ class DetailBill extends Component {
         this.componentWillMount = this.componentDidMount.bind(this);
     }
     componentDidMount() {
-        Axios.get(API_URL_CUSTOMER + localStorage.getItem('user_id'), { headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({
-                    customers: response.data.customers
-                });
+        getCustomerUserCurrent().then(data => {
+            this.setState({
+                customers: data.customers
             })
-            .catch(err => console.log(err));
-        Axios.get(API_URL_EDIT + this.props.match.params.id + '/'+ localStorage.getItem('user_id'), { headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({
-                    data: response.data.items,
-                    accountbanks: response.data.accountsbank,
-                    account_bank_id: response.data.bill.account_bank_id,
-                    account_bank_name: response.data.bill.account_bank_name,
-                    account_bank_number: response.data.bill.account_bank_number,
-                    account_bank_address: response.data.bill.account_bank_address,
-                    account_bank_swift: response.data.bill.account_bank_swift,
-                    customer_id: response.data.bill.customer_id,
-                    customer_name: response.data.bill.customer_name,
-                    customer_address: response.data.bill.customer_address,
-                    bill_monthly_cost: response.data.bill.bill_monthly_cost,
-                    bill_date: response.data.bill.bill_date.slice(0, 10),
-                    bill_no: response.data.bill.bill_no,
-                    bill_reference:response.data.bill.bill_reference,
-                    bill_content: response.data.bill.bill_content,
-                    bill_display_po: response.data.po_number.po_number_no,
-                    templates_name_company :response.data.temp.templates_name_company,
-                    templates_address : response.data.temp.templates_address,
-                    templates_phone  :response.data.temp.templates_phone,
-                    templates_email  :response.data.temp.templates_email,
-                    templates_name_on_account  :response.data.temp.templates_name_on_account,
-                    templates_tel :response.data.temp.templates_tel,
-                    templates_fax  :response.data.temp.templates_fax,
-                    templates_sign  :response.data.temp.templates_sign,
-                    bill_id  : response.data.temp.bill_id,
-                    templates_name_cfo  :response.data.temp.templates_name_cfo,
-                    templates_tel_cfo :response.data.temp.templates_tel_cfo,
-                    templates_extension_cfo :response.data.temp.templates_extension_cfo,
-                    templates_email_cfo :response.data.temp.templates_email_cfo,
-                });
-            })
-            .catch(err => console.log(err));
-
+        });
+        getBill(this.props.match.params.id).then(data => {
+            this.setState({
+                data: data.items,
+                accountbanks: data.accountsbank,
+                account_bank_id: data.bill.account_bank_id,
+                account_bank_name: data.bill.account_bank_name,
+                account_bank_number: data.bill.account_bank_number,
+                account_bank_address: data.bill.account_bank_address,
+                account_bank_swift: data.bill.account_bank_swift,
+                customer_id: data.bill.customer_id,
+                customer_name: data.bill.customer_name,
+                customer_address: data.bill.customer_address,
+                bill_monthly_cost: data.bill.bill_monthly_cost,
+                bill_date: data.bill.bill_date.slice(0, 10),
+                bill_no: data.bill.bill_no,
+                bill_reference:data.bill.bill_reference,
+                bill_content: data.bill.bill_content,
+                bill_display_po: data.po_number.po_number_no,
+                templates_name_company :data.temp.templates_name_company,
+                templates_address : data.temp.templates_address,
+                templates_phone  :data.temp.templates_phone,
+                templates_email  :data.temp.templates_email,
+                templates_name_on_account  :data.temp.templates_name_on_account,
+                templates_tel :data.temp.templates_tel,
+                templates_fax  :data.temp.templates_fax,
+                templates_sign  :data.temp.templates_sign,
+                bill_id  : data.temp.bill_id,
+                templates_name_cfo  :data.temp.templates_name_cfo,
+                templates_tel_cfo :data.temp.templates_tel_cfo,
+                templates_extension_cfo :data.temp.templates_extension_cfo,
+                templates_email_cfo :data.temp.templates_email_cfo,
+            });
+        })
     }
     handleChangeBillDate(event) {
         var value = event.target.value;
@@ -205,7 +200,7 @@ class DetailBill extends Component {
         if (redirect) {
             return <Redirect to='/bill-list' />;
         }
-        if ((this.props.isLogin) || (localStorage.getItem('user_name'))) {
+        if ((this.props.role) || (localStorage.getItem('user_information'))) {
             return (
                 <div >
                     <div className="example-config">
@@ -383,7 +378,7 @@ class DetailBill extends Component {
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <Typography style={{ fontSize: '15px', fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'><br />{this.state.templates_sign}</Typography>
+                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'><br />{this.state.templates_sign}</Typography>
                                                 </Grid>
                                                 <Grid item xs={12} style={{ height: "20px" }}>
                                                 </Grid>
@@ -419,14 +414,14 @@ class DetailBill extends Component {
             );
         }
         return (
-            <ErrorLogin />
+            <NotFound />
         );
     }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        title: state.loginReducer.username,
-        isLogin: state.loginReducer.isLogin
+        user_fullname: state.loginReducer.user_fullname,
+        role: state.loginReducer.role
     };
 }
 export default connect(mapStateToProps)(DetailBill);
