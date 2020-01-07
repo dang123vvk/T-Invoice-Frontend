@@ -12,6 +12,6 @@ export function getBillUserCurrent(){
 export function getBill(id){
     return axios.get(API_URL + 'bills/edit/'+ id + '/' +user_information.user_username,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
-export function postAccountBank(accountsbank){
-    return axios.post(API_URL + 'customers/add',accountsbank,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+export function getStatusBill(){
+    return axios.get(API_URL + 'bills/status',{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }

@@ -11,6 +11,7 @@ import Header from './components/views/Header';
 import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
 import DetailBill from './components/bill/detail';
+import AddBill from './components/bill/add';
 import ListCustomer from './components/customer/list';
 import AddCustomer from './components/customer/add';
 import EditCustomer from './components/customer/edit';
@@ -29,6 +30,7 @@ const routing = (
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/bills" component={ListBill} />
+        <Route exact path="/bills/add" component={AddBill} />
         <Route exact path="/bills/export/:id" component={DetailBill} />
         <Route exact path="/customers" component={ListCustomer} />
         <Route exact path="/customers/add" component={AddCustomer} />

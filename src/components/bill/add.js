@@ -11,21 +11,18 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import MaterialTable from 'material-table';
 import { Button, TextField, Paper } from '@material-ui/core';
 import Axios from 'axios';
 import { Redirect } from 'react-router'
-import {API} from '../share/api';
 import { connect } from "react-redux";
-import ErrorLogin from '../share/error.login';
+import NotFound from '../views/NotFound';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { Link } from "react-router-dom";
 import {month} from '../share/month';
-const API_URL = API + 'bills/add';
-const API_URL_CUSTOMER = API + 'customers/';
-const API_URL_ACCOUNTSBANK = API + 'accountsbank';
-const API_URL_TEMPLATE = API + 'templates/edit';
-const API_URL_TEMPLATE_CUS = API + 'templates/selectcustomer/';
+import {getTemplate} from '../share/services/template.service';
+import {getAccountBankCurrent} from '../share/services/accountbank.service';
+import {getCustomerUserCurrent, getCustomerPO} from '../share/services/customer.service';
+import {getStatusBill} from '../share/services/bill.service';
 const th = createMuiTheme({
     palette: {
         primary: { main: blue[500] }, 
@@ -101,6 +98,7 @@ class AddBill extends Component {
         this.onChange = this.onChange.bind(this);
         this.default = this.default.bind(this);
         this.customerdefault = this.customerdefault.bind(this);
+        document.title = 'Add Bill';
     }
     componentDidMount() {
         var date = new Date().getDate(); 
@@ -113,125 +111,82 @@ class AddBill extends Component {
             bill_monthly_cost: year + '-' + month1,
             month_1: month(month1)+year,
         });
-        Axios.get(API_URL_TEMPLATE, { headers: { Authorization: localStorage.getItem('token') } })
-        .then(response => {
-            this.setState({
-            templates_name_company :response.data.temp.templates_name_company,
-            templates_address : response.data.temp.templates_address,
-            templates_phone  :response.data.temp.templates_phone,
-            templates_email  :response.data.temp.templates_email,
-            templates_name_on_account  :response.data.temp.templates_name_on_account,
-            templates_tel :response.data.temp.templates_tel,
-            templates_fax  :response.data.temp.templates_fax,
-            templates_sign  :response.data.temp.templates_sign,
-            
-            templates_name_cfo  :response.data.temp.templates_name_cfo,
-            templates_tel_cfo :response.data.temp.templates_tel_cfo,
-            templates_extension_cfo :response.data.temp.templates_extension_cfo,
-            templates_email_cfo :response.data.temp.templates_email_cfo,
+
+        //template
+       getTemplate().then(data => {
+        this.setState({
+            templates_name_company :data.temp.templates_name_company,
+            templates_address : data.temp.templates_address,
+            templates_phone  :data.temp.templates_phone,
+            templates_email  :data.temp.templates_email,
+            templates_name_on_account  :data.temp.templates_name_on_account,
+            templates_tel :data.temp.templates_tel,
+            templates_fax  :data.temp.templates_fax,
+            templates_sign  :data.temp.templates_sign,
+            templates_name_cfo  :data.temp.templates_name_cfo,
+            templates_tel_cfo :data.temp.templates_tel_cfo,
+            templates_extension_cfo :data.temp.templates_extension_cfo,
+            templates_email_cfo :data.temp.templates_email_cfo,
             });
-        })
-        .catch(err => console.log(err));
-        
-    
-        Axios.get(API_URL_ACCOUNTSBANK,{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
+       })
+       getAccountBankCurrent().then(data => {
+        this.setState({ 
+            accountbanks: data.accountsbank,
+            account_bank_id: data.accountsbank[0].account_bank_id,
+            account_bank_name: data.accountsbank[0].account_bank_name,
+            account_bank_address: data.accountsbank[0].account_bank_address,
+            account_bank_swift: data.accountsbank[0].account_bank_swift, });
+    })
+        getCustomerUserCurrent().then(data => {
+            if(data.length_po_nos_add > 0)
+            {
                 this.setState({ 
-                    accountbanks: response.data.accountsbank,
-                    account_bank_id: response.data.accountsbank[0].account_bank_id,
-                    account_bank_name: response.data.accountsbank[0].account_bank_name,
-                    account_bank_address: response.data.accountsbank[0].account_bank_address,
-                    account_bank_swift: response.data.accountsbank[0].account_bank_swift, });
-            })
-            .catch(err => console.log(err));
-        Axios.get(API_URL_CUSTOMER+ localStorage.getItem('user_id'),{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                if(response.data.length_po_nos_add > 0)
-                {
-                    this.setState({ 
-                        customers: response.data.customers,
-                        customer_id: response.data.customers[0].customer_id,
-                        swiftcode: response.data.customers[0].customer_swift_code,
-                        bill_reference: (this.state.month_1+response.data.customers[0].customer_swift_code).toUpperCase(),
-                        customer_address: response.data.customers[0].customer_address,
-                        bill_no: response.data.po_nos_add[0].po_number_id,
-                        bill_display_po: response.data.po_nos_add[0].po_number_no,
-                        po_nos: response.data.po_nos_add,
-                        display_po: false,
-                     });
-                }
-                else
-                {
-                    this.setState({ 
-                        customers: response.data.customers,
-                        customer_id: response.data.customers[0].customer_id,
-                        swiftcode: response.data.customers[0].customer_swift_code,
-                        bill_reference: (this.state.month_1+response.data.customers[0].customer_swift_code).toUpperCase(),
-                        customer_address: response.data.customers[0].customer_address,
-                        display_po: true,
-                     });
-                }
-              
-            })
-            .catch(err => console.log(err));
-        Axios.get(API+ 'bills/status',{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({ 
-                    status: response.data.status
+                    customers: data.customers,
+                    customer_id: data.customers[0].customer_id,
+                    swiftcode: data.customers[0].customer_swift_code,
+                    bill_reference: (this.state.month_1+data.customers[0].customer_swift_code).toUpperCase(),
+                    customer_address: data.customers[0].customer_address,
+                    bill_no: data.po_nos_add[0].po_number_id,
+                    bill_display_po: data.po_nos_add[0].po_number_no,
+                    po_nos: data.po_nos_add,
+                    display_po: false,
                  });
-            })
-            .catch(err => console.log(err));
+            }
+            else
+            {
+                this.setState({ 
+                    customers: data.customers,
+                    customer_id: data.customers[0].customer_id,
+                    swiftcode: data.customers[0].customer_swift_code,
+                    bill_reference: (this.state.month_1+data.customers[0].customer_swift_code).toUpperCase(),
+                    customer_address: data.customers[0].customer_address,
+                    display_po: true,
+                 });
+            }
+        })
+        getStatusBill().then(data => {
+            this.setState({ 
+                status: data.status
+             });
+        })
+    //accountbank
+ 
+    //customer
+       //statusbll
         
     }
+    //default template
     default(e){
-        Axios.get(API_URL_TEMPLATE, { headers: { Authorization: localStorage.getItem('token') } })
-        .then(response => {
-            this.setState({
-            templates_name_company :response.data.temp.templates_name_company,
-            templates_address : response.data.temp.templates_address,
-            templates_phone  :response.data.temp.templates_phone,
-            templates_email  :response.data.temp.templates_email,
-            templates_name_on_account  :response.data.temp.templates_name_on_account,
-            templates_tel :response.data.temp.templates_tel,
-            templates_fax  :response.data.temp.templates_fax,
-            templates_sign  :response.data.temp.templates_sign,
-            
-            templates_name_cfo  :response.data.temp.templates_name_cfo,
-            templates_tel_cfo :response.data.temp.templates_tel_cfo,
-            templates_extension_cfo :response.data.temp.templates_extension_cfo,
-            templates_email_cfo :response.data.temp.templates_email_cfo,
-            });
-        })
-        .catch(err => console.log(err));
+    
     }
+    //customtemplate
     customerdefault(e){
-        Axios.get(API_URL_TEMPLATE_CUS +  this.state.customer_id, { headers: { Authorization: localStorage.getItem('token') } })
-        .then(response => {
-            this.setState({
-            templates_name_company :response.data.temp.templates_name_company,
-            templates_address : response.data.temp.templates_address,
-            templates_phone  :response.data.temp.templates_phone,
-            templates_email  :response.data.temp.templates_email,
-            templates_name_on_account  :response.data.temp.templates_name_on_account,
-            templates_tel :response.data.temp.templates_tel,
-            templates_fax  :response.data.temp.templates_fax,
-            templates_sign  :response.data.temp.templates_sign,
-            templates_name_cfo  :response.data.temp.templates_name_cfo,
-            templates_tel_cfo :response.data.temp.templates_tel_cfo,
-            templates_extension_cfo :response.data.temp.templates_extension_cfo,
-            templates_email_cfo :response.data.temp.templates_email_cfo,
-            });
-        })
-        .catch(err => console.log(err));
+      
     }
     handleSubmitForm(event) {
         event.preventDefault();
         const bill = this.state;
-        Axios.post(API_URL, bill,{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                this.setState({ redirect: true })
-            })
-            .catch(err => console.log(err));
+        
     }
     handleChangeBillDate(event) {
         var value = event.target.value;
@@ -253,14 +208,13 @@ class AddBill extends Component {
         this.setState({
             customer_id: event.target.value,
         });
-        Axios.get(API+ 'customers/list/po_no/'+event.target.value,{ headers: { Authorization: localStorage.getItem('token') } })
-            .then(response => {
-                if(response.data.length_po_nos_add > 0)
+        getCustomerPO(event.target.value).then(data => {
+            if(data.length_po_nos_add > 0)
                 {
                     this.setState({ 
-                        bill_no: response.data.po_nos_add[0].po_number_id,
-                        bill_display_po: response.data.po_nos_add[0].po_number_no,
-                        po_nos: response.data.po_nos_add,
+                        bill_no: data.po_nos_add[0].po_number_id,
+                        bill_display_po: data.po_nos_add[0].po_number_no,
+                        po_nos: data.po_nos_add,
                         display_po: false,
                      });
                 }
@@ -269,9 +223,7 @@ class AddBill extends Component {
                        display_po: true,
                      });
                 }
-                
-            })
-            .catch(err => console.log(err));
+        })
         this.state.customers.map(customer => {
             if (customer.customer_id === event.target.value) {
                 this.setState({
@@ -281,6 +233,7 @@ class AddBill extends Component {
                 })
             }
         })
+       
     }
     handleChangeAccount(event) {
         this.setState({
@@ -326,23 +279,11 @@ class AddBill extends Component {
         if (redirect) {
             return <Redirect to='/bill-list' />;
         }
-        if((this.props.isLogin) || (localStorage.getItem('user_name')))
-        {
+        if ((this.props.role) || (localStorage.getItem('user_information'))) {
         return (
             <ThemeProvider theme={th}>
                 <Container component="main" maxWidth="md" style={{ backgroundColor: 'white' }} >
                     <CssBaseline />
-                        <Paper elevation={0} >
-                            <Breadcrumbs aria-label="Breadcrumb" separator="›">
-                            <Link color="inherit" to="/" >
-                            Home
-                            </Link>
-                            <Link  to="/bill-list" >
-                                Bills
-                            </Link>
-                            <Typography color="textPrimary">Add bill</Typography>
-                            </Breadcrumbs>
-                        </Paper>
                     <form validate="true" onSubmit={event => this.handleSubmitForm(event)}>
                         <main >
                             <div style={{ marginTop: '20px' }} >
@@ -366,7 +307,7 @@ class AddBill extends Component {
                                     </Grid>
                                     <Grid item xs={9} style={{ height: '100px' }} justify-xs-space-between="true"	>
                                         <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='right'>&nbsp;&nbsp;</Typography>
-                                        <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='right'>  <Input
+                                         <Input
                                                 style={{ width: '100%',fontSize:'13px'}}
                                                 type="text"
                                                 value={this.state.templates_name_company}
@@ -376,8 +317,8 @@ class AddBill extends Component {
                                                 name="templates_name_company"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
-                                        <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='right'>Address:<Input
+                                            />
+                                        <b>Address:</b><Input
                                                 style={{ width: '90%',fontSize:'13px'}}
                                                 type="text"
                                                 value={this.state.templates_address}
@@ -387,8 +328,8 @@ class AddBill extends Component {
                                                 name="templates_address"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
-                                        <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='right'>Phone: <Input
+                                            />
+                                        <b>Phone:</b> <Input
                                                 style={{ width: '40%',fontSize:'13px'}}
                                                 type="text"
                                                 value={this.state.templates_phone}
@@ -398,7 +339,7 @@ class AddBill extends Component {
                                                 name="templates_phone"
                                                 onChange={this.onChange}
                                                 required
-                                            /> - E-mail:   <Input
+                                            /> <b>- E-mail:</b>   <Input
                                                 style={{ width: '41%',fontSize:'13px'}}
                                                 type="text"
                                                 value={this.state.templates_email}
@@ -408,7 +349,7 @@ class AddBill extends Component {
                                                 name="templates_email"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
+                                            />
                                     </Grid>
                                     <Grid item xs={5} style={{ height: 'auto' }}>
                                         <Typography variant="h4" style={{ fontWeight: 'bold' }}>INVOICE</Typography>
@@ -466,18 +407,18 @@ class AddBill extends Component {
                                         <div className="row">
                                             <div className="col-sm-4" style={{ fontWeight: 'bold' }}>To:</div>
                                             <div className="col-sm-8" >
-                                                <FormControl >
+                                            
                                                     <Select
                                                         value={this.state.customer_id}
                                                         onChange={event => this.handleChange(event)}
                                                     >
                                                      {this.state.customers.map(customer => (
-                                                            <MenuItem key={customer.customer_id} value={customer.customer_id} >
+                                                            <MenuItem key={customer.customer_swift_code} value={customer.customer_id} >
                                                                 {customer.customer_name}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
-                                                </FormControl>
+                                              
                                             </div>
                                         </div>
                                         <div className="row">
@@ -499,18 +440,17 @@ class AddBill extends Component {
                                     <Grid item xs={12} >
                                         <div style={{ fontWeight: 'bold' }}>Description:</div>
                                     </Grid>
-                                    <Grid item xs={6} align-content-xs-flex-end="true" >
-                                        <Typography style={{ fontWeight: 'bold', fontSize: '20px' }} align="right">  <Input
+                                    <Grid item xs={6}  container justify="flex-end" alignItems="flex-end" >
+                                         <Input
                                                     value={this.state.bill_content}
                                                     inputProps={{
                                                         'aria-label': 'Description',
                                                     }}
                                                     name="bill_content"
                                                     onChange={this.onChange}
-                                                /></Typography>
+                                                />
                                     </Grid>
-                                    <Grid item xs={6} >
-                                        <Typography style={{ fontWeight: 'bold', fontSize: '20px' }} align="left">
+                                    <Grid item xs={6}  >
                                             <Input
                                                 type="month"
                                                 defaultValue={this.state.bill_monthly_cost}
@@ -518,53 +458,9 @@ class AddBill extends Component {
                                                 inputProps={{
                                                     'aria-label': 'Description',
                                                 }} />
-                                        </Typography>
                                     </Grid>
                                     <Grid item xs={12} >
-                                        <MaterialTable
-                                            title=" "
-                                            columns={this.state.columns}
-                                            data={this.state.data}
-                                            editable={{
-                                                onRowAdd: newData =>
-                                                    new Promise((resolve, reject) => {
-                                                        setTimeout(() => {
-                                                            {
-                                                                const data = this.state.data;
-                                                                newData.bill_item_cost= this.state.temp;
-                                                                this.setState({temp: 0});
-                                                                data.push(newData);
-                                                                this.setState({ data }, () => resolve());
-                                                            }
-                                                            resolve()
-                                                        }, 1000)
-                                                    }),
-                                                onRowUpdate: (newData, oldData) =>
-                                                    new Promise((resolve, reject) => {
-                                                        setTimeout(() => {
-                                                            {
-                                                                const data = this.state.data;
-                                                                const index = data.indexOf(oldData);
-                                                                data[index] = newData;
-                                                                this.setState({ data }, () => resolve());
-                                                            }
-                                                            resolve()
-                                                        }, 1000)
-                                                    }),
-                                                onRowDelete: oldData =>
-                                                    new Promise((resolve, reject) => {
-                                                        setTimeout(() => {
-                                                            {
-                                                                let data = this.state.data;
-                                                                const index = data.indexOf(oldData);
-                                                                data.splice(index, 1);
-                                                                this.setState({ data }, () => resolve());
-                                                            }
-                                                            resolve()
-                                                        }, 1000)
-                                                    }),
-                                            }}
-                                        />
+                                    
                                     </Grid>
                                     <Grid item xs={12}>
                                         <div className="row">
@@ -661,7 +557,7 @@ class AddBill extends Component {
                                     </div>
                                     </Grid>
                                     <Grid item xs={12} >
-                                    <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='left'><br />
+                                    
                                         <Input
                                                 style={{ width: '40%',fontSize:'13px'}}
                                                 type="text"
@@ -672,12 +568,9 @@ class AddBill extends Component {
                                                 name ="templates_sign"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
-                                    </Grid>
-                                    <Grid item xs={12} style={{ height: "50px" }}>
+                                            />
                                     </Grid>
                                     <Grid item xs={12} >
-                                    <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='left'>
                                         <Input
                                                 style={{ width: '40%',fontSize:'13px'}}
                                                 type="text"
@@ -688,9 +581,9 @@ class AddBill extends Component {
                                                 name="templates_name_cfo"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
+                                            />
                                         <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='left'>CFO</Typography>
-                                        <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='left'>Tel: 
+                                        <b> Tel: </b>
                                         <Input
                                                 style={{ width: '20%',fontSize:'13px'}}
                                                 type="text"
@@ -701,7 +594,7 @@ class AddBill extends Component {
                                                 name="templates_tel_cfo"
                                                 onChange={this.onChange}
                                                 required
-                                            />, extension: 
+                                            /><b>, extension: </b>
                                             <Input
                                                 style={{ width: '20%',fontSize:'13px'}}
                                                 type="text"
@@ -712,8 +605,8 @@ class AddBill extends Component {
                                                 name="templates_extension_cfo"
                                                 onChange={this.onChange}
                                                 required
-                                            /></Typography>
-                                        <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='left'>Email:
+                                            />
+                                      <b>Email: &nbsp; &nbsp;</b>
                                         <Input
                                                 style={{ width: '20%',fontSize:'13px'}}
                                                 type="text"
@@ -725,7 +618,7 @@ class AddBill extends Component {
                                                 onChange={this.onChange}
                                                 required
                                             />
-                                        </Typography>
+            
                                     </Grid>
                                     <Grid item xs={12} style={{ height: "50px" }}>
                                     </Grid>
@@ -752,14 +645,14 @@ class AddBill extends Component {
         );
     }
     return (
-<ErrorLogin />
+<NotFound />
     );
 }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-      title: state.loginReducer.username,
-      isLogin: state.loginReducer.isLogin
+        user_fullname: state.loginReducer.user_fullname,
+        role: state.loginReducer.role
     };
-  }
+}
   export default connect(mapStateToProps) (AddBill);

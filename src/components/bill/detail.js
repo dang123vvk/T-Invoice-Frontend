@@ -17,7 +17,7 @@ import PageTemplate from './pagetemlate';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import { Link } from "react-router-dom";
 import NotFound from '../views/NotFound';
-import {month} from '../share/month';
+import { month } from '../share/month';
 import {
     ExcelExport,
     ExcelExportColumn,
@@ -29,12 +29,12 @@ import { getCustomerUserCurrent } from '../share/services/customer.service';
 import { getBill } from '../share/services/bill.service';
 
 
-const aggregates = [ { field: 'bill_item_cost', aggregate: 'SUM' } ];
-const total= (props)=>(aggregateBy(props.data, aggregates));
-const URL_EDIT="/bill-edit/";
+const aggregates = [{ field: 'bill_item_cost', aggregate: 'SUM' }];
+const total = (props) => (aggregateBy(props.data, aggregates));
+const URL_EDIT = "/bill-edit/";
 const th = createMuiTheme({
     palette: {
-        primary: { main: blue[500] }, 
+        primary: { main: blue[500] },
         secondary: { main: '#2196f3' },
     },
 });
@@ -74,25 +74,26 @@ class DetailBill extends Component {
             account_bank_swift: '',
             redirect: false,
             bill_no: '',
-            bill_reference:'',
+            bill_reference: '',
             bill_content: '',
-            po_nos:[],
+            po_nos: [],
             bill_display_po: '',
-            templates_name_company :'',
-            templates_address :'',
-            templates_phone  :'',
-            templates_email  :'',
-            templates_name_on_account  :'',
-            templates_tel :'',
-            templates_fax  :'',
-            templates_sign  :'',
-            bill_id  : 1,
-            templates_name_cfo  :'',
-            templates_tel_cfo :'',
-            templates_extension_cfo :'',
-            templates_email_cfo :'',
+            templates_name_company: '',
+            templates_address: '',
+            templates_phone: '',
+            templates_email: '',
+            templates_name_on_account: '',
+            templates_tel: '',
+            templates_fax: '',
+            templates_sign: '',
+            bill_id: 1,
+            templates_name_cfo: '',
+            templates_tel_cfo: '',
+            templates_extension_cfo: '',
+            templates_email_cfo: '',
         }
         this.componentWillMount = this.componentDidMount.bind(this);
+        document.title = 'Export Bill'
     }
     componentDidMount() {
         getCustomerUserCurrent().then(data => {
@@ -115,22 +116,22 @@ class DetailBill extends Component {
                 bill_monthly_cost: data.bill.bill_monthly_cost,
                 bill_date: data.bill.bill_date.slice(0, 10),
                 bill_no: data.bill.bill_no,
-                bill_reference:data.bill.bill_reference,
+                bill_reference: data.bill.bill_reference,
                 bill_content: data.bill.bill_content,
                 bill_display_po: data.po_number.po_number_no,
-                templates_name_company :data.temp.templates_name_company,
-                templates_address : data.temp.templates_address,
-                templates_phone  :data.temp.templates_phone,
-                templates_email  :data.temp.templates_email,
-                templates_name_on_account  :data.temp.templates_name_on_account,
-                templates_tel :data.temp.templates_tel,
-                templates_fax  :data.temp.templates_fax,
-                templates_sign  :data.temp.templates_sign,
-                bill_id  : data.temp.bill_id,
-                templates_name_cfo  :data.temp.templates_name_cfo,
-                templates_tel_cfo :data.temp.templates_tel_cfo,
-                templates_extension_cfo :data.temp.templates_extension_cfo,
-                templates_email_cfo :data.temp.templates_email_cfo,
+                templates_name_company: data.temp.templates_name_company,
+                templates_address: data.temp.templates_address,
+                templates_phone: data.temp.templates_phone,
+                templates_email: data.temp.templates_email,
+                templates_name_on_account: data.temp.templates_name_on_account,
+                templates_tel: data.temp.templates_tel,
+                templates_fax: data.temp.templates_fax,
+                templates_sign: data.temp.templates_sign,
+                bill_id: data.temp.bill_id,
+                templates_name_cfo: data.temp.templates_name_cfo,
+                templates_tel_cfo: data.temp.templates_tel_cfo,
+                templates_extension_cfo: data.temp.templates_extension_cfo,
+                templates_email_cfo: data.temp.templates_email_cfo,
             });
         })
     }
@@ -184,19 +185,18 @@ class DetailBill extends Component {
     }
     createPdf = (html) => Doc.createPdf(html);
     render() {
-        this.state.data.map((data,index) => {
+        this.state.data.map((data, index) => {
+            var k = Number(data.bill_item_cost);
+            data.cost = k.toLocaleString('vi');
 
-            var k=Number(data.bill_item_cost);   
-            data.cost=k.toLocaleString('vi');
-        
-     });
-        this.state.data.map((key,index)=>{
-            key.in = index +1;
+        });
+        this.state.data.map((key, index) => {
+            key.in = index + 1;
         });
         this.state.bills_sum = this.state.data.reduce((total, item) => total + parseInt(item.bill_item_cost, 10), 0);
         const redirect = this.state.redirect;
-        const m = month(this.state.bill_monthly_cost.slice(5,7));
-        const sumCost = (props) =>(`${this.state.bills_sum}`);
+        const m = month(this.state.bill_monthly_cost.slice(5, 7));
+        const sumCost = (props) => (`${this.state.bills_sum}`);
         if (redirect) {
             return <Redirect to='/bill-list' />;
         }
@@ -207,42 +207,31 @@ class DetailBill extends Component {
                         <ThemeProvider theme={th}>
                             <Container component="main" maxWidth="sm" >
                                 <Grid container spacing={3} >
-                                <Grid item xs={12} >
-                                <Paper elevation={0} >
-                            <Breadcrumbs aria-label="Breadcrumb" separator="›">
-                            <Link color="inherit" to="/" >
-                            Home
-                            </Link>
-                            <Link  to="/bill-list" >
-                                Bills
-                            </Link>
-                            <Typography color="textPrimary">Export</Typography>
-                            </Breadcrumbs>
-                        </Paper>
-                                </Grid>
-                                    <Grid item xs={12} sm={4}  align="right">
-                                    <Tooltip title="Export bill to PDF">
-                                        <Button variant="contained" color="secondary"   onClick={() => this.pdfExportComponent.save()}>
-                                        <PrintIcon />
-                                             PDF
-                                         </Button>
-                                         </Tooltip>
+                                    <Grid item xs={12} >
                                     </Grid>
-                                    <Grid item xs={12} sm={4}  align="center">
-                                    <Tooltip title="Export Description to Excel">
-                                        <Button variant="contained" color="secondary"  onClick={this.export} >
-                                        <PrintIcon />
-                                         Excel
+                                    <Grid item xs={12} sm={4} align="right">
+                                        <Tooltip title="Export bill to PDF">
+                                            <Button variant="contained" color="secondary" onClick={() => this.pdfExportComponent.save()}>
+                                                <PrintIcon />
+                                                PDF
+                                         </Button>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4} align="center">
+                                        <Tooltip title="Export Description to Excel">
+                                            <Button variant="contained" color="secondary" onClick={this.export} >
+                                                <PrintIcon />
+                                                Excel
                                         </Button>
-                                    </Tooltip>
+                                        </Tooltip>
                                     </Grid>
                                     <Grid item xs={12} sm={4} >
-                                    <Tooltip title="Edit bill">
-                                        <Link to={URL_EDIT+this.props.match.params.id}><Button variant="contained" color="secondary" >
-                                            <EditIcon />
-                                            Edit
+                                        <Tooltip title="Edit bill">
+                                            <Link to={URL_EDIT + this.props.match.params.id}><Button variant="contained" color="secondary" >
+                                                <EditIcon />
+                                                Edit
                                         </Button>
-                                        </Link>
+                                            </Link>
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
@@ -266,127 +255,127 @@ class DetailBill extends Component {
                                                 </Grid>
                                                 <Grid item xs={10} style={{ height: 'auto' }} justify-xs-space-between="true"	>
                                                     <Typography style={{ fontSize: '9px' }} align='right'>&nbsp;&nbsp;</Typography>
-                                                    <Typography style={{ fontSize: '9px',fontFamily: 'Times New Roman' }} align='right'>{this.state.templates_name_company}</Typography>
-                                                    <Typography style={{ fontSize: '9px',fontFamily: 'Times New Roman' }} align='right'>Address: {this.state.templates_address}</Typography>
-                                                    <Typography style={{ fontSize: '9px' ,fontFamily: 'Times New Roman'}} align='right'>Phone: {this.state.templates_phone} - E-mail: {this.state.templates_email}</Typography>
+                                                    <Typography style={{ fontSize: '9px', fontFamily: 'Times New Roman' }} align='right'>{this.state.templates_name_company}</Typography>
+                                                    <Typography style={{ fontSize: '9px', fontFamily: 'Times New Roman' }} align='right'>Address: {this.state.templates_address}</Typography>
+                                                    <Typography style={{ fontSize: '9px', fontFamily: 'Times New Roman' }} align='right'>Phone: {this.state.templates_phone} - E-mail: {this.state.templates_email}</Typography>
                                                 </Grid>
                                                 <Grid item xs={5} style={{ height: 'auto' }}>
                                                     <Typography variant="h5" style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>INVOICE</Typography>
                                                 </Grid>
-                                                
-                                                <Grid item xs={7} style={{height: 'auto', color: '#2196f3' }} className="border border-primary">
+
+                                                <Grid item xs={7} style={{ height: 'auto', color: '#2196f3' }} className="border border-primary">
                                                     <div className="row"  >
                                                         <div className="col-sm-7" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>TMA reference number:</div>
-                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold',fontFamily: 'Times New Roman' }} >
+                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold', fontFamily: 'Times New Roman' }} >
                                                             {this.state.bill_reference}
-                                                    </div>
+                                                        </div>
                                                     </div>
                                                     <div className="row">
-                                                        <div className="col-sm-7" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>PO No</div>
-                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold',fontFamily: 'Times New Roman' }} >
+                                                        <div className="col-sm-7" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>PO No</div>
+                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold', fontFamily: 'Times New Roman' }} >
                                                             {this.state.bill_display_po}
-                                                    </div>
+                                                        </div>
                                                     </div>
                                                     <div className="row">
-                                                        <div className="col-sm-7" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>Date: </div>
-                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold',fontFamily: 'Times New Roman' }} >
+                                                        <div className="col-sm-7" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Date: </div>
+                                                        <div className="col-sm-5" style={{ fontSize: '11px', fontWeight: 'bold', fontFamily: 'Times New Roman' }} >
                                                             {this.state.bill_date}
                                                         </div>
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} >
                                                     <div className="row">
-                                                        <div className="col-sm-4" style={{ color: '#808080', fontSize: '11px',fontFamily: 'Times New Roman' }}>To:</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Arial' }}>
+                                                        <div className="col-sm-4" style={{ color: '#808080', fontSize: '11px', fontFamily: 'Times New Roman' }}>To:</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial' }}>
                                                             {this.state.customer_name}
                                                         </div>
                                                     </div>
                                                     <div className="row">
-                                                        <div className="col-sm-4" style={{ fontWeight: 'bold',fontFamily: 'Times New Roman' }}></div>
-                                                        <div className="col-sm-8" style={{ fontSize: '11px',fontFamily: 'Arial' }}>
+                                                        <div className="col-sm-4" style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}></div>
+                                                        <div className="col-sm-8" style={{ fontSize: '11px', fontFamily: 'Arial' }}>
                                                             {this.state.customer_address}
                                                         </div>
                                                     </div>
                                                     <div className="row">
                                                         <div className="col-sm-4"></div>
-                                                        <div className="col-sm-8" style={{fontFamily: 'Times New Roman'}} >PO No: <b style={{ fontWeight: 'bold', fontSize: '11px' }}> {this.state.bill_display_po}</b></div>
+                                                        <div className="col-sm-8" style={{ fontFamily: 'Times New Roman' }} >PO No: <b style={{ fontWeight: 'bold', fontSize: '11px' }}> {this.state.bill_display_po}</b></div>
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} >
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <div style={{ color: '#808080', fontSize: '11px',fontFamily: 'Times New Roman' }}>Description:</div>
+                                                    <div style={{ color: '#808080', fontSize: '11px', fontFamily: 'Times New Roman' }}>Description:</div>
                                                 </Grid>
                                                 <Grid item xs={12} align-content-xs-flex-end="true" style={{ marginTop: '1px' }} >
-                                                    <Typography align="center" style={{ fontWeight: 'bold', fontSize: '16px',fontFamily: 'Times New Roman' }}>{this.state.bill_content} {m} {this.state.bill_monthly_cost.slice(0,4)} </Typography>
+                                                    <Typography align="center" style={{ fontWeight: 'bold', fontSize: '16px', fontFamily: 'Times New Roman' }}>{this.state.bill_content} {m} {this.state.bill_monthly_cost.slice(0, 4)} </Typography>
                                                 </Grid>
 
                                                 <Grid item xs={12} >
-                                                    
+
                                                     <div>
-                                                    <style dangerouslySetInnerHTML={{__html: "\ntable {\n  border-collapse: collapse;\n  padding: 11px ;\n}\n\ntable {\n  border: 0.5px solid #2196f3;\n  margin: 0 auto;\n  width :100%;\n  padding: 6px ;\n}\n.k{\t\n\tborder-bottom:0.5px solid #2196f3;\n    border-right:0.5px solid #2196f3;\n   \tpadding: 6px ;\n}\n.v{\n\tborder-bottom:0.5px solid #2196f3;\n    padding: 6px ;\n    \n}\n.g{\n\t border-right:0.5px solid white;\n     padding: 6px ;\n}\n.f{\n\tpadding: 6px ;\n}\n" }} />
+                                                        <style dangerouslySetInnerHTML={{ __html: "\ntable {\n  border-collapse: collapse;\n  padding: 11px ;\n}\n\ntable {\n  border: 0.5px solid #2196f3;\n  margin: 0 auto;\n  width :100%;\n  padding: 6px ;\n}\n.k{\t\n\tborder-bottom:0.5px solid #2196f3;\n    border-right:0.5px solid #2196f3;\n   \tpadding: 6px ;\n}\n.v{\n\tborder-bottom:0.5px solid #2196f3;\n    padding: 6px ;\n    \n}\n.g{\n\t border-right:0.5px solid white;\n     padding: 6px ;\n}\n.f{\n\tpadding: 6px ;\n}\n" }} />
 
                                                         <table>
                                                             <tbody><tr >
-                                                                <td className="k" align="center" style={{ width: '15%', color:'#2196f3', fontWeight: 'bold' ,fontFamily: 'Times New Roman', fontsize: '7px'}}>Item #</td>
-                                                                <td className="k" align="center" style={{ color:'#2196f3', fontWeight: 'bold',fontFamily: 'Times New Roman', fontsize: '7px'}}>Description</td>
-                                                                <td className="v" align="center" style={{ width: '40%', color:'#2196f3', fontWeight: 'bold',fontFamily: 'Times New Roman', fontsize: '7px' }}>Payment Amount in USD</td>
+                                                                <td className="k" align="center" style={{ width: '15%', color: '#2196f3', fontWeight: 'bold', fontFamily: 'Times New Roman', fontsize: '7px' }}>Item #</td>
+                                                                <td className="k" align="center" style={{ color: '#2196f3', fontWeight: 'bold', fontFamily: 'Times New Roman', fontsize: '7px' }}>Description</td>
+                                                                <td className="v" align="center" style={{ width: '40%', color: '#2196f3', fontWeight: 'bold', fontFamily: 'Times New Roman', fontsize: '7px' }}>Payment Amount in USD</td>
                                                             </tr>
-                                                            {this.state.data.map((row, index) => (
-                                                                <tr style={{ height:"40px" }}>
-                                                                    <td className="k" align="center" style={{ width: '15%',fontFamily: 'Times New Roman', fontsize: '8px', fontWeight: 'bold' }}>{row.in}</td>
-                                                                    <td className="k" align="left" style={{fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.bill_item_description}</td>
-                                                                    <td  className="v" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.cost}</td>
-                                                                </tr>
+                                                                {this.state.data.map((row, index) => (
+                                                                    <tr style={{ height: "40px" }}>
+                                                                        <td className="k" align="center" style={{ width: '15%', fontFamily: 'Times New Roman', fontsize: '8px', fontWeight: 'bold' }}>{row.in}</td>
+                                                                        <td className="k" align="left" style={{ fontsize: '8px' }}>{row.bill_item_description}</td>
+                                                                        <td className="v" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.cost}</td>
+                                                                    </tr>
 
                                                                 ))}
                                                                 <tr style={{ backgroundColor: '#2196f3', color: 'white' }}>
-                                                                    <td colSpan="2" className="g" align="right" style={{ width: '15%',fontFamily: 'Times New Roman', fontsize: '5px', fontWeight: 'bold' }}>Total</td>
-                                                                    <td className="f" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '5px',fontWeight: 'bold' }}>{this.state.bills_sum.toLocaleString('vi')}</td>
+                                                                    <td colSpan="2" className="g" align="right" style={{ width: '15%', fontFamily: 'Times New Roman', fontsize: '5px', fontWeight: 'bold' }}>Total</td>
+                                                                    <td className="f" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '5px', fontWeight: 'bold' }}>{this.state.bills_sum.toLocaleString('vi')}</td>
                                                                 </tr>
                                                             </tbody></table>
 
                                                     </div>
-                                                
+
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <div className="row">
-                                                        <div className="col-sm-12" style={{  fontSize: '11px',fontFamily: 'Times New Roman' }}><a style={{color:'#808080',fontSize: '12px',fontFamily: 'Times New Roman'}}>Total amount to be paid: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a> ${this.state.bills_sum.toLocaleString('vi')}</div>
+                                                        <div className="col-sm-12" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}><a style={{ color: '#808080', fontSize: '12px', fontFamily: 'Times New Roman' }}>Total amount to be paid: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a> ${this.state.bills_sum.toLocaleString('vi')}</div>
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <Typography align='left' style={{ fontSize: '12px',fontFamily: 'Times New Roman' }}>Please pay by <a style={{ fontWeight: 'bold',fontFamily: 'Times New Roman' }}>WIRE TRANSFER</a> the above amount to our account:</Typography>
+                                                    <Typography align='left' style={{ fontSize: '12px', fontFamily: 'Times New Roman' }}>Please pay by <a style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>WIRE TRANSFER</a> the above amount to our account:</Typography>
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <div className="row" style={{ height: 'auto', backgroundColor: '#2196f3', color: 'white', margin: 'auto', width:'100%' }}>
-                                                        <div className="col-sm-4" style={{ marginTop: '11px', fontSize: '11px',fontFamily: 'Times New Roman' }}>Name on account :</div>
-                                                        <div className="col-sm-8" style={{ marginTop: '11px', fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }}>{this.state.templates_name_on_account}</div>
-                                                        <div className="col-sm-4" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>Account number  :</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }}>
+                                                    <div className="row" style={{ height: 'auto', backgroundColor: '#2196f3', color: 'white', margin: 'auto', width: '100%' }}>
+                                                        <div className="col-sm-4" style={{ marginTop: '11px', fontSize: '11px', fontFamily: 'Times New Roman' }}>Name on account :</div>
+                                                        <div className="col-sm-8" style={{ marginTop: '11px', fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.templates_name_on_account}</div>
+                                                        <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Account number  :</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>
                                                             {this.state.account_bank_number}
                                                         </div>
-                                                        <div className="col-sm-4" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>Bank Name :</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }}>{this.state.account_bank_name}</div>
+                                                        <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Bank Name :</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.account_bank_name}</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px' }}></div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Arial' }} >{this.state.account_bank_address}</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial' }} >{this.state.account_bank_address}</div>
                                                         <div className="col-sm-4" ></div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }}>(SWIFT code: {this.state.account_bank_swift})</div>
-                                                        <div className="col-sm-4" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>Tel:</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }}>{this.state.templates_tel}</div>
-                                                        <div className="col-sm-4" style={{ fontSize: '11px',fontFamily: 'Times New Roman' }}>Fax:</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', marginBottom: '11px', fontSize: '11px',fontFamily: 'Times New Roman' }}>{this.state.templates_fax}</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>(SWIFT code: {this.state.account_bank_swift})</div>
+                                                        <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Tel:</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.templates_tel}</div>
+                                                        <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Fax:</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', marginBottom: '11px', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.templates_fax}</div>
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'><br />{this.state.templates_sign}</Typography>
+                                                    <Typography style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} align='left'><br />{this.state.templates_sign}</Typography>
                                                 </Grid>
                                                 <Grid item xs={12} style={{ height: "20px" }}>
                                                 </Grid>
                                                 <Grid item xs={12} >
-                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'>{this.state.templates_name_cfo}</Typography>
-                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'>CFO</Typography>
-                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'>Tel: {this.state.templates_tel_cfo}, extension: {this.state.templates_extension_cfo}</Typography>
-                                                    <Typography style={{  fontWeight: 'bold', fontSize: '11px',fontFamily: 'Times New Roman' }} align='left'>Email:  <a href={"mailto:"+this.state.templates_email_cfo} style={{paddingBottom: '2px', borderBottom: '1px solid #2196f3'}}> {this.state.templates_email_cfo}</a></Typography>
+                                                    <Typography style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} align='left'>{this.state.templates_name_cfo}</Typography>
+                                                    <Typography style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} align='left'>CFO</Typography>
+                                                    <Typography style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} align='left'>Tel: {this.state.templates_tel_cfo}, extension: {this.state.templates_extension_cfo}</Typography>
+                                                    <Typography style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} align='left'>Email:  <a href={"mailto:" + this.state.templates_email_cfo} style={{ paddingBottom: '2px', borderBottom: '1px solid #2196f3' }}> {this.state.templates_email_cfo}</a></Typography>
                                                 </Grid>
                                                 <Grid item xs={12} style={{ height: "50px" }}>
                                                 </Grid>
@@ -398,18 +387,18 @@ class DetailBill extends Component {
                         </ThemeProvider>
                     </PDFExport>
                     <ExcelExport
-                    data={this.state.data}
-                    fileName={this.state.customer_name + this.state.bill_monthly_cost+".xlsx"}
-                    ref={(exporter) => { this._exporter = exporter; }}
-                >
-                 <ExcelExportColumnGroup title={"Monthly cost for " + m + " " + this.state.bill_monthly_cost.slice(0,4)} headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
-                 <ExcelExportColumn   title="Item #" field="in" width={100} cellOptions={{
-                            textAlign: 'center'
-                        }}/>
-                    <ExcelExportColumn cellOptions={{ verticalAlign: 'center' }} field="bill_item_description"  title="Description" width={300} footer={CustomFooter} footerCellOptions={{ textAlign: 'right'}}/>
-                    <ExcelExportColumn field="bill_item_cost"  title="Payment Amount in USD" width={250} footer={sumCost} footerCellOptions={{ textAlign: 'right'}} />
-                    </ExcelExportColumnGroup>
-                </ExcelExport>
+                        data={this.state.data}
+                        fileName={this.state.customer_name + this.state.bill_monthly_cost + ".xlsx"}
+                        ref={(exporter) => { this._exporter = exporter; }}
+                    >
+                        <ExcelExportColumnGroup title={"Monthly cost for " + m + " " + this.state.bill_monthly_cost.slice(0, 4)} headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
+                            <ExcelExportColumn title="Item #" field="in" width={100} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn cellOptions={{ verticalAlign: 'center' }} field="bill_item_description" title="Description" width={300} footer={CustomFooter} footerCellOptions={{ textAlign: 'right' }} />
+                            <ExcelExportColumn field="bill_item_cost" title="Payment Amount in USD" width={250} footer={sumCost} footerCellOptions={{ textAlign: 'right' }} />
+                        </ExcelExportColumnGroup>
+                    </ExcelExport>
                 </div>
             );
         }

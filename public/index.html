@@ -21,6 +21,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <style>
+      /*
+          Use the DejaVu Sans font for displaying and embedding in the PDF file.
+          The standard PDF fonts do not support Unicode characters.
+      */
+      div {
+        font-family: "DejaVu Sans", "Arial", sans-serif;
+        font-size: 12px;
+      }
+
+      /*
+        The example loads the DejaVu Sans from the Kendo UI CDN.
+        Other fonts have to be hosted from your application.
+        The official site of the Deja Vu Fonts project is
+        https://dejavu-fonts.github.io/.
+      */
+      @font-face {
+        font-family: "DejaVu Sans";
+        src: url("https://kendo.cdn.telerik.com/2019.3.1023/styles/fonts/DejaVu/DejaVuSans.ttf") format("truetype");
+      }
+
+      @font-face {
+        font-family: "DejaVu Sans";
+        font-weight: bold;
+        src: url("https://kendo.cdn.telerik.com/2019.3.1023/styles/fonts/DejaVu/DejaVuSans-Bold.ttf") format("truetype");
+      }
+
+      @font-face {
+        font-family: "DejaVu Sans";
+        font-style: italic;
+        src: url("https://kendo.cdn.telerik.com/2019.3.1023/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf") format("truetype");
+      }
+
+      @font-face {
+        font-family: "DejaVu Sans";
+        font-weight: bold;
+        font-style: italic;
+        src: url("https://kendo.cdn.telerik.com/2019.3.1023/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf") format("truetype");
+      }
+    </style>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
