@@ -8,7 +8,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import './style.css';
-import { getAccountBankCurrent } from '../share/services/accountbank.service';
+import { getAccountBankCurrent, getAccountBankCurrentSearch } from '../share/services/accountbank.service';
 import { Link } from "react-router-dom";
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
@@ -40,6 +40,7 @@ class ListAccountBank extends React.Component {
         }
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);
         document.title = 'List Account Bank';
         this.openEdit = this.openEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
@@ -75,6 +76,13 @@ class ListAccountBank extends React.Component {
         this.setState({
             rowsPerPage: +event.target.value,
             page: 0
+        })
+    }
+    handleChangeSearch(event){  
+        getAccountBankCurrentSearch(event.target.value).then(data=> {
+            this.setState({
+                data: data.accountsbank
+            })     
         })
     }
     openEdit(e, account_bank_id) {
@@ -130,6 +138,7 @@ class ListAccountBank extends React.Component {
                                             InputProps={{
                                                 disableUnderline: true
                                             }}
+                                            onChange={this.handleChangeSearch}
                                         />
                                     </Grid>
                                     <Grid item>
