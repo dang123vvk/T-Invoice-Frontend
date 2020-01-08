@@ -12,6 +12,10 @@ export function getCustomerUserCurrent(){
 export function getCustomer(){
     return axios.get(API_URL + 'customers/'+user_information.user_username,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+export function getCustomerSearch(text_search){
+    return axios.get(API_URL + 'customers/'+user_information.user_username+'/search/'+text_search,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
+
 export function getCustomerPO(customer_id){
     return axios.get(API_URL + 'customers/list/po_no/'+customer_id,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }

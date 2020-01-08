@@ -10,6 +10,9 @@ export function getBillUserCurrent(){
     return axios.get(API_URL + 'bills/list/user/'+user_information.user_username,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
 //function get bill by id
+export function getBillUserCurrentSearch(text_search){
+    return axios.get(API_URL + 'bills/list/user/'+user_information.user_username+'/search/'+text_search,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
 export function getBill(id){
     return axios.get(API_URL + 'bills/edit/'+ id + '/' +user_information.user_username,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }

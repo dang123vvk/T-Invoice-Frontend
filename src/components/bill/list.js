@@ -18,7 +18,7 @@ import {
     ExcelExportColumnGroup
 } from '@progress/kendo-react-excel-export';
 import {month} from '../share/month';
-import { getBillUserCurrent } from '../share/services/bill.service';
+import { getBillUserCurrent, getBillUserCurrentSearch } from '../share/services/bill.service';
 class ListBill extends React.Component {
     _exporter;
     export = () => {
@@ -38,6 +38,7 @@ class ListBill extends React.Component {
         document.title = 'Bills';
         this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);  
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
@@ -84,6 +85,13 @@ class ListBill extends React.Component {
             page: newPage,
         })
     }
+    handleChangeSearch(event){  
+        getBillUserCurrentSearch(event.target.value).then(data=> {
+            this.setState({
+                data: data.bill
+            })     
+        })
+    }
     reload(e){
         e.preventDefault();
         window.location.reload();
@@ -118,10 +126,11 @@ class ListBill extends React.Component {
                                     <Grid item xs>
                                         <TextField
                                             fullWidth
-                                            placeholder="Search by name, email, phone number or address"
+                                            placeholder="Search by customer, status, date"
                                             InputProps={{
                                                 disableUnderline: true
                                             }}
+                                            onChange={this.handleChangeSearch}
                                         />
                                     </Grid>
                                     <Grid item>

@@ -9,6 +9,9 @@ if(typeof user_information === 'undefined'){
 export function getAccountBankCurrent(){
     return axios.get(API_URL + 'accountsbank',{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+export function getAccountBankCurrentSearch(text_search){
+    return axios.get(API_URL + 'accountsbank/search/'+text_search,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
 export function postAccountBank(accountsbank){
     return axios.post(API_URL + 'accountsbank/add',accountsbank,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }

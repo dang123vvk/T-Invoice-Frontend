@@ -11,7 +11,7 @@ import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
 import BuildIcon from '@material-ui/icons/BuildOutlined';
 import AddIcon from '@material-ui/icons/Add';
 import './style.css';
-import { getCustomerUserCurrent } from '../share/services/customer.service';
+import { getCustomerUserCurrent, getCustomerSearch } from '../share/services/customer.service';
 import { Link } from "react-router-dom";
 // import _ from 'lodash';
 
@@ -29,6 +29,7 @@ class ListCustomer extends React.Component {
         }
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);
         document.title = 'Customers';
         this.openEdit = this.openEdit.bind(this);
         this.closeEdit = this.closeEdit.bind(this);
@@ -67,6 +68,14 @@ class ListCustomer extends React.Component {
             page: 0
         })
     }
+    handleChangeSearch(event){  
+        getCustomerSearch(event.target.value).then(data=> {
+            this.setState({
+                data: data.customers
+            })     
+        })
+    }
+
     openEdit(e, account_bank_id) {
         e.preventDefault();
         
@@ -112,6 +121,7 @@ class ListCustomer extends React.Component {
                                             InputProps={{
                                                 disableUnderline: true
                                             }}
+                                            onChange={this.handleChangeSearch}
                                         />
                                     </Grid>
                                     <Grid item>

@@ -26,7 +26,7 @@ const routing = (
       <div >
         <Header />
         <Switch>
-        <Route exact path="/accountbanks" component={ListAccountBank} />
+        <Route exact path="/accountbanks/:text_search?" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/bills" component={ListBill} />
