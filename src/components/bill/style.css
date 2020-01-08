@@ -1,0 +1,11 @@
+#div {
+    font-family: 'Times New Roman', Times, serif;
+}
+.time-new{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.3em;
+}
+.btn-without-border:focus {
+    border: none;
+    outline: none;
+}
