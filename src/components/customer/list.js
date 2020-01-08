@@ -173,11 +173,13 @@ class ListCustomer extends React.Component {
                                                     </Fab>
                                                 </Tooltip>
                                                 </Link>
+                                                <Link to={'/bills/add/customer/'+ row.customer_id} style={{ color: 'white', textDecoration: 'none' }}>
                                                 <Tooltip title="Add Bill" aria-label="add">
                                                  <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
                                                        <AddIcon style={{ display: 'block' }} />
                                                     </Fab>
                                                 </Tooltip>
+                                                </Link>
                                                 <Tooltip title="Customer Template" aria-label="add">
                                                  <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
                                                        <BuildIcon style={{ display: 'block' }} />

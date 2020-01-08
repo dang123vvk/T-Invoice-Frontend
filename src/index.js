@@ -12,6 +12,7 @@ import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
 import DetailBill from './components/bill/detail';
 import AddBill from './components/bill/add';
+import AddBillCustomer from './components/bill/add.customer';
 import ListCustomer from './components/customer/list';
 import AddCustomer from './components/customer/add';
 import EditCustomer from './components/customer/edit';
@@ -26,11 +27,12 @@ const routing = (
       <div >
         <Header />
         <Switch>
-        <Route exact path="/accountbanks/:text_search?" component={ListAccountBank} />
+        <Route exact path="/accountbanks" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/bills" component={ListBill} />
         <Route exact path="/bills/add" component={AddBill} />
+        <Route exact path="/bills/add/customer/:id" component={AddBillCustomer} />
         <Route exact path="/bills/export/:id" component={DetailBill} />
         <Route exact path="/customers" component={ListCustomer} />
         <Route exact path="/customers/add" component={AddCustomer} />

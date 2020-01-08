@@ -19,6 +19,10 @@ export function getCustomerSearch(text_search){
 export function getCustomerPO(customer_id){
     return axios.get(API_URL + 'customers/list/po_no/'+customer_id,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+
+export function getCustomerForBill(customer_id){
+    return axios.get(API_URL + 'customers/edit/'+customer_id + '/' + localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
 export function postAccountBank(accountsbank){
     return axios.post(API_URL + 'customers/add',accountsbank,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
