@@ -50,6 +50,7 @@ class Signin extends Component {
         user_information.token = data.token;
         user_information.role = data.role;
         localStorage.setItem('user_information', JSON.stringify(user_information));
+        localStorage.setItem('user_id',data.user_id);
         this.props.login(data.user_fullname,data.user_username, data.token,data.role);
       }
       else {

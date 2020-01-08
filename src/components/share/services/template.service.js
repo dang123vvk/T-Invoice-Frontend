@@ -9,3 +9,6 @@ if(typeof user_information === 'undefined'){
 export function getTemplate(){
     return axios.get(API_URL + 'templates/edit',{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+export function getTemplateCustomer(customer_id){
+    return axios.get(API_URL + 'templates/selectcustomer/'+customer_id,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}

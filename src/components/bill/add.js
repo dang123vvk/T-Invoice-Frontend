@@ -9,23 +9,24 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { Button, TextField, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, Tooltip, Dialog, DialogContent, DialogTitle, DialogActions, Fab } from '@material-ui/core';
+import { Button, TextField, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, Tooltip, Dialog, DialogContent, DialogTitle, DialogActions, Fab, FormHelperText, InputLabel } from '@material-ui/core';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
 import { Link } from "react-router-dom";
 import { month } from '../share/month';
 import './style.css';
-import { getTemplate } from '../share/services/template.service';
+import { getTemplate, getTemplateCustomer } from '../share/services/template.service';
 import { getAccountBankCurrent } from '../share/services/accountbank.service';
 import { getCustomerUserCurrent, getCustomerPO } from '../share/services/customer.service';
-import { getStatusBill } from '../share/services/bill.service';
+import { getStatusBill, postBill } from '../share/services/bill.service';
 import { th } from "../share/config";
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Draggable from 'react-draggable';
 import _ from 'lodash';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { isNumber } from 'util';
 function PaperComponent(props) {
     return (
         <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
@@ -41,7 +42,6 @@ class AddBill extends Component {
             bill_item_description: '',
             bill_item_cost: 0,
             data: [],
-            //template
             templates_name_company: '',
             templates_address: '',
             templates_phone: '',
@@ -50,7 +50,6 @@ class AddBill extends Component {
             templates_tel: '',
             templates_fax: '',
             templates_sign: '',
-            //customer_id  : 0,
             templates_name_cfo: '',
             templates_tel_cfo: '',
             templates_extension_cfo: '',
@@ -85,6 +84,12 @@ class AddBill extends Component {
             dialogTitle: 'Add',
             isAdd: true,
             item_id: '',
+            messageDescription: '',
+            errorDescription: false,
+            messageCost: '',
+            errorCost: false,
+            messageItem: ' ',
+            errorItem: false,
         }
         this.componentWillMount = this.componentDidMount.bind(this);
         this.cancel = this.cancel.bind(this);
@@ -97,6 +102,8 @@ class AddBill extends Component {
         this.actionItem = this.actionItem.bind(this);
         this.openEdit = this.openEdit.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
+        this.onChangeNumber = this.onChangeNumber.bind(this);
+        this.onChangeDescription = this.onChangeDescription.bind(this);
     }
     componentDidMount() {
         var date = new Date().getDate();
@@ -166,30 +173,60 @@ class AddBill extends Component {
                 status: data.status
             });
         })
-        //accountbank
-
-        //customer
-        //statusbll
-
     }
     //default template
     default(e) {
+        e.preventDefault();
+        getTemplate().then(data => {
+            this.setState({
+                templates_name_company: data.temp.templates_name_company,
+                templates_address: data.temp.templates_address,
+                templates_phone: data.temp.templates_phone,
+                templates_email: data.temp.templates_email,
+                templates_name_on_account: data.temp.templates_name_on_account,
+                templates_tel: data.temp.templates_tel,
+                templates_fax: data.temp.templates_fax,
+                templates_sign: data.temp.templates_sign,
 
+                templates_name_cfo: data.temp.templates_name_cfo,
+                templates_tel_cfo: data.temp.templates_tel_cfo,
+                templates_extension_cfo: data.temp.templates_extension_cfo,
+                templates_email_cfo: data.temp.templates_email_cfo,
+            });
+        })
     }
     closeDialog(e) {
         e.preventDefault();
         this.setState({
-          isDialog: false,
-          isAdd: true
+            isDialog: false,
+            isAdd: true
         })
-      }
-    //customtemplate
+    }
     customerdefault(e) {
-
+        e.preventDefault();
+        getTemplateCustomer(this.state.customer_id).then(data => {
+            this.setState({
+                templates_name_company: data.temp.templates_name_company,
+                templates_address: data.temp.templates_address,
+                templates_phone: data.temp.templates_phone,
+                templates_email: data.temp.templates_email,
+                templates_name_on_account: data.temp.templates_name_on_account,
+                templates_tel: data.temp.templates_tel,
+                templates_fax: data.temp.templates_fax,
+                templates_sign: data.temp.templates_sign,
+                templates_name_cfo: data.temp.templates_name_cfo,
+                templates_tel_cfo: data.temp.templates_tel_cfo,
+                templates_extension_cfo: data.temp.templates_extension_cfo,
+                templates_email_cfo: data.temp.templates_email_cfo,
+            });
+        })
     }
     handleSubmitForm(event) {
         event.preventDefault();
         const bill = this.state;
+        postBill(bill).then(data => {
+            this.setState({ redirect: true });
+        })
 
     }
     handleChangeBillDate(event) {
@@ -274,6 +311,44 @@ class AddBill extends Component {
             [e.target.name]: e.target.value,
         });
     }
+    onChangeDescription(e) {
+    if(!e.target.value){
+        this.setState({
+            errorDescription: true,
+            messageDescription : 'Field can not empty',
+            [e.target.name]: '',
+        });
+    }
+    else {
+        this.setState({
+            [e.target.name]: e.target.value,
+            errorDescription: false,
+            messageDescription : ' ',
+        });
+    }
+}
+
+    onChangeNumber(e) {
+    if(!e.target.value){
+        this.setState({
+            [e.target.name]: e.target.value,
+            messageCost: 'Field can not empty',
+            errorCost: true
+        });
+    }
+    else {
+        this.setState({
+            [e.target.name]: e.target.value,
+            messageCost: ' ',
+            errorCost: false
+        });
+    }
+   
+}       
+            
+        
+      
+
     openAdd(e) {
         e.preventDefault();
         this.setState({
@@ -281,14 +356,17 @@ class AddBill extends Component {
             bill_item_description: '',
             bill_item_cost: 0,
             isAdd: true,
-            dialogTitle: 'Add'
+            dialogTitle: 'Add',
+            messageItem: ' ',
+            messageCost: ' ',
+            messageDescription: ' '
         })
     }
     openEdit(e, bill_item_description) {
         e.preventDefault();
         let index = _.findIndex(this.state.data, it => { return it.bill_item_description === bill_item_description; });
         console.log(index);
-        
+
         var data = this.state.data;
         this.setState({
             isDialog: true,
@@ -296,45 +374,62 @@ class AddBill extends Component {
             bill_item_description: bill_item_description,
             bill_item_cost: data[index].bill_item_cost,
             isAdd: false,
-            dialogTitle: 'Edit '
+            dialogTitle: 'Edit ',
+            messageItem: ' ',
+            messageCost: ' ',
+            messageDescription: ' '
         })
     }
     actionItem(e) {
         e.preventDefault();
         if (this.state.isAdd) {
-          const item = {
-            bill_item_description: this.state.bill_item_description,
-            bill_item_cost: this.state.bill_item_cost,
-          };
-          this.setState(state => {
-            const list = state.data.push(item);
-            return {
-              list,
-              isDialog: false,
-              bill_item_description: '',
-              bill_item_cost: 0,
-              dialogTitle: 'Add PO No',
+            const item = {
+                bill_item_description: this.state.bill_item_description,
+                bill_item_cost: this.state.bill_item_cost,
             };
-          });
+            let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.bill_item_description; });
+            if(index === -1 ){
+                this.setState(state => {
+                    const list = state.data.push(item);
+                    return {
+                        list,
+                        isDialog: false,
+                        bill_item_description: '',
+                        bill_item_cost: 0,
+                        dialogTitle: 'Add PO No',
+                        messageItem: ' ',
+                        errorItem: false
+                    };
+                });
+            }
+            else {
+                this.setState({
+                     messageItem: 'Item already exists',
+                     errorItem: true
+                })
+            }
+         
         }
         else {
             const item = {
                 bill_item_description: this.state.bill_item_description,
                 bill_item_cost: this.state.bill_item_cost,
-              };
-          let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.item_id; });
-          const data = this.state.data;
-          data[index] = item;
-          this.setState({
-            isDialog: false,
-            isAdd: true,
-            data: data,
-          })
+            };
+            let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.item_id; });
+            const data = this.state.data;
+            data[index] = item;
+            this.setState({
+                isDialog: false,
+                isAdd: true,
+                data: data,
+                messageItem: ' ',
+                errorItem: false
+            })
         }
-    } 
-    deleteItem(e, i){
+    }
+    deleteItem(e, i) {
         e.preventDefault();
-        var data = _.filter(this.state.data, function(item){
+        var data = _.filter(this.state.data, function (item) {
             return item.bill_item_description != i
         })
         this.setState({
@@ -491,7 +586,7 @@ class AddBill extends Component {
                                             </div>
                                             <div className="row">
                                                 <div className="col-sm-4" style={{ fontWeight: 'bold' }}></div>
-                                                <div className="col-sm-8 time-new" style={{ marginTop: '1%'}}>
+                                                <div className="col-sm-8 time-new" style={{ marginTop: '1%' }}>
                                                     {this.state.customer_address}
                                                 </div>
                                             </div>
@@ -529,8 +624,7 @@ class AddBill extends Component {
                                         </Grid>
                                         <Grid item xs={12} >
                                             <Typography align="right" style={{ fontWeight: 'bold' }}>
-
-                                                <Tooltip title='Add'><IconButton color='primary' onClick={this.openAdd}>
+                                                <Tooltip title='Add'><IconButton className='btn-without-border' color='primary' onClick={this.openAdd}>
                                                     <AddOutlinedIcon />
                                                 </IconButton></Tooltip>
                                             </Typography>
@@ -545,34 +639,34 @@ class AddBill extends Component {
                                                 </TableHead>
                                                 <TableBody>
                                                     {this.state.data.map((row, index) => (
-                                                        <TableRow key={row.bill_item_description}>
+                                                        <TableRow key={index}>
                                                             <TableCell align="right">
                                                                 {index + 1}
                                                             </TableCell>
                                                             <TableCell align="right">{row.bill_item_description}</TableCell>
                                                             <TableCell align="right">{row.bill_item_cost}</TableCell>
                                                             <TableCell align="right">
-                                                            <Tooltip title="Edit" aria-label="add">
-                                <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.bill_item_description)} className="btn-without-border">
-                                  <EditIcon />
-                                </Fab>
-                              </Tooltip>
-                              <Tooltip title="Delete" aria-label="add" style={{ marginLeft:'2%'}}>
-                                <Fab size="small" color="secondary" onClick={e => this.deleteItem(e, row.bill_item_description)} className="btn-without-border">
-                                  <DeleteIcon />
-                                </Fab>
-                              </Tooltip>
+                                                                <Tooltip title="Edit" aria-label="add">
+                                                                    <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.bill_item_description)} className="btn-without-border">
+                                                                        <EditIcon />
+                                                                    </Fab>
+                                                                </Tooltip>
+                                                                <Tooltip title="Delete" aria-label="add" style={{ marginLeft: '2%' }}>
+                                                                    <Fab size="small" color="secondary" onClick={e => this.deleteItem(e, row.bill_item_description)} className="btn-without-border">
+                                                                        <DeleteIcon />
+                                                                    </Fab>
+                                                                </Tooltip>
                                                             </TableCell>
                                                         </TableRow>
                                                     ))}
                                                     <TableRow >
-                                                            <TableCell align="right">
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                            <TableCell align="right">
-                                                            </TableCell>
-                                                        </TableRow>
+                                                        <TableCell align="right">
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                        <TableCell align="right">
+                                                        </TableCell>
+                                                    </TableRow>
                                                 </TableBody>
                                             </Table>
                                             <Dialog PaperComponent={PaperComponent} open={this.state.isDialog} aria-labelledby="form-dialog-title">
@@ -580,28 +674,37 @@ class AddBill extends Component {
                                                 <DialogContent >
                                                     <div id="configuration" className="container" ><br />
                                                         <div className="row d-flex align-items-center">
+                                                        <div className="col-sm-12"><InputLabel error={this.state.errorItem}>{this.state.messageItem}</InputLabel> </div>
                                                             <div className="col-sm-5">Description </div>
                                                             <div className="col-sm-7">
+                                                            <FormControl error={this.state.errorDescription}>
                                                                 <TextField
                                                                     margin="dense"
                                                                     variant="outlined"
                                                                     value={this.state.bill_item_description}
                                                                     fullWidth
                                                                     name="bill_item_description"
-                                                                    onChange={this.onChange}
+                                                                    onChange={this.onChangeDescription}
+                                                                    error={this.state.errorDescription}
                                                                 />
+                                                                  <FormHelperText id="component-error-text">{this.state.messageDescription}</FormHelperText>
+                                                                </FormControl>
                                                             </div>
                                                             <div className="col-sm-5">Payment Amount in USD </div>
                                                             <div className="col-sm-7">
+                                                            <FormControl error={this.state.errorCost}>
                                                                 <TextField
                                                                     margin="dense"
                                                                     variant="outlined"
                                                                     value={this.state.bill_item_cost}
                                                                     fullWidth
                                                                     name="bill_item_cost"
-                                                                    onChange={this.onChange}
+                                                                    onChange={this.onChangeNumber}
                                                                     type='number'
+                                                                    error={this.state.errorCost}
                                                                 />
+                                                                 <FormHelperText id="component-error-tex">{this.state.messageCost}</FormHelperText>
+                                                            </FormControl>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -646,8 +749,7 @@ class AddBill extends Component {
                                                     <FormControl >
                                                         <Select
                                                             value={this.state.account_bank_id}
-                                                            onChange={event => this.handleChangeAccount(event)}
-                                                        >
+                                                            onChange={event => this.handleChangeAccount(event)}>
                                                             {this.state.accountbanks.map(accountbank => (
                                                                 <MenuItem key={accountbank.account_bank_id} value={accountbank.account_bank_id} >
                                                                     {accountbank.account_bank_number}
@@ -780,12 +882,12 @@ class AddBill extends Component {
                                         </Grid>
                                         <Grid item xs={4} >
                                             <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='center'>
-                                                <Button style={{ color: 'white', backgroundColor: 'red' }} fullWidth type="button" size="large" color="primary" variant="contained" onClick={this.cancel} >Cancel</Button>
+                                                <Button className='btn-without-border' style={{ color: 'white', backgroundColor: 'red' }} fullWidth type="button" size="large" color="primary" variant="contained" onClick={this.cancel} >Cancel</Button>
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={4} >
                                             <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='center'>
-                                                <Button fullWidth type="submit" size="large" color="primary" variant="contained" >Save</Button>
+                                                <Button className='btn-without-border' fullWidth type="submit" size="large" color="primary" variant="contained" >Save</Button>
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2} >
