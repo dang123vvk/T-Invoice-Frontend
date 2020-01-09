@@ -96,12 +96,12 @@ class DetailBill extends Component {
         document.title = 'Export Bill'
     }
     componentDidMount() {
-        getCustomerUserCurrent().then(data => {
+        getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
             this.setState({
                 customers: data.customers
             })
         });
-        getBill(this.props.match.params.id).then(data => {
+        getBill(this.props.match.params.id,this.props.user_username,this.props.token).then(data => {
             this.setState({
                 data: data.items,
                 accountbanks: data.accountsbank,
@@ -410,7 +410,9 @@ class DetailBill extends Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+        user_username: state.loginReducer.user_username,
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(DetailBill);

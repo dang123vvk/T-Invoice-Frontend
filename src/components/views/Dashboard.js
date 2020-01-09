@@ -60,22 +60,22 @@ class Dashboard extends Component {
             date_from: year + '-' + month1 + '-' + date,
             date_to: year + '-' + month1 + '-' + date,
         });
-        getBillLength().then(data => {
+        getBillLength(this.props.token).then(data => {
             this.setState({ billNumber: data.length });
         })
-        getBillSum().then(data => {
+        getBillSum(this.props.token).then(data => {
             this.setState({ total: data.total });
         })
-        getCustomerLength().then(data => {
+        getCustomerLength(this.props.token).then(data => {
             this.setState({ customerNumber: data.length });
         })
-        getBillNotSendLength().then(data => {
+        getBillNotSendLength(this.props.token).then(data => {
             this.setState({ billNotSent: data.length });
         })
-        getBillLimit().then(data => {
+        getBillLimit(this.props.token).then(data => {
             this.setState({ dataBill: data.bill });
         })
-        getCustomerLimit().then(data => {
+        getCustomerLimit(this.props.token).then(data => {
             this.setState({ dataCustomer: data.customers });
         })
     }
@@ -141,7 +141,7 @@ class Dashboard extends Component {
                                     Number of Bills
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bill-list" style={{ color: 'black', textDecoration: 'none' }}> {this.state.billNumber}</Link>
+                                        <Link to="/bills" style={{ color: 'black', textDecoration: 'none' }}> {this.state.billNumber}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>
@@ -161,7 +161,7 @@ class Dashboard extends Component {
                                     Number of Customers
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/customer-list" style={{ color: 'black', textDecoration: 'none' }}>{this.state.customerNumber}</Link>
+                                        <Link to="/customers" style={{ color: 'black', textDecoration: 'none' }}>{this.state.customerNumber}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>
@@ -285,7 +285,7 @@ class Dashboard extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link to="/bill-list">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={3} ><Link to="/bills">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -314,7 +314,7 @@ class Dashboard extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link to="/customer-list">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={3} ><Link to="/customers">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -376,7 +376,8 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(Dashboard);

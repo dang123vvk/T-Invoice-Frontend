@@ -39,7 +39,7 @@ class EditAccountBank extends Component {
       account_bank_address: this.state.account_bank_address,
       account_bank_swift: this.state.account_bank_swift,
     };
-    postAccountBank(accountbank).then(data => {
+    postAccountBank(accountbank,this.props.token).then(data => {
       if (data.status === false) {
         this.setState({ message: 'Account Bank already exists' })
       }
@@ -185,7 +185,8 @@ class EditAccountBank extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
-    role: state.loginReducer.role
+    role: state.loginReducer.role,
+    token: state.loginReducer.token
   };
 }
 export default connect(mapStateToProps)(EditAccountBank);

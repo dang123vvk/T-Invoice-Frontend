@@ -37,7 +37,7 @@ class ListCustomer extends React.Component {
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        getCustomerUserCurrent().then(data => {
+        getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
             // console.log(data.customers)
             this.setState({
                 data: data.customers
@@ -69,7 +69,7 @@ class ListCustomer extends React.Component {
         })
     }
     handleChangeSearch(event){  
-        getCustomerSearch(event.target.value).then(data=> {
+        getCustomerSearch(event.target.value,this.props.user_username,this.props.token).then(data=> {
             this.setState({
                 data: data.customers
             })     
@@ -221,7 +221,9 @@ class ListCustomer extends React.Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+        user_username: state.loginReducer.user_username,
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(ListCustomer);

@@ -118,7 +118,7 @@ class AddBill extends Component {
         });
 
         //template
-        getTemplate().then(data => {
+        getTemplate(this.props.token).then(data => {
             this.setState({
                 templates_name_company: data.temp.templates_name_company,
                 templates_address: data.temp.templates_address,
@@ -134,7 +134,7 @@ class AddBill extends Component {
                 templates_email_cfo: data.temp.templates_email_cfo,
             });
         })
-        getAccountBankCurrent().then(data => {
+        getAccountBankCurrent(this.props.token).then(data => {
             this.setState({
                 accountbanks: data.accountsbank,
                 account_bank_id: data.accountsbank[0].account_bank_id,
@@ -143,7 +143,7 @@ class AddBill extends Component {
                 account_bank_swift: data.accountsbank[0].account_bank_swift,
             });
         })
-        getCustomerUserCurrent().then(data => {
+        getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
             if (data.length_po_nos_add > 0) {
                 this.setState({
                     customers: data.customers,
@@ -168,7 +168,7 @@ class AddBill extends Component {
                 });
             }
         })
-        getStatusBill().then(data => {
+        getStatusBill(this.props.token).then(data => {
             this.setState({
                 status: data.status
             });
@@ -177,7 +177,7 @@ class AddBill extends Component {
     //default template
     default(e) {
         e.preventDefault();
-        getTemplate().then(data => {
+        getTemplate(this.props.token).then(data => {
             this.setState({
                 templates_name_company: data.temp.templates_name_company,
                 templates_address: data.temp.templates_address,
@@ -204,7 +204,7 @@ class AddBill extends Component {
     }
     customerdefault(e) {
         e.preventDefault();
-        getTemplateCustomer(this.state.customer_id).then(data => {
+        getTemplateCustomer(this.state.customer_id,this.props.token).then(data => {
             this.setState({
                 templates_name_company: data.temp.templates_name_company,
                 templates_address: data.temp.templates_address,
@@ -224,7 +224,7 @@ class AddBill extends Component {
     handleSubmitForm(event) {
         event.preventDefault();
         const bill = this.state;
-        postBill(bill).then(data => {
+        postBill(bill,this.props.token).then(data => {
             this.setState({ redirect: true });
         })
 
@@ -249,7 +249,7 @@ class AddBill extends Component {
         this.setState({
             customer_id: event.target.value,
         });
-        getCustomerPO(event.target.value).then(data => {
+        getCustomerPO(event.target.value,this.props.token).then(data => {
             if (data.length_po_nos_add > 0) {
                 this.setState({
                     bill_no: data.po_nos_add[0].po_number_id,
@@ -908,7 +908,9 @@ class AddBill extends Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+       user_username: state.loginReducer.user_username,
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(AddBill);

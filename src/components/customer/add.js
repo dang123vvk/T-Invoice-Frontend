@@ -474,7 +474,8 @@ class AddCustomer extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
-    role: state.loginReducer.role
+    role: state.loginReducer.role,
+    token: state.loginReducer.token
   };
 }
 export default connect(mapStateToProps)(AddCustomer);

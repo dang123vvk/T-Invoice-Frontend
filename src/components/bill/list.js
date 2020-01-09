@@ -42,7 +42,7 @@ class ListBill extends React.Component {
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        getBillUserCurrent().then(data => {
+        getBillUserCurrent(this.props.user_username,this.props.token).then(data => {
             this.setState({
                 data: data.bill
             })
@@ -86,7 +86,7 @@ class ListBill extends React.Component {
         })
     }
     handleChangeSearch(event){  
-        getBillUserCurrentSearch(event.target.value).then(data=> {
+        getBillUserCurrentSearch(event.target.value,this.props.user_username,this.props.token).then(data=> {
             this.setState({
                 data: data.bill
             })     
@@ -101,17 +101,6 @@ class ListBill extends React.Component {
             key.in = index +1;
             key.month= month(key.bill_monthly_cost.slice(5,7)) + " " + key.bill_monthly_cost.slice(0,4);
         });
-        const { redirect, redirectAdd, reactDetail } = this.state;
-
-        if (redirect) {
-            return <Redirect to={'/bill-edit/' + this.state.bill_id} />;
-        }
-        if (reactDetail) {
-            return <Redirect to={'/bill-detail/' + this.state.bill_id} />;
-        }
-        if (redirectAdd) {
-            return <Redirect to={'/bill-add/'} />;
-        }
         if ((this.props.role) || (localStorage.getItem('user_information'))) {
             return (
                 <Container component="main">
@@ -254,7 +243,9 @@ class ListBill extends React.Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+        user_username: state.loginReducer.user_username,
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(ListBill);

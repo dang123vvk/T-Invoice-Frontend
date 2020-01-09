@@ -11,6 +11,7 @@ class Logout extends Component
   }
   logout(){
       localStorage.removeItem('user_information');
+      localStorage.removeItem('user_id');
       this.props.login('','','','');
   }
 render()

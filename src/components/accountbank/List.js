@@ -48,7 +48,7 @@ class ListAccountBank extends React.Component {
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        getAccountBankCurrent().then(data => {
+        getAccountBankCurrent(this.props.token).then(data => {
             this.setState({
                 data: data.accountsbank
             })
@@ -275,7 +275,8 @@ class ListAccountBank extends React.Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-        role: state.loginReducer.role
+        role: state.loginReducer.role,
+        token: state.loginReducer.token
     };
 }
 export default connect(mapStateToProps)(ListAccountBank);

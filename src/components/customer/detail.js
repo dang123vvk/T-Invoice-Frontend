@@ -48,8 +48,7 @@ class DetailCustomer extends Component {
                 { title: 'Description', field: 'po_number_description' },
                 { title: 'Status', field: 'status_po_id', lookup: { 1: 'New', 2: 'Active', 3: 'Used' } },
             ],
-            data: [
-            ],
+            data: [],
             dataBill: [],
         }
         this.onChange = this.onChange.bind(this);
@@ -316,7 +315,8 @@ class DetailCustomer extends Component {
 const mapStateToProps = (state) => {
     return {
       user_fullname: state.loginReducer.user_fullname,
-      role: state.loginReducer.role
+      role: state.loginReducer.role,
+      token: state.loginReducer.token
     };
   }
 export default connect(mapStateToProps)(DetailCustomer);
