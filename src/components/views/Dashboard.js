@@ -18,8 +18,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Divider from '@material-ui/core/Divider';
-import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit } from '../share/services/bill.service';
-import { getCustomerLength, getCustomerLimit } from '../share/services/customer.service';
+import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit, getBillUserCurrentFilter } from '../share/services/bill.service';
+import { getCustomerLength, getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
 const th = createMuiTheme({
     palette: {
         primary: { main: blue[500] },
@@ -45,8 +45,7 @@ class Dashboard extends Component {
             customer_name: '',
             dataCustomersSearch: [
                 {
-                    customer_name: 'NVA',
-                   
+                    customer_name: 'NVA',                 
                 },
                 {
                     customer_name: 'NVB',
@@ -59,6 +58,7 @@ class Dashboard extends Component {
         this.onChange = this.onChange.bind(this);
         this.search = this.search.bind(this);
         this.selectCustomer = this.selectCustomer.bind(this);
+        this.onChangeSearchCustomer = this.onChangeSearchCustomer.bind(this);
     }
     componentDidMount() {
         var date = new Date().getDate();
@@ -91,8 +91,15 @@ class Dashboard extends Component {
     }
     onChange(e) {
         this.setState({
-            [e.target.name]: e.target.value,
+            [e.target.name]: e.target.value
         });
+    }
+    onChangeSearchCustomer(e) {
+        getCustomerSearch(e.target.value, this.props.user_username, this.props.token).then(data=>{
+            this.setState({
+                dataCustomersSearch: data.customers
+            });
+        })     
     }
     useStyles = makeStyles(theme => ({
         root: {
@@ -135,7 +142,9 @@ class Dashboard extends Component {
 
     }
     search(e) {
-
+        getBillUserCurrentFilter(this.state.customer_name, this.state.status_bill_id, this.state.date_from, this.state.date_to, this.props.user_username, this.props.token).then(data => {
+            console.log(data);
+        })
     }
     selectCustomer(e, customer_name) {
         e.preventDefault();
@@ -214,7 +223,7 @@ class Dashboard extends Component {
                                                         variant="outlined"
                                                         name="customer_name"
                                                         value={this.state.customer_name}
-                                                        onChange={this.onChange}
+                                                        onChange={this.onChangeSearchCustomer}
                                                     />
                                                     <List component="nav" aria-label="secondary mailbox folder" >
                                                         {
@@ -406,6 +415,7 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
+        user_username: state.loginReducer.user_username,
         role: state.loginReducer.role,
         token: state.loginReducer.token
     };

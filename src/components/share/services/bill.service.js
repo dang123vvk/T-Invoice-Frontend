@@ -9,6 +9,10 @@ export function getBillUserCurrent(user_username,token){
 export function getBillUserCurrentSearch(text_search, user_username,token){
     return axios.get(API_URL + 'bills/list/user/'+user_username+'/search/'+text_search,{ headers: { Authorization: token } } ).then(res => res.data);
 }
+//function filter
+export function getBillUserCurrentFilter(customer_id, status_bill_id, date_start, date_end, user_username, token){
+    return axios.get(API_URL + 'bills/list/user/'+ user_username+'/filter/'+customer_id + '/' + status_bill_id+ '/' + date_start+ '/' + date_end,{ headers: { Authorization: token } } ).then(res => res.data);
+}
 export function getBill(id,user_username, token){
     return axios.get(API_URL + 'bills/edit/'+ id + '/' +user_username,{ headers: { Authorization: token } } ).then(res => res.data);
 }
