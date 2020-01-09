@@ -8,7 +8,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import './style.css';
-import { getAccountBankCurrent, getAccountBankCurrentSearch } from '../share/services/accountbank.service';
+import { getAccountBankCurrent, getAccountBankCurrentSearch, updateAccountBank } from '../share/services/accountbank.service';
 import { Link } from "react-router-dom";
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
@@ -46,6 +46,7 @@ class ListAccountBank extends React.Component {
         this.closeEdit = this.closeEdit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
+        this.save = this.save.bind(this);
     }
     componentDidMount() {
         getAccountBankCurrent(this.props.token).then(data => {
@@ -79,7 +80,7 @@ class ListAccountBank extends React.Component {
         })
     }
     handleChangeSearch(event){  
-        getAccountBankCurrentSearch(event.target.value).then(data=> {
+        getAccountBankCurrentSearch(event.target.value,this.props.token).then(data=> {
             this.setState({
                 data: data.accountsbank
             })     
@@ -95,6 +96,7 @@ class ListAccountBank extends React.Component {
             account_bank_name: temp[index].account_bank_name,
             account_bank_address: temp[index].account_bank_address,
             account_bank_swift: temp[index].account_bank_swift,
+            account_bank_id: account_bank_id
         })
     }
     closeEdit(e) {
@@ -103,7 +105,34 @@ class ListAccountBank extends React.Component {
             edit: false
         })
     }
+    save(e,account_bank_id) {
+        e.preventDefault();
+        const accountbank = {
+            account_bank_number: this.state.account_bank_number,
+            account_bank_name: this.state.account_bank_name,
+            account_bank_address: this.state.account_bank_address,
+            account_bank_swift: this.state.account_bank_swift,
+          };
+        updateAccountBank(account_bank_id,accountbank,this.props.token).then(data => {
+            console.log(data); 
+        });
+        var index = _.findIndex(this.state.data, function (ac) { return ac.account_bank_id === account_bank_id; });
+        var temp = this.state.data;
+        const accountbank_1 = {
+            account_bank_id: account_bank_id,
+            account_bank_number: this.state.account_bank_number,
+            account_bank_name: this.state.account_bank_name,
+            account_bank_address: this.state.account_bank_address,
+            account_bank_swift: this.state.account_bank_swift,
+          };
+          temp[index] = accountbank_1;
+        this.setState({
+            edit: false,
+            data: temp,
+        })
+    }
     onChange(e) {
+        e.preventDefault();
         this.setState({
             [e.target.name]: e.target.value,
         });
@@ -220,6 +249,7 @@ class ListAccountBank extends React.Component {
                                                 value={this.state.account_bank_number}
                                                 fullWidth
                                                 name="account_bank_number"
+                                                onChange={this.onChange}
                                             />
                                         </div>
                                         <div className="col-sm-5">Account Bank Name </div>
@@ -230,6 +260,7 @@ class ListAccountBank extends React.Component {
                                                 value={this.state.account_bank_name}
                                                 fullWidth
                                                 name="account_bank_name"
+                                                onChange={this.onChange}
                                             />
                                         </div>
                                         <div className="col-sm-5">Account Bank Address</div>
@@ -260,7 +291,7 @@ class ListAccountBank extends React.Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={this.closeEdit}>Cancel</Button>
-                                <Button color="primary" variant="contained" >Save</Button>
+                                <Button color="primary" variant="contained" onClick={e => this.save(e,this.state.account_bank_id)} >Save</Button>
                             </DialogActions>
                         </Dialog>
                     </div>

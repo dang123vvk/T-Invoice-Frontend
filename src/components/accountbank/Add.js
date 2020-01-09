@@ -64,7 +64,7 @@ class AddAccountBank extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/accountbank' />;
+      return <Redirect to='/accountbanks' />;
     }
     if ((this.props.role) || (localStorage.getItem('user_information'))) {
       return (

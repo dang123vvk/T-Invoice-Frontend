@@ -13,3 +13,7 @@ export function postAccountBank(accountsbank, token){
     return axios.post(API_URL + 'accountsbank/add',accountsbank,{ headers: { Authorization: token } } ).then(res => res.data);
 }
 
+export function updateAccountBank(account_bank_id,accountsbank, token){
+    return axios.post(API_URL + 'accountsbank/edit/'+account_bank_id,accountsbank,{ headers: { Authorization: token } } ).then(res => res.data);
+}
+
