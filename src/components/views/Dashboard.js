@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { ThemeProvider } from '@material-ui/styles';
-import { Container, CssBaseline, createMuiTheme, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab } from '@material-ui/core';
+import { Container, CssBaseline, createMuiTheme, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab, List, ListItem, ListItemText } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -43,12 +43,22 @@ class Dashboard extends Component {
             date_to: '',
             redirect: false,
             customer_name: '',
+            dataCustomersSearch: [
+                {
+                    customer_name: 'NVA',
+                   
+                },
+                {
+                    customer_name: 'NVB',
+                }
+            ]
         };
         this.classes = this.useStyles;
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeStatus = this.handleChangeStatus.bind(this);
         this.onChange = this.onChange.bind(this);
         this.search = this.search.bind(this);
+        this.selectCustomer = this.selectCustomer.bind(this);
     }
     componentDidMount() {
         var date = new Date().getDate();
@@ -127,6 +137,13 @@ class Dashboard extends Component {
     search(e) {
 
     }
+    selectCustomer(e, customer_name) {
+        e.preventDefault();
+        this.setState({
+            customer_name: customer_name,
+            dataCustomersSearch: [],
+        })
+    }
     render() {
         const redirect = this.state.redirect;
         return (
@@ -199,6 +216,19 @@ class Dashboard extends Component {
                                                         value={this.state.customer_name}
                                                         onChange={this.onChange}
                                                     />
+                                                    <List component="nav" aria-label="secondary mailbox folder" >
+                                                        {
+                                                            this.state.dataCustomersSearch.map((customer) => (
+                                                                <ListItem key={customer.customer_name}
+                                                                    button
+                                                                    onClick={event => this.selectCustomer(event, customer.customer_name)}
+                                                                >
+                                                                    <ListItemText primary={customer.customer_name} />
+                                                                </ListItem>
+                                                            ))
+
+                                                        }
+                                                    </List>
                                                 </div>
                                                 <div className="col-sm-3">
                                                     <FormControl fullWidth >
