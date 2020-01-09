@@ -43,14 +43,8 @@ class Dashboard extends Component {
             date_to: '',
             redirect: false,
             customer_name: '',
-            dataCustomersSearch: [
-                {
-                    customer_name: 'NVA',                 
-                },
-                {
-                    customer_name: 'NVB',
-                }
-            ]
+            customer_id: 1,
+            dataCustomersSearch: []
         };
         this.classes = this.useStyles;
         this.handleChange = this.handleChange.bind(this);
@@ -99,7 +93,10 @@ class Dashboard extends Component {
             this.setState({
                 dataCustomersSearch: data.customers
             });
-        })     
+        })
+        this.setState({
+            [e.target.name]: e.target.value
+        });     
     }
     useStyles = makeStyles(theme => ({
         root: {
@@ -142,15 +139,16 @@ class Dashboard extends Component {
 
     }
     search(e) {
-        getBillUserCurrentFilter(this.state.customer_name, this.state.status_bill_id, this.state.date_from, this.state.date_to, this.props.user_username, this.props.token).then(data => {
+        getBillUserCurrentFilter(this.state.customer_id, this.state.status_bill_id, this.state.date_from, this.state.date_to, this.props.user_username, this.props.token).then(data => {
             console.log(data);
         })
     }
-    selectCustomer(e, customer_name) {
+    selectCustomer(e, customer_name, customer_id) {
         e.preventDefault();
         this.setState({
             customer_name: customer_name,
             dataCustomersSearch: [],
+            customer_id: customer_id,
         })
     }
     render() {
@@ -224,13 +222,14 @@ class Dashboard extends Component {
                                                         name="customer_name"
                                                         value={this.state.customer_name}
                                                         onChange={this.onChangeSearchCustomer}
+                                                        autoComplete='off'
                                                     />
                                                     <List component="nav" aria-label="secondary mailbox folder" >
                                                         {
                                                             this.state.dataCustomersSearch.map((customer) => (
                                                                 <ListItem key={customer.customer_name}
                                                                     button
-                                                                    onClick={event => this.selectCustomer(event, customer.customer_name)}
+                                                                    onClick={event => this.selectCustomer(event,customer.customer_name, customer.customer_id)}
                                                                 >
                                                                     <ListItemText primary={customer.customer_name} />
                                                                 </ListItem>
