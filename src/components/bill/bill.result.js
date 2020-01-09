@@ -18,7 +18,7 @@ import {
     ExcelExportColumnGroup
 } from '@progress/kendo-react-excel-export';
 import {month} from '../share/month';
-import { getBillUserCurrent, getBillUserCurrentSearch } from '../share/services/bill.service';
+import { getBillUserCurrent, getBillUserCurrentSearch, getBillUserCurrentFilter } from '../share/services/bill.service';
 class ResultBill extends React.Component {
     _exporter;
     export = () => {
@@ -42,12 +42,12 @@ class ResultBill extends React.Component {
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        getBillUserCurrent(this.props.user_username,this.props.token).then(data => {
+        getBillUserCurrentFilter(this.props.match.params.customer_id, this.props.match.params.status_id, this.props.match.params.date_from, this.props.match.params.date_to, this.props.user_username, this.props.token).then(data =>{
             this.setState({
                 data: data.bill
             })
         })
- 
+
     }
     handleSubmit(event, bill_id) {
         event.preventDefault();
@@ -107,7 +107,7 @@ class ResultBill extends React.Component {
                     <CssBaseline />
                     <div style={{ marginTop: '5%', marginBottom: '2%' }}  >
       <Typography variant="h5" gutterBottom>
-                    About 5 results
+                    About {this.state.data.length} results
       </Typography>
                     </div>
                     <div style={{ marginTop: '2%' }}>

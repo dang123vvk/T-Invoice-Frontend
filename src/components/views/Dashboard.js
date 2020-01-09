@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { ThemeProvider } from '@material-ui/styles';
 import { Container, CssBaseline, createMuiTheme, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab, List, ListItem, ListItemText } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -139,9 +139,10 @@ class Dashboard extends Component {
 
     }
     search(e) {
-        getBillUserCurrentFilter(this.state.customer_id, this.state.status_bill_id, this.state.date_from, this.state.date_to, this.props.user_username, this.props.token).then(data => {
-            console.log(data);
-        })
+        e.preventDefault();
+        this.setState({
+            redirect: true
+           })
     }
     selectCustomer(e, customer_name, customer_id) {
         e.preventDefault();
@@ -153,6 +154,9 @@ class Dashboard extends Component {
     }
     render() {
         const redirect = this.state.redirect;
+        if (redirect) {
+            return <Redirect to={'bills/search/customer/'+ this.state.customer_id+ '/status/' + this.state.status_bill_id + '/date_from/'+this.state.date_from+ '/date_to/'+ this.state.date_to}/>;
+          }
         return (
             <ThemeProvider theme={th}>
                 <Container component="main" maxWidth="md">

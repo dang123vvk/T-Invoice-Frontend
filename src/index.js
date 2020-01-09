@@ -32,7 +32,7 @@ const routing = (
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/bills" component={ListBill} />
-        <Route exact path="/bills/search" component={ResultBill} />
+        <Route exact path="/bills/search/customer/:customer_id?/(status)?/:status_id?/(date_from)?/:date_from?/(date_to)?/:date_to?" component={ResultBill} />
         <Route exact path="/bills/add" component={AddBill} />
         <Route exact path="/bills/add/customer/:id" component={AddBillCustomer} />
         <Route exact path="/bills/export/:id" component={DetailBill} />
