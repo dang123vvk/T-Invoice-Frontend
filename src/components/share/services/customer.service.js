@@ -26,3 +26,9 @@ export function getCustomerForBill(customer_id){
 export function postAccountBank(accountsbank){
     return axios.post(API_URL + 'customers/add',accountsbank,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+export function getCustomerLength(){
+    return axios.get(API_URL + 'customers/length/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
+export function getCustomerLimit(){
+    return axios.get(API_URL + 'customers/limit/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}

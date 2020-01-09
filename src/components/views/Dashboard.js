@@ -12,14 +12,12 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Divider from '@material-ui/core/Divider';
-import { Redirect } from 'react-router';
 import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit } from '../share/services/bill.service';
 import { getCustomerLength, getCustomerLimit } from '../share/services/customer.service';
 const th = createMuiTheme({
@@ -28,7 +26,7 @@ const th = createMuiTheme({
         secondary: { main: '#2196f3' },
     },
 });
-class DirectorDashboard extends Component {
+class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -127,7 +125,7 @@ class DirectorDashboard extends Component {
 
     }
     search(e) {
-     
+
     }
     render() {
         const redirect = this.state.redirect;
@@ -279,7 +277,7 @@ class DirectorDashboard extends Component {
                                         </TableHead>
                                         <TableBody>
                                             {this.state.dataBill.map((row, index) => (
-                                                <TableRow  key={index}>
+                                                <TableRow key={index}>
                                                     <TableCell align="right" >{row.customer_name}</TableCell>
                                                     <TableCell align="right"> {row.bills_sum}</TableCell>
                                                     <TableCell align="center" >{row.status_bill_name}</TableCell>
@@ -381,4 +379,4 @@ const mapStateToProps = (state) => {
         role: state.loginReducer.role
     };
 }
-export default connect(mapStateToProps)(DirectorDashboard);
+export default connect(mapStateToProps)(Dashboard);

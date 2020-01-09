@@ -24,3 +24,15 @@ export function getStatusBill(){
 export function postBill(bill){
     return axios.post(API_URL + 'bills/add',bill,{ headers: { Authorization: user_information.token } } ).then(res => res.data);
 }
+export function getBillLength(){
+    return axios.get(API_URL + 'bills/list/user/length/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
+export function getBillSum(){
+    return axios.get(API_URL + 'bills/list/user/sum/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
+export function getBillNotSendLength(){
+    return axios.get(API_URL + 'bills/list/user/length/notsent/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
+export function getBillLimit(){
+    return axios.get(API_URL + 'bills/list/user/limit/'+localStorage.getItem('user_id'),{ headers: { Authorization: user_information.token } } ).then(res => res.data);
+}
