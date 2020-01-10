@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
 import { Link } from "react-router-dom";
 import Icon from '@material-ui/core/Icon';
+import { getCustomerEdit } from '../share/services/customer.service';
 
 const th = createMuiTheme({
     palette: {
@@ -55,8 +56,25 @@ class DetailCustomer extends Component {
         this.cancel = this.cancel.bind(this);
         document.title = 'Detail Customer';
     }
-    componentDidMount() {
-    }
+    UNSAFE_componentWillMount () {
+        getCustomerEdit(this.props.match.params.id, this.props.token).then(data => {
+         this.setState({
+          customer_name: data.customers.customer_name,
+          customer_email: data.customers.customer_email,
+          customer_address: data.customers.customer_address,
+          customer_number_phone: data.customers.customer_number_phone,
+          customer_details_company: data.customerDetail.customer_details_company,
+          customer_details_project: data.customerDetail.customer_details_project,
+          customer_details_country: data.customerDetail.customer_details_country,
+          customer_details_note: data.customerDetail.customer_details_note,
+          customer_swift_code: data.customers.customer_swift_code,
+          data: data.po_nos,
+          dataBill: data.bill
+
+         })
+        })
+        
+      }
     handleSubmitForm(event) {
         event.preventDefault();
         const customer = {

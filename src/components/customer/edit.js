@@ -18,6 +18,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import _ from 'lodash';
 import Draggable from 'react-draggable';
 import { status } from './status';
+import {getCustomerEdit } from '../share/services/customer.service';
+
 
 function PaperComponent(props) {
   return (
@@ -60,6 +62,22 @@ class EditCustomer extends Component {
     this.openAdd = this.openAdd.bind(this);
     this.addPoNo = this.addPoNo.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+  }
+  UNSAFE_componentWillMount () {
+    getCustomerEdit(this.props.match.params.id, this.props.token).then(data => {
+     this.setState({
+      customer_name: data.customers.customer_name,
+      customer_email: data.customers.customer_email,
+      customer_address: data.customers.customer_address,
+      customer_number_phone: data.customers.customer_number_phone,
+      customer_details_company: data.customerDetail.customer_details_company,
+      customer_details_project: data.customerDetail.customer_details_project,
+      customer_details_country: data.customerDetail.customer_details_country,
+      customer_details_note: data.customerDetail.customer_details_note,
+      customer_swift_code: data.customers.customer_swift_code,
+      data: data.po_nos
+     })
+    })
   }
   handleSubmitForm(event) {
     event.preventDefault();

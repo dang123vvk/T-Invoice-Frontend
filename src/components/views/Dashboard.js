@@ -199,7 +199,7 @@ class Dashboard extends Component {
                                     Not Sent
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bill-list-not-sent" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNotSent}</Link>
+                                        <Link to="/bills/status/notsent" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNotSent}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>

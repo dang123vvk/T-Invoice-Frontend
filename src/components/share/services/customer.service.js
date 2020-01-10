@@ -28,3 +28,6 @@ export function getCustomerLength(token){
 export function getCustomerLimit(token){
     return axios.get(API_URL + 'customers/limit/'+localStorage.getItem('user_id'),{ headers: { Authorization: token } } ).then(res => res.data);
 }
+export function getCustomerEdit(customer_id,token){
+    return axios.get(API_URL + 'customers/edit/'+customer_id + '/'+localStorage.getItem('user_id'),{ headers: { Authorization: token } } ).then(res => res.data);
+}

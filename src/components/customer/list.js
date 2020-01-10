@@ -159,14 +159,14 @@ class ListCustomer extends React.Component {
                                             <TableCell align='center' >{row.customer_number_phone}</TableCell>
                                             <TableCell align='center' >{row.customer_address}</TableCell>
                                             <TableCell align="center">
-                                            <Link to='/customers/edit' style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
+                                            <Link to={'/customers/edit/'+row.customer_id } style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
                                                  <Fab size="small" color="primary"  className="btn-without-border">
                                                        <EditIcon style={{ display: 'block' }} />
                                                     </Fab>
                                                     
                                                 </Tooltip>
                                                 </Link>
-                                                <Link to='/customers/detail' style={{ color: 'white', textDecoration: 'none' }}>
+                                                <Link to={'/customers/detail/'+ row.customer_id} style={{ color: 'white', textDecoration: 'none' }}>
                                                 <Tooltip title="Detail customer" aria-label="add">
                                                  <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
                                                        <ViewColumnButton style={{ display: 'block' }} />

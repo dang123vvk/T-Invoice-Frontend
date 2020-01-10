@@ -11,6 +11,7 @@ import Header from './components/views/Header';
 import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
 import ResultBill from './components/bill/bill.result';
+import ResultBillNotSent from './components/bill/bill.not.sent';
 import DetailBill from './components/bill/detail';
 import AddBill from './components/bill/add';
 import AddBillCustomer from './components/bill/add.customer';
@@ -33,13 +34,14 @@ const routing = (
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/bills" component={ListBill} />
         <Route exact path="/bills/search/customer/:customer_id?/(status)?/:status_id?/(date_from)?/:date_from?/(date_to)?/:date_to?" component={ResultBill} />
+        <Route exact path="/bills/status/notsent" component={ResultBillNotSent} />
         <Route exact path="/bills/add" component={AddBill} />
         <Route exact path="/bills/add/customer/:id" component={AddBillCustomer} />
         <Route exact path="/bills/export/:id" component={DetailBill} />
         <Route exact path="/customers" component={ListCustomer} />
         <Route exact path="/customers/add" component={AddCustomer} />
-        <Route exact path="/customers/edit" component={EditCustomer} />
-        <Route exact path="/customers/detail" component={DetailCustomer} />
+        <Route exact path="/customers/edit/:id" component={EditCustomer} />
+        <Route exact path="/customers/detail/:id" component={DetailCustomer} />
         <Route exact path="/signin" component={Signin} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/" component={HomePage} />
