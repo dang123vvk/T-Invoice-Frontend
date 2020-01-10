@@ -31,7 +31,7 @@ import { getBill } from '../share/services/bill.service';
 
 const aggregates = [{ field: 'bill_item_cost', aggregate: 'SUM' }];
 const total = (props) => (aggregateBy(props.data, aggregates));
-const URL_EDIT = "/bill-edit/";
+const URL_EDIT = "/bills/edit/";
 const th = createMuiTheme({
     palette: {
         primary: { main: blue[500] },
@@ -209,7 +209,7 @@ class DetailBill extends Component {
                                 <Grid container spacing={3} >
                                     <Grid item xs={12} >
                                     </Grid>
-                                    <Grid item xs={12} sm={4} align="right">
+                                    <Grid item xs={12} sm={6} align="right">
                                         <Tooltip title="Export bill to PDF">
                                             <Button variant="contained" color="secondary" onClick={() => this.pdfExportComponent.save()}>
                                                 <PrintIcon />
@@ -217,15 +217,7 @@ class DetailBill extends Component {
                                          </Button>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={12} sm={4} align="center">
-                                        <Tooltip title="Export Description to Excel">
-                                            <Button variant="contained" color="secondary" onClick={this.export} >
-                                                <PrintIcon />
-                                                Excel
-                                        </Button>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={12} sm={4} >
+                                    <Grid item xs={12} sm={6} >
                                         <Tooltip title="Edit bill">
                                             <Link to={URL_EDIT + this.props.match.params.id}><Button variant="contained" color="secondary" >
                                                 <EditIcon />

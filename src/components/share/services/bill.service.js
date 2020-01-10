@@ -24,6 +24,9 @@ export function getStatusBill(token){
 export function postBill(bill, token){
     return axios.post(API_URL + 'bills/add',bill,{ headers: { Authorization: token } } ).then(res => res.data);
 }
+export function postBillUpdate(id,bill, token){
+    return axios.post(API_URL + 'bills/edit/'+id,bill,{ headers: { Authorization: token } } ).then(res => res.data);
+}
 export function getBillLength(token){
     return axios.get(API_URL + 'bills/list/user/length/'+localStorage.getItem('user_id'),{ headers: { Authorization: token } } ).then(res => res.data);
 }

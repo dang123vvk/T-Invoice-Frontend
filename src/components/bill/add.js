@@ -26,7 +26,6 @@ import Draggable from 'react-draggable';
 import _ from 'lodash';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { isNumber } from 'util';
 function PaperComponent(props) {
     return (
         <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
@@ -143,7 +142,7 @@ class AddBill extends Component {
                 account_bank_swift: data.accountsbank[0].account_bank_swift,
             });
         })
-        getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
+        getCustomerUserCurrent(this.props.user_username, this.props.token).then(data => {
             if (data.length_po_nos_add > 0) {
                 this.setState({
                     customers: data.customers,
@@ -204,7 +203,7 @@ class AddBill extends Component {
     }
     customerdefault(e) {
         e.preventDefault();
-        getTemplateCustomer(this.state.customer_id,this.props.token).then(data => {
+        getTemplateCustomer(this.state.customer_id, this.props.token).then(data => {
             this.setState({
                 templates_name_company: data.temp.templates_name_company,
                 templates_address: data.temp.templates_address,
@@ -224,7 +223,7 @@ class AddBill extends Component {
     handleSubmitForm(event) {
         event.preventDefault();
         const bill = this.state;
-        postBill(bill,this.props.token).then(data => {
+        postBill(bill, this.props.token).then(data => {
             this.setState({ redirect: true });
         })
 
@@ -249,7 +248,7 @@ class AddBill extends Component {
         this.setState({
             customer_id: event.target.value,
         });
-        getCustomerPO(event.target.value,this.props.token).then(data => {
+        getCustomerPO(event.target.value, this.props.token).then(data => {
             if (data.length_po_nos_add > 0) {
                 this.setState({
                     bill_no: data.po_nos_add[0].po_number_id,
@@ -312,43 +311,39 @@ class AddBill extends Component {
         });
     }
     onChangeDescription(e) {
-    if(!e.target.value){
-        this.setState({
-            errorDescription: true,
-            messageDescription : 'Field can not empty',
-            [e.target.name]: '',
-        });
+        if (!e.target.value) {
+            this.setState({
+                errorDescription: true,
+                messageDescription: 'Field can not empty',
+                [e.target.name]: '',
+            });
+        }
+        else {
+            this.setState({
+                [e.target.name]: e.target.value,
+                errorDescription: false,
+                messageDescription: ' ',
+            });
+        }
     }
-    else {
-        this.setState({
-            [e.target.name]: e.target.value,
-            errorDescription: false,
-            messageDescription : ' ',
-        });
-    }
-}
 
     onChangeNumber(e) {
-    if(!e.target.value){
-        this.setState({
-            [e.target.name]: e.target.value,
-            messageCost: 'Field can not empty',
-            errorCost: true
-        });
-    }
-    else {
-        this.setState({
-            [e.target.name]: e.target.value,
-            messageCost: ' ',
-            errorCost: false
-        });
-    }
-   
-}       
-            
-        
-      
+        if (!e.target.value) {
+            this.setState({
+                [e.target.name]: e.target.value,
+                messageCost: 'Field can not empty',
+                errorCost: true
+            });
+        }
+        else {
+            this.setState({
+                [e.target.name]: e.target.value,
+                messageCost: ' ',
+                errorCost: false
+            });
+        }
 
+    }
     openAdd(e) {
         e.preventDefault();
         this.setState({
@@ -365,8 +360,6 @@ class AddBill extends Component {
     openEdit(e, bill_item_description) {
         e.preventDefault();
         let index = _.findIndex(this.state.data, it => { return it.bill_item_description === bill_item_description; });
-        console.log(index);
-
         var data = this.state.data;
         this.setState({
             isDialog: true,
@@ -388,7 +381,7 @@ class AddBill extends Component {
                 bill_item_cost: this.state.bill_item_cost,
             };
             let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.bill_item_description; });
-            if(index === -1 ){
+            if (index === -1) {
                 this.setState(state => {
                     const list = state.data.push(item);
                     return {
@@ -404,11 +397,11 @@ class AddBill extends Component {
             }
             else {
                 this.setState({
-                     messageItem: 'Item already exists',
-                     errorItem: true
+                    messageItem: 'Item already exists',
+                    errorItem: true
                 })
             }
-         
+
         }
         else {
             const item = {
@@ -450,20 +443,6 @@ class AddBill extends Component {
                         <form validate="true" onSubmit={event => this.handleSubmitForm(event)}>
                             <main >
                                 <div style={{ marginTop: '20px' }} >
-                                    <Grid container spacing={3} >
-                                        <Grid item xs={6} >
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography style={{ fontSize: '10px', fontWeight: 'bold' }} align='center'>
-                                                <Button style={{ color: 'white' }} fullWidth type="button" size="small" color="primary" variant="contained" onClick={this.customerdefault} >Customer Template</Button>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography style={{ fontSize: '10px', fontWeight: 'bold' }} align='center'>
-                                                <Button style={{ color: 'white' }} fullWidth type="button" size="small" color="primary" variant="contained" onClick={this.default} >Default Template</Button>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
                                     <Grid container spacing={3}>
                                         <Grid item xs={3} style={{ height: 'auto' }} justify-xs-space-between="true"	>
                                             <img src={logotma} width="150px" alt="vvn" />
@@ -548,7 +527,7 @@ class AddBill extends Component {
                                                     </FormControl>
                                                 </div>
                                                 <div className="col-sm-4" hidden={!(this.state.display_po)}>
-                                                    There isn't an active PO. Please add in <Link to={'/customer-edit/' + this.state.customer_id}>this customer</Link>
+                                                    There isn't an active PO. Please add in <Link to={'/customers/edit/' + this.state.customer_id}>this customer</Link>
                                                 </div>
                                             </div>
                                             <div className="row" style={{ marginTop: '10px' }}>
@@ -674,37 +653,37 @@ class AddBill extends Component {
                                                 <DialogContent >
                                                     <div id="configuration" className="container" ><br />
                                                         <div className="row d-flex align-items-center">
-                                                        <div className="col-sm-12"><InputLabel error={this.state.errorItem}>{this.state.messageItem}</InputLabel> </div>
+                                                            <div className="col-sm-12"><InputLabel error={this.state.errorItem}>{this.state.messageItem}</InputLabel> </div>
                                                             <div className="col-sm-5">Description </div>
                                                             <div className="col-sm-7">
-                                                            <FormControl error={this.state.errorDescription}>
-                                                                <TextField
-                                                                    margin="dense"
-                                                                    variant="outlined"
-                                                                    value={this.state.bill_item_description}
-                                                                    fullWidth
-                                                                    name="bill_item_description"
-                                                                    onChange={this.onChangeDescription}
-                                                                    error={this.state.errorDescription}
-                                                                />
-                                                                  <FormHelperText id="component-error-text">{this.state.messageDescription}</FormHelperText>
+                                                                <FormControl error={this.state.errorDescription}>
+                                                                    <TextField
+                                                                        margin="dense"
+                                                                        variant="outlined"
+                                                                        value={this.state.bill_item_description}
+                                                                        fullWidth
+                                                                        name="bill_item_description"
+                                                                        onChange={this.onChangeDescription}
+                                                                        error={this.state.errorDescription}
+                                                                    />
+                                                                    <FormHelperText id="component-error-text">{this.state.messageDescription}</FormHelperText>
                                                                 </FormControl>
                                                             </div>
                                                             <div className="col-sm-5">Payment Amount in USD </div>
                                                             <div className="col-sm-7">
-                                                            <FormControl error={this.state.errorCost}>
-                                                                <TextField
-                                                                    margin="dense"
-                                                                    variant="outlined"
-                                                                    value={this.state.bill_item_cost}
-                                                                    fullWidth
-                                                                    name="bill_item_cost"
-                                                                    onChange={this.onChangeNumber}
-                                                                    type='number'
-                                                                    error={this.state.errorCost}
-                                                                />
-                                                                 <FormHelperText id="component-error-tex">{this.state.messageCost}</FormHelperText>
-                                                            </FormControl>
+                                                                <FormControl error={this.state.errorCost}>
+                                                                    <TextField
+                                                                        margin="dense"
+                                                                        variant="outlined"
+                                                                        value={this.state.bill_item_cost}
+                                                                        fullWidth
+                                                                        name="bill_item_cost"
+                                                                        onChange={this.onChangeNumber}
+                                                                        type='number'
+                                                                        error={this.state.errorCost}
+                                                                    />
+                                                                    <FormHelperText id="component-error-tex">{this.state.messageCost}</FormHelperText>
+                                                                </FormControl>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -908,7 +887,7 @@ class AddBill extends Component {
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
-       user_username: state.loginReducer.user_username,
+        user_username: state.loginReducer.user_username,
         role: state.loginReducer.role,
         token: state.loginReducer.token
     };

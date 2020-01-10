@@ -164,7 +164,7 @@ class ListBill extends React.Component {
                                             <TableCell align='center' >{row.bills_sum}</TableCell>
                                             <TableCell align='center' >{row.bill_date}</TableCell>
                                             <TableCell align="center">
-                                            <Link to='/bills/edit' style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
+                                            <Link to={'/bills/edit/'+ row.bill_id} style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
                                                  <Fab size="small" color="primary"  className="btn-without-border">
                                                        <EditIcon style={{ display: 'block' }} />
                                                     </Fab>

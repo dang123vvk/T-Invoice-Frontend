@@ -17,7 +17,9 @@ import { th } from "../share/config";
 import EditIcon from '@material-ui/icons/Edit';
 import _ from 'lodash';
 import Draggable from 'react-draggable';
-import {status} from './status';
+import { status } from './status';
+import { postCustomerAdd } from "../share/services/customer.service";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 function PaperComponent(props) {
   return (
@@ -53,6 +55,7 @@ class AddCustomer extends Component {
       status_po_id: 1,
       isAdd: true,
       po_id: '',
+      messagePO: ''
     }
     this.onChange = this.onChange.bind(this);
     this.clear = this.clear.bind(this);
@@ -60,23 +63,28 @@ class AddCustomer extends Component {
     this.openAdd = this.openAdd.bind(this);
     this.addPoNo = this.addPoNo.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+    this.deletePo = this.deletePo.bind(this);
   }
   handleSubmitForm(event) {
     event.preventDefault();
-    // const customer = {
-    //   customer_details_company: this.state.customer_details_company,
-    //   customer_details_project: this.state.customer_details_project,
-    //   customer_details_country: this.state.customer_details_country,
-    //   customer_details_note: this.state.customer_details_note,
-    //   customer_name: this.state.customer_name,
-    //   customer_email: this.state.customer_email,
-    //   customer_address: this.state.customer_address,
-    //   customer_number_phone: this.state.customer_number_phone,
-    //   customer_swift_code: this.state.customer_swift_code,
-    //   user_id: localStorage.getItem('user_id'),
-    //   po_nos: this.state.data,
-
-    // };
+    const customer = {
+      customer_details_company: this.state.customer_details_company,
+      customer_details_project: this.state.customer_details_project,
+      customer_details_country: this.state.customer_details_country,
+      customer_details_note: this.state.customer_details_note,
+      customer_name: this.state.customer_name,
+      customer_email: this.state.customer_email,
+      customer_address: this.state.customer_address,
+      customer_number_phone: this.state.customer_number_phone,
+      customer_swift_code: this.state.customer_swift_code,
+      user_id: localStorage.getItem('user_id'),
+      po_nos: this.state.data,
+    };
+    postCustomerAdd(customer, this.props.token).then(data => {
+      this.setState({
+        message: data.message
+      })
+    })
   }
   onChange(e) {
     this.setState({
@@ -107,7 +115,8 @@ class AddCustomer extends Component {
       status_po_id: temp[index].status_po_id,
       dialogTitle: 'Edit PO No',
       isAdd: false,
-      po_id: po_number_no
+      po_id: po_number_no,
+      messagePO: '',
     })
   }
   openAdd(e) {
@@ -118,30 +127,41 @@ class AddCustomer extends Component {
       po_number_description: '',
       status_po_id: 1,
       dialogTitle: 'Add PO No',
-      isAdd: true
+      isAdd: true,
+      messagePO: '',
     })
   }
   addPoNo(e) {
     e.preventDefault();
     if (this.state.isAdd) {
       var status1 = status(this.state.status_po_id.toString());
-      const Po = {
-        po_number_description: this.state.po_number_description,
-        status_po_id: this.state.status_po_id,
-        po_number_no: this.state.po_number_no,
-        status_po_name: status1
-      };
-      this.setState(state => {
-        const list = state.data.push(Po);
-        return {
-          list,
-          isDialog: false,
-          po_number_no: '',
-          po_number_description: '',
-          status_po_id: 1,
-          dialogTitle: 'Add PO No',
+      let index = _.findIndex(this.state.data, po => { return po.po_number_no === this.state.po_number_no; });
+      if (index === -1) {
+        const Po = {
+          po_number_description: this.state.po_number_description,
+          status_po_id: this.state.status_po_id,
+          po_number_no: this.state.po_number_no,
+          status_po_name: status1
         };
-      });
+        this.setState(state => {
+          const list = state.data.push(Po);
+          return {
+            list,
+            isDialog: false,
+            po_number_no: '',
+            po_number_description: '',
+            status_po_id: 1,
+            dialogTitle: 'Add PO No',
+            messagePO: '',
+          };
+        });
+      }
+      else {
+        this.setState({
+          messagePO: 'PO No already exists'
+        })
+      }
+
     }
     else {
       var status2 = status(this.state.status_po_id.toString());
@@ -158,8 +178,9 @@ class AddCustomer extends Component {
         isDialog: false,
         isAdd: true,
         data: data,
+        messagePO: '',
       })
-}
+    }
 
   }
   closeDialog(e) {
@@ -167,6 +188,15 @@ class AddCustomer extends Component {
     this.setState({
       isDialog: false,
       isAdd: true
+    })
+  }
+  deletePo(e, i) {
+    e.preventDefault();
+    var data = _.filter(this.state.data, function (item) {
+      return item.po_number_no != i
+    })
+    this.setState({
+      data: data,
     })
   }
   render() {
@@ -364,12 +394,17 @@ class AddCustomer extends Component {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {this.state.data.map(row => (
+                        {this.state.data.map((row,index) => (
                           <TableRow hover role="checkbox" key={row.po_number_no} tabIndex={-1} >
                             <TableCell align="center">
                               <Tooltip title="Edit" aria-label="add">
                                 <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.po_number_no)} className="btn-without-border">
                                   <EditIcon />
+                                </Fab>
+                              </Tooltip>
+                              <Tooltip title="Delete" aria-label="add" style={{ marginLeft: '2%' }}>
+                                <Fab size="small" color="secondary" onClick={e => this.deletePo(e, row.po_number_no)} className="btn-without-border">
+                                  <DeleteIcon />
                                 </Fab>
                               </Tooltip>
                             </TableCell>
@@ -416,6 +451,7 @@ class AddCustomer extends Component {
                 <DialogContent >
                   <div id="configuration" className="container" ><br />
                     <div className="row d-flex align-items-center">
+                      <div className="col-sm-12" style={{ color: 'red' }}> {this.state.messagePO}</div>
                       <div className="col-sm-5"> PO No</div>
                       <div className="col-sm-7">
                         <TextField

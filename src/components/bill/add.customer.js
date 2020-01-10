@@ -451,20 +451,6 @@ class AddBillCustomer extends Component {
                         <form validate="true" onSubmit={event => this.handleSubmitForm(event)}>
                             <main >
                                 <div style={{ marginTop: '20px' }} >
-                                    <Grid container spacing={3} >
-                                        <Grid item xs={6} >
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography style={{ fontSize: '10px', fontWeight: 'bold' }} align='center'>
-                                                <Button style={{ color: 'white' }} fullWidth type="button" size="small" color="primary" variant="contained" onClick={this.customerdefault} >Customer Template</Button>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <Typography style={{ fontSize: '10px', fontWeight: 'bold' }} align='center'>
-                                                <Button style={{ color: 'white' }} fullWidth type="button" size="small" color="primary" variant="contained" onClick={this.default} >Default Template</Button>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
                                     <Grid container spacing={3}>
                                         <Grid item xs={3} style={{ height: 'auto' }} justify-xs-space-between="true"	>
                                             <img src={logotma} width="150px" alt="vvn" />

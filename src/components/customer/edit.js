@@ -18,7 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import _ from 'lodash';
 import Draggable from 'react-draggable';
 import { status } from './status';
-import {getCustomerEdit } from '../share/services/customer.service';
+import {getCustomerEdit, postCustomerEdit, updatePOCustomer, addPOCustomer } from '../share/services/customer.service';
 
 
 function PaperComponent(props) {
@@ -42,6 +42,7 @@ class EditCustomer extends Component {
       customer_details_country: '',
       customer_details_note: '',
       customer_swift_code: '',
+      customer_details_id: 1,
       user_id: 1,
       redirect: false,
       message: '',
@@ -55,6 +56,7 @@ class EditCustomer extends Component {
       status_po_id: 1,
       isAdd: true,
       po_id: '',
+      po_number_id: 1,
     }
     this.onChange = this.onChange.bind(this);
     this.clear = this.clear.bind(this);
@@ -70,6 +72,7 @@ class EditCustomer extends Component {
       customer_email: data.customers.customer_email,
       customer_address: data.customers.customer_address,
       customer_number_phone: data.customers.customer_number_phone,
+      customer_details_id: data.customers.customer_details_id,
       customer_details_company: data.customerDetail.customer_details_company,
       customer_details_project: data.customerDetail.customer_details_project,
       customer_details_country: data.customerDetail.customer_details_country,
@@ -81,20 +84,25 @@ class EditCustomer extends Component {
   }
   handleSubmitForm(event) {
     event.preventDefault();
-    // const customer = {
-    //   customer_details_company: this.state.customer_details_company,
-    //   customer_details_project: this.state.customer_details_project,
-    //   customer_details_country: this.state.customer_details_country,
-    //   customer_details_note: this.state.customer_details_note,
-    //   customer_name: this.state.customer_name,
-    //   customer_email: this.state.customer_email,
-    //   customer_address: this.state.customer_address,
-    //   customer_number_phone: this.state.customer_number_phone,
-    //   customer_swift_code: this.state.customer_swift_code,
-    //   user_id: localStorage.getItem('user_id'),
-    //   po_nos: this.state.data,
+    const customer = {
+      customer_details_company: this.state.customer_details_company,
+      customer_details_project: this.state.customer_details_project,
+      customer_details_country: this.state.customer_details_country,
+      customer_details_id: this.state.customer_details_id,
+      customer_details_note: this.state.customer_details_note,
+      customer_name: this.state.customer_name,
+      customer_email: this.state.customer_email,
+      customer_address: this.state.customer_address,
+      customer_number_phone: this.state.customer_number_phone,
+      customer_swift_code: this.state.customer_swift_code,
+      po_nos: this.state.data,
 
-    // };
+    };
+    postCustomerEdit(this.props.match.params.id, customer, this.props.token).then(data=> {
+      this.setState({
+        message: data.message
+      })
+    })
   }
   onChange(e) {
     this.setState({
@@ -102,19 +110,12 @@ class EditCustomer extends Component {
     });
   }
   clear(e) {
-    this.setState({
-      customer_name: '',
-      customer_email: '',
-      customer_address: '',
-      customer_number_phone: '',
-      customer_details_company: '',
-      customer_details_project: '',
-      customer_details_country: '',
-      customer_details_note: '',
-    });
+  this.setState({
+    redirect: true
+  })
 
   }
-  openEdit(e, po_number_no) {
+  openEdit(e, po_number_no,po_number_id) {
     e.preventDefault();
     var index = _.findIndex(this.state.data, function (ac) { return ac.po_number_no === po_number_no; });
     var temp = this.state.data;
@@ -125,7 +126,8 @@ class EditCustomer extends Component {
       status_po_id: temp[index].status_po_id,
       dialogTitle: 'Edit PO No',
       isAdd: false,
-      po_id: po_number_no
+      po_id: po_number_no,
+      po_number_id: po_number_id
     })
   }
   openAdd(e) {
@@ -149,6 +151,12 @@ class EditCustomer extends Component {
         po_number_no: this.state.po_number_no,
         status_po_name: status1
       };
+      const PoSave = {
+        po_number_no: this.state.po_number_no,
+        status_po_id: this.state.status_po_id,
+        customer_id: this.props.match.params.id,
+        po_number_description: this.state.po_number_description,
+      };
       this.setState(state => {
         const list = state.data.push(Po);
         return {
@@ -160,6 +168,9 @@ class EditCustomer extends Component {
           dialogTitle: 'Add PO No',
         };
       });
+      addPOCustomer(this.props.match.params.id,PoSave,this.props.token).then(data => {
+        console.log(data);
+      });
     }
     else {
       var status2 = status(this.state.status_po_id.toString());
@@ -169,6 +180,11 @@ class EditCustomer extends Component {
         po_number_no: this.state.po_number_no,
         status_po_name: status2
       };
+      const PoSave = {
+        po_number_no: this.state.po_number_no,
+        status_po_id: this.state.status_po_id,
+        po_number_description: this.state.po_number_description,
+      };
       let index = _.findIndex(this.state.data, po => { return po.po_number_no === this.state.po_id; });
       const data = this.state.data;
       data[index] = Po;
@@ -176,6 +192,10 @@ class EditCustomer extends Component {
         isDialog: false,
         isAdd: true,
         data: data,
+      });
+      updatePOCustomer(this.state.po_number_id,PoSave,this.props.token).then(data => {
+        console.log(data);
+        
       })
     }
 
@@ -386,7 +406,7 @@ class EditCustomer extends Component {
                           <TableRow hover role="checkbox" key={row.po_number_no} tabIndex={-1} >
                             <TableCell align="center">
                               <Tooltip title="Edit" aria-label="add">
-                                <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.po_number_no)} className="btn-without-border">
+                                <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.po_number_no,row.po_number_id)} className="btn-without-border">
                                   <EditIcon />
                                 </Fab>
                               </Tooltip>
@@ -414,7 +434,7 @@ class EditCustomer extends Component {
                       onClick={this.clear}
                       className="btn-without-border"
                     >
-                      Clear
+                      Cancel
           </Button>
                   </Grid>
                   <Grid item xs={2}>
