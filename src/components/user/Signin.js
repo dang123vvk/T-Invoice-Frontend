@@ -144,8 +144,9 @@ class Signin extends Component {
 }
 const mapStateToProps = (state) => {
   return {
-    title: state.loginReducer.user_fullname,
-    isLogin: state.loginReducer.role
+    user_fullname: state.loginReducer.user_fullname,
+    role: state.loginReducer.role,
+    token: state.loginReducer.token
   };
 }
 const mapDispatchToProps = (dispatch) => ({

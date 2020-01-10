@@ -278,13 +278,13 @@ class DetailBill extends Component {
                                                 <Grid item xs={6} >
                                                     <div className="row">
                                                         <div className="col-sm-4" style={{ color: '#808080', fontSize: '11px', fontFamily: 'Times New Roman' }}>To:</div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial' }}>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>
                                                             {this.state.customer_name}
                                                         </div>
                                                     </div>
                                                     <div className="row">
                                                         <div className="col-sm-4" style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}></div>
-                                                        <div className="col-sm-8" style={{ fontSize: '11px', fontFamily: 'Arial' }}>
+                                                        <div className="col-sm-8" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>
                                                             {this.state.customer_address}
                                                         </div>
                                                     </div>
@@ -316,7 +316,7 @@ class DetailBill extends Component {
                                                                 {this.state.data.map((row, index) => (
                                                                     <tr style={{ height: "40px" }}>
                                                                         <td className="k" align="center" style={{ width: '15%', fontFamily: 'Times New Roman', fontsize: '8px', fontWeight: 'bold' }}>{row.in}</td>
-                                                                        <td className="k" align="left" style={{ fontsize: '8px' }}>{row.bill_item_description}</td>
+                                                                        <td className="k" align="left" style={{ fontFamily: 'Times New Roman' ,fontsize: '8px' }}>{row.bill_item_description}</td>
                                                                         <td className="v" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.cost}</td>
                                                                     </tr>
 
@@ -349,7 +349,7 @@ class DetailBill extends Component {
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Bank Name :</div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.account_bank_name}</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px' }}></div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial' }} >{this.state.account_bank_address}</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} >{this.state.account_bank_address}</div>
                                                         <div className="col-sm-4" ></div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>(SWIFT code: {this.state.account_bank_swift})</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Tel:</div>

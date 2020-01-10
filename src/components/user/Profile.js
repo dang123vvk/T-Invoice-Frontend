@@ -41,7 +41,7 @@ class Profile extends Component {
                     user_oldpassword: this.state.user_oldpassword,
                     user_password: this.state.user_password};
     if((this.state.user_oldpassword.length >0 ) && (this.state.error=== false)){
-      postInformationCurrent(this.state.user_username,user).then(data => {
+      postInformationCurrent(this.state.user_username,user, this.props.token).then(data => {
         if(data.status){
           this.setState({
             message: data.message
@@ -205,7 +205,7 @@ class Profile extends Component {
                       type="submit"
                       fullWidth
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       style={{ marginTop: '2%' }}
                       onClick={this.save}
                       disabled={this.state.disabled}
@@ -229,7 +229,8 @@ class Profile extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
-    role: state.loginReducer.role
+    role: state.loginReducer.role,
+    token: state.loginReducer.token
   };
 }
 const mapDispatchToProps = (dispatch) => ({

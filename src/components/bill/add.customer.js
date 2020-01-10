@@ -18,7 +18,7 @@ import { month } from '../share/month';
 import './style.css';
 import { getTemplate, getTemplateCustomer } from '../share/services/template.service';
 import { getAccountBankCurrent } from '../share/services/accountbank.service';
-import { getCustomerUserCurrent, getCustomerPO, getCustomerForBill } from '../share/services/customer.service';
+import {  getCustomerPO, getCustomerForBill } from '../share/services/customer.service';
 import { getStatusBill, postBill } from '../share/services/bill.service';
 import { th } from "../share/config";
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';

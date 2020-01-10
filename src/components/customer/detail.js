@@ -246,7 +246,7 @@ class DetailCustomer extends Component {
                                             ))}
                                             <TableRow >
                                                 <TableCell align="right" colSpan={5}>
-                                                    <Link to={"/customer-edit/" + this.props.match.params.id}> Edit</Link>
+                                                    <Link to={"/customers/edit/" + this.props.match.params.id}> Edit</Link>
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>
@@ -284,11 +284,6 @@ class DetailCustomer extends Component {
                                                     <TableCell align="right">{row.status_bill_name}</TableCell>
                                                 </TableRow>
                                             ))}
-                                            <TableRow >
-                                                <TableCell align="right" colSpan={5}>
-                                                    <Link to={"/bill-list-customer/" + this.props.match.params.id}>All Bill</Link>
-                                                </TableCell>
-                                            </TableRow>
                                         </TableBody>
                                     </Table>
                                 </Grid>
@@ -306,7 +301,7 @@ class DetailCustomer extends Component {
           </Button>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Link to={"/customer-edit/" + this.props.match.params.id}>
+                                    <Link to={"/customers/edit/" + this.props.match.params.id}>
                                         <Button style={{ marginTop: '20px' }}
                                             type="button"
                                             fullWidth
