@@ -225,7 +225,7 @@ class EditCustomer extends Component {
                     Home
           </Link>
                   <Link to="/customers" >
-                    Customer
+                    Customers
           </Link>
                   <Typography color="textPrimary">Add customer</Typography>
                 </Breadcrumbs>

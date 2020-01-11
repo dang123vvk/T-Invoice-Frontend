@@ -120,7 +120,7 @@ class DetailCustomer extends Component {
                                         Home
                                     </Link>
                                     <Link to="/customers" >
-                                        Customer
+                                        Customers
                                     </Link>
                                     <Typography color="textPrimary">Detail</Typography>
                                 </Breadcrumbs>

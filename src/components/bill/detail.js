@@ -96,12 +96,12 @@ class DetailBill extends Component {
         document.title = 'Export Bill'
     }
     componentDidMount() {
-        getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
+        getCustomerUserCurrent(this.props.user_username, this.props.token).then(data => {
             this.setState({
                 customers: data.customers
             })
         });
-        getBill(this.props.match.params.id,this.props.user_username,this.props.token).then(data => {
+        getBill(this.props.match.params.id, this.props.user_username, this.props.token).then(data => {
             this.setState({
                 data: data.items,
                 accountbanks: data.accountsbank,
@@ -206,6 +206,17 @@ class DetailBill extends Component {
                     <div className="example-config">
                         <ThemeProvider theme={th}>
                             <Container component="main" maxWidth="sm" >
+                                <Paper elevation={0}  style={{ marginTop: '2%'}} >
+                                    <Breadcrumbs aria-label="Breadcrumb" separator="/">
+                                        <Link style={{ color: '#3f51b5' }} to="/" >
+                                            Home
+                                        </Link>
+                                        <Link style={{ color: '#3f51b5' }} to="/bills" >
+                                            Bills
+                                        </Link>
+                                        <Typography color="textPrimary">Export</Typography>
+                                    </Breadcrumbs>
+                                </Paper>
                                 <Grid container spacing={3} >
                                     <Grid item xs={12} >
                                     </Grid>
@@ -314,9 +325,9 @@ class DetailBill extends Component {
                                                                 <td className="v" align="center" style={{ width: '40%', color: '#2196f3', fontWeight: 'bold', fontFamily: 'Times New Roman', fontsize: '7px' }}>Payment Amount in USD</td>
                                                             </tr>
                                                                 {this.state.data.map((row, index) => (
-                                                                    <tr style={{ height: "40px" }}>
+                                                                    <tr style={{ height: "40px" }} key={index}>
                                                                         <td className="k" align="center" style={{ width: '15%', fontFamily: 'Times New Roman', fontsize: '8px', fontWeight: 'bold' }}>{row.in}</td>
-                                                                        <td className="k" align="left" style={{ fontFamily: 'Times New Roman' ,fontsize: '8px' }}>{row.bill_item_description}</td>
+                                                                        <td className="k" align="left" style={{ fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.bill_item_description}</td>
                                                                         <td className="v" align="right" style={{ width: '40%', fontFamily: 'Times New Roman', fontsize: '8px' }}>{row.cost}</td>
                                                                     </tr>
 
@@ -349,7 +360,7 @@ class DetailBill extends Component {
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Bank Name :</div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.account_bank_name}</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px' }}></div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} >{this.state.account_bank_address}</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'DejaVu Sans' }} >{this.state.account_bank_address}</div>
                                                         <div className="col-sm-4" ></div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>(SWIFT code: {this.state.account_bank_swift})</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Tel:</div>

@@ -9,7 +9,7 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { Button, TextField, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, Tooltip, Dialog, DialogContent, DialogTitle, DialogActions, Fab, FormHelperText, InputLabel } from '@material-ui/core';
+import { Button, TextField, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, Tooltip, Dialog, DialogContent, DialogTitle, DialogActions, Fab, FormHelperText, InputLabel, Breadcrumbs } from '@material-ui/core';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
@@ -440,6 +440,17 @@ class AddBill extends Component {
                 <ThemeProvider theme={th}>
                     <Container component="main" maxWidth="md" style={{ backgroundColor: 'white' }} >
                         <CssBaseline />
+                        <Paper elevation={0}  style={{ marginTop: '2%'}} >
+                                    <Breadcrumbs aria-label="Breadcrumb" separator="/">
+                                        <Link style={{ color: '#3f51b5' }} to="/" >
+                                            Home
+                                        </Link>
+                                        <Link style={{ color: '#3f51b5' }} to="/bills" >
+                                            Bills
+                                        </Link>
+                                        <Typography color="textPrimary">Add</Typography>
+                                    </Breadcrumbs>
+                                </Paper>
                         <form validate="true" onSubmit={event => this.handleSubmitForm(event)}>
                             <main >
                                 <div style={{ marginTop: '20px' }} >

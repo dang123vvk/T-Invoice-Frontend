@@ -8,12 +8,13 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { ThemeProvider } from '@material-ui/styles';
-import { FormControl } from '@material-ui/core';
+import { FormControl, Breadcrumbs, Paper } from '@material-ui/core';
 import { Redirect } from 'react-router';
 import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
 import { postAccountBank } from '../share/services/accountbank.service';
 import { th } from "../share/config";
+import { Link } from 'react-router-dom';
 
 class AddAccountBank extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class AddAccountBank extends Component {
       account_bank_address: this.state.account_bank_address,
       account_bank_swift: this.state.account_bank_swift,
     };
-    postAccountBank(accountbank,this.props.token).then(data => {
+    postAccountBank(accountbank, this.props.token).then(data => {
       if (data.status === false) {
         this.setState({ message: 'Account Bank already exists' })
       }
@@ -71,6 +72,17 @@ class AddAccountBank extends Component {
         <ThemeProvider theme={th} >
           <Container component="main" maxWidth="xs">
             <CssBaseline />
+            <Paper elevation={0} style={{ marginTop: '2%' }} >
+              <Breadcrumbs aria-label="Breadcrumb" separator="/">
+                <Link style={{ color: '#3f51b5' }} to="/" >
+                  Home
+                                        </Link>
+                <Link style={{ color: '#3f51b5' }} to="/accountbanks" >
+                  Account Bank
+                                        </Link>
+                <Typography color="textPrimary">Add</Typography>
+              </Breadcrumbs>
+            </Paper>
             <div style={{ marginTop: '2%', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
               <Avatar style={{ marginTop: '2%', backgroundColor: '#3f51b5', }} >
                 <AccountBalanceIcon />

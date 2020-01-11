@@ -224,7 +224,7 @@ class ListBill extends React.Component {
                             <ExcelExportColumn title="Sum" field="bills_sum" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="People Enter The Bill" field="user_username" width={250} cellOptions={{
+                            <ExcelExportColumn title="People Enter The Bill" field="user_fullname" width={250} cellOptions={{
                                 textAlign: 'center'
                             }} />
                             <ExcelExportColumn title="Date" field="bill_date" width={200} cellOptions={{

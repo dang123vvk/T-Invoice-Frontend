@@ -217,9 +217,9 @@ class AddCustomer extends Component {
                     Home
           </Link>
                   <Link to="/customers" >
-                    Customer
+                    Customers
           </Link>
-                  <Typography color="textPrimary">Add customer</Typography>
+                  <Typography color="textPrimary">Add</Typography>
                 </Breadcrumbs>
               </Paper>
               <Avatar style={{ marginTop: '1%', backgroundColor: '#2196f3', }} >

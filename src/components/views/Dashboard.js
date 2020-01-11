@@ -20,12 +20,8 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Divider from '@material-ui/core/Divider';
 import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit, getBillUserCurrentFilter } from '../share/services/bill.service';
 import { getCustomerLength, getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
-const th = createMuiTheme({
-    palette: {
-        primary: { main: blue[500] },
-        secondary: { main: '#2196f3' },
-    },
-});
+import {  th} from "../share/config";
+
 class Dashboard extends Component {
     constructor(props) {
         super(props)
@@ -327,7 +323,7 @@ class Dashboard extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link to="/bills">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={3} ><Link style={{ color: '#3f51b5' }} to="/bills">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -356,7 +352,7 @@ class Dashboard extends Component {
                                                 </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link to="/customers">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={3} ><Link style={{ color: '#3f51b5' }} to="/customers">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -368,10 +364,10 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/customers"><SupervisorAccountIcon style={{ fontSize: '50px', backgroundColor: '#2196f3', color: 'white' }} /></Link>
+                                        <Link to="/customers"><SupervisorAccountIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        Customer
+                                        Customers
                             </Typography>
                                 </Paper>
                             </Grid>
@@ -379,7 +375,7 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/accountbanks"><AccountBalanceIcon style={{ fontSize: '50px', backgroundColor: '#2196f3', color: 'white' }} /></Link>
+                                        <Link to="/accountbanks"><AccountBalanceIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
                                         Account Bank
@@ -390,7 +386,7 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/bills"><ReceiptIcon style={{ fontSize: '50px', backgroundColor: '#2196f3', color: 'white' }} /></Link>
+                                        <Link to="/bills"><ReceiptIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
                                         Bills
@@ -401,7 +397,7 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/profile"><AccountBoxIcon style={{ fontSize: '50px', backgroundColor: '#2196f3', color: 'white' }} /></Link>
+                                        <Link to="/profile"><AccountBoxIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
                                         My Account
