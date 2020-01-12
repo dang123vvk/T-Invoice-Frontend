@@ -63,16 +63,16 @@ class Header extends Component {
             <ListItemText style={{ color: '#263238'}} primary='Dashboard' />
           </ListItem>
         </Link>
-        <Link to='/customers' style={{ textDecoration: 'none' }}>
-          <ListItem button >
-            <ListItemIcon><SupervisorAccountIcon style={{ color: '#546e7a'}} /></ListItemIcon>
-            <ListItemText style={{ color: '#263238'}} primary='Customers' />
-          </ListItem>
-        </Link>
         <Link to='/accountbanks' style={{ textDecoration: 'none' }}>
           <ListItem button >
             <ListItemIcon><AccountBalanceIcon style={{ color: '#546e7a'}} /></ListItemIcon>
             <ListItemText style={{ color: '#263238'}} primary='Account Bank' />
+          </ListItem>
+        </Link>
+        <Link to='/customers' style={{ textDecoration: 'none' }}>
+          <ListItem button >
+            <ListItemIcon><SupervisorAccountIcon style={{ color: '#546e7a'}} /></ListItemIcon>
+            <ListItemText style={{ color: '#263238'}} primary='Customers' />
           </ListItem>
         </Link>
         <Link to='/bills' style={{ textDecoration: 'none' }}>
@@ -89,7 +89,7 @@ class Header extends Component {
         </Link>
         <Link to='/settings' style={{ textDecoration: 'none' }}>
           <ListItem button >
-            <ListItemIcon> <SettingsIcon style={{ color: '#546e7a'}} /></ListItemIcon>
+            <ListItemIcon><SettingsIcon style={{ color: '#546e7a'}} /></ListItemIcon>
             <ListItemText style={{ color: '#263238'}} primary='Settings' />
           </ListItem>
         </Link>

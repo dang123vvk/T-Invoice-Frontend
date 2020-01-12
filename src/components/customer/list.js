@@ -13,10 +13,20 @@ import AddIcon from '@material-ui/icons/Add';
 import './style.css';
 import { getCustomerUserCurrent, getCustomerSearch } from '../share/services/customer.service';
 import { Link } from "react-router-dom";
+import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
+import {
+    ExcelExport,
+    ExcelExportColumn,
+    ExcelExportColumnGroup
+} from '@progress/kendo-react-excel-export';
 // import _ from 'lodash';
 
 
 class ListCustomer extends React.Component {
+    _exporter;
+    export = () => {
+        this._exporter.save();
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -38,7 +48,6 @@ class ListCustomer extends React.Component {
     }
     componentDidMount() {
         getCustomerUserCurrent(this.props.user_username,this.props.token).then(data => {
-            // console.log(data.customers)
             this.setState({
                 data: data.customers
             })
@@ -96,6 +105,9 @@ class ListCustomer extends React.Component {
         window.location.reload();
     }
     render() {
+        this.state.data.map((key,index)=>{
+            key.in = index +1;
+        });
         const { redirect, redirectAddAccountBank } = this.state;
         if (redirect) {
             return <Redirect to={'/accountbank/' + this.state.account_bank_id} />;
@@ -132,6 +144,11 @@ class ListCustomer extends React.Component {
                                         <Tooltip title="Reload">
                                             <IconButton className="btn-without-border" onClick={this.reload}>
                                                 <RefreshIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Export To Excel">
+                                            <IconButton className="btn-without-border" onClick={this.export}>
+                                                <DescriptionSharpIcon color="inherit" />
                                             </IconButton>
                                         </Tooltip>
                                     </Grid>
@@ -210,6 +227,35 @@ class ListCustomer extends React.Component {
                             </TableFooter>
                         </Table>
                     </div>
+                    <ExcelExport
+                        data={this.state.data}
+                        fileName="customers.xlsx"
+                        ref={(exporter) => { this._exporter = exporter; }}
+                    >
+                        <ExcelExportColumnGroup title="List Bill" headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
+                            <ExcelExportColumn title="#" field="in" width={100} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Name" field="customer_name" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Email" field="customer_email" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Phone Number" field="customer_number_phone" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Address" field="customer_address" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Company" field="customer_details_company" width={250} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                            <ExcelExportColumn title="Project" field="customer_details_project" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                        </ExcelExportColumnGroup>
+                    </ExcelExport>
                 </Container>
             )
         }

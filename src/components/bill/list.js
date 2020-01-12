@@ -70,7 +70,6 @@ class ListBill extends React.Component {
         })
     }
     handleSubmitExportExcel(event,data) {
-        console.log(JSON.stringify(data.length));
         event.preventDefault();
         this._exporter.save();
     }
@@ -132,7 +131,7 @@ class ListBill extends React.Component {
                                                 <RefreshIcon color="inherit" />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip title="Export Excel">
+                                        <Tooltip title="Export To Excel">
                                             <IconButton className="btn-without-border" onClick={this.export}>
                                                 <DescriptionSharpIcon color="inherit" />
                                             </IconButton>
