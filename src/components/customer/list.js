@@ -115,7 +115,7 @@ class ListCustomer extends React.Component {
         if (redirectAddAccountBank) {
             return <Redirect to={'/accountbank'} />;
         }
-        if ((this.props.role) || (localStorage.getItem('user_information'))) {
+        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
             return (
                 <Container component="main" maxWidth="lg">
                     <CssBaseline />
@@ -197,11 +197,6 @@ class ListCustomer extends React.Component {
                                                     </Fab>
                                                 </Tooltip>
                                                 </Link>
-                                                <Tooltip title="Customer Template" aria-label="add">
-                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%'}}>
-                                                       <BuildIcon style={{ display: 'block' }} />
-                                                    </Fab>
-                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -18,8 +18,14 @@ export function getAllUser(role,token){
 export function getUserFromAdmin(user_id,role,token){
     return axios.get(API_URL + 'users/role/'+user_id,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
 }
+export function getUserFromAdminSearch(text_search,role,token){
+    return axios.get(API_URL + 'users/role/search/'+text_search,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
+}
 export function postUserFromAdmin(user_id,user,role,token){
     return axios.post(API_URL + 'users/role/'+user_id,user,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
+}
+export function postAddUserFromAdmin(user,role,token){
+    return axios.post(API_URL + 'users/roles/add',user,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
 }
 //function update information current user
 export function postInformationCurrent(user_username,user, token){

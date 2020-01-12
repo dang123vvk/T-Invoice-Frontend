@@ -24,6 +24,7 @@ import DetailCustomer from './components/customer/detail';
 import AddAccountBank from './components/accountbank/Add';
 import EditAccountBank from './components/accountbank/Edit';
 import EditUser from './components/user/Edit';
+import AddUser from './components/user/Add';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -37,6 +38,7 @@ const routing = (
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/admin" component={AdminDashboard} />
         <Route exact path="/admin/users/edit/:id" component={EditUser} />
+        <Route exact path="/admin/users/add" component={AddUser} />
         <Route exact path="/bills" component={ListBill} />
         <Route exact path="/bills/search/customer/:customer_id?/(status)?/:status_id?/(date_from)?/:date_from?/(date_to)?/:date_to?" component={ResultBill} />
         <Route exact path="/bills/status/notsent" component={ResultBillNotSent} />

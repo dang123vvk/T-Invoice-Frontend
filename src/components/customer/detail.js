@@ -17,14 +17,9 @@ import NotFound from '../views/NotFound';
 import { Link } from "react-router-dom";
 import Icon from '@material-ui/core/Icon';
 import { getCustomerEdit } from '../share/services/customer.service';
+import { th } from "../share/config";
 
-const th = createMuiTheme({
-    palette: {
-        primary: { main: blue[500] }, // Purple and green play nicely together.
-        secondary: { main: '#2196f3' },
-        // This is just green.A700 as hex.
-    },
-});
+
 class DetailCustomer extends Component {
     constructor(props) {
         super(props);
@@ -106,26 +101,26 @@ class DetailCustomer extends Component {
     render() {
         const redirect = this.state.redirect;
         if (redirect) {
-            return <Redirect to='/customer-list' />;
+            return <Redirect to='/customers' />;
         }
-        if ((this.props.role) || (localStorage.getItem('user_information'))) {
+        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
             return (
                 <ThemeProvider theme={th}>
                     <Container component="main" >
                         <CssBaseline />
                         <div style={{ marginTop: '20px', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
                             <Paper elevation={0}   >
-                                <Breadcrumbs aria-label="Breadcrumb" separator="›">
-                                    <Link color="inherit" to="/" >
+                                <Breadcrumbs aria-label="Breadcrumb" separator="/">
+                                    <Link style={{ color: '#3f51b5' }} to="/" >
                                         Home
                                     </Link>
-                                    <Link to="/customers" >
+                                    <Link style={{ color: '#3f51b5' }} to="/customers" >
                                         Customers
                                     </Link>
                                     <Typography color="textPrimary">Detail</Typography>
                                 </Breadcrumbs>
                             </Paper>
-                            <Avatar style={{ marginTop: '10px', backgroundColor: '#2196f3', }} >
+                            <Avatar style={{ marginTop: '10px', backgroundColor: '#3f51b5', }} >
                                 <LockOutlinedIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5" style={{ marginTop: '10px', marginBottom: '30px' }}>
@@ -246,7 +241,7 @@ class DetailCustomer extends Component {
                                             ))}
                                             <TableRow >
                                                 <TableCell align="right" colSpan={5}>
-                                                    <Link to={"/customers/edit/" + this.props.match.params.id}> Edit</Link>
+                                                    <Link  style={{ color: '#3f51b5' }} to={"/customers/edit/" + this.props.match.params.id}> Edit</Link>
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>
@@ -306,7 +301,7 @@ class DetailCustomer extends Component {
                                             type="button"
                                             fullWidth
                                             variant="contained"
-                                            color="secondary"
+                                            color="primary"
                                             disabled={this.state.disable}
                                         >
                                             Edit

@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
 import BuildIcon from '@material-ui/icons/BuildOutlined';
 import AddIcon from '@material-ui/icons/Add';
-import { getAllUser } from '../share/services/user.service';
+import { getAllUser, getUserFromAdminSearch } from '../share/services/user.service';
 import { Link } from "react-router-dom";
 import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
 import {
@@ -79,11 +79,25 @@ class AdminDashboard extends React.Component {
         })
     }
     handleChangeSearch(event){  
-        // getCustomerSearch(event.target.value,this.props.user_username,this.props.token).then(data=> {
-        //     this.setState({
-        //         data: data.customers
-        //     })     
-        // })
+        event.preventDefault();
+        if(event.target.value === '')
+        {
+            getAllUser(this.props.role,this.props.token).then(data => {
+                this.setState({
+                    data: data.users
+                })
+                
+             });
+            
+        }else {
+            getUserFromAdminSearch(event.target.value,this.props.role,this.props.token).then(data=> {
+                this.setState({
+                    data: data.users
+                })     
+            })
+        }
+      
+    
     }
 
     openEdit(e, account_bank_id) {
@@ -123,7 +137,7 @@ class AdminDashboard extends React.Component {
                                     <Grid item xs>
                                         <TextField
                                             fullWidth
-                                            placeholder="Search by name, email, phone number or address"
+                                            placeholder="Search by full name, user name or email"
                                             InputProps={{
                                                 disableUnderline: true
                                             }}

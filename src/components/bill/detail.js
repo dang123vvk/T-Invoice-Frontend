@@ -27,17 +27,12 @@ import { aggregateBy } from '@progress/kendo-data-query';
 import { Tooltip, Paper, Breadcrumbs } from '@material-ui/core';
 import { getCustomerUserCurrent } from '../share/services/customer.service';
 import { getBill } from '../share/services/bill.service';
+import { th } from "../share/config";
 
 
 const aggregates = [{ field: 'bill_item_cost', aggregate: 'SUM' }];
 const total = (props) => (aggregateBy(props.data, aggregates));
 const URL_EDIT = "/bills/edit/";
-const th = createMuiTheme({
-    palette: {
-        primary: { main: blue[500] },
-        secondary: { main: '#2196f3' },
-    },
-});
 
 const CustomFooter = (props) =>
     (`Total `);
@@ -200,7 +195,7 @@ class DetailBill extends Component {
         if (redirect) {
             return <Redirect to='/bill-list' />;
         }
-        if ((this.props.role) || (localStorage.getItem('user_information'))) {
+        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
             return (
                 <div >
                     <div className="example-config">
@@ -221,16 +216,16 @@ class DetailBill extends Component {
                                     <Grid item xs={12} >
                                     </Grid>
                                     <Grid item xs={12} sm={6} align="right">
-                                        <Tooltip title="Export bill to PDF">
-                                            <Button variant="contained" color="secondary" onClick={() => this.pdfExportComponent.save()}>
+                                        <Tooltip title="Export Bill to PDF">
+                                            <Button variant="contained" color="primary" onClick={() => this.pdfExportComponent.save()}>
                                                 <PrintIcon />
                                                 PDF
                                          </Button>
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={12} sm={6} >
-                                        <Tooltip title="Edit bill">
-                                            <Link to={URL_EDIT + this.props.match.params.id}><Button variant="contained" color="secondary" >
+                                        <Tooltip title="Edit Bill">
+                                            <Link to={URL_EDIT + this.props.match.params.id}><Button variant="contained" color="primary" >
                                                 <EditIcon />
                                                 Edit
                                         </Button>

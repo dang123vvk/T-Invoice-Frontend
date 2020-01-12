@@ -13,7 +13,7 @@ import { loginAction } from '../reducers/action'
 import { Grid } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import {postUserFromAdmin, getUserFromAdmin } from "../share/services/user.service";
+import { postUserFromAdmin, getUserFromAdmin } from "../share/services/user.service";
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +26,8 @@ class EditUser extends Component {
       user_confirm_password: '',
       redirect: false,
       error: false,
-      disabled: true
+      disabled: true,
+      message: ''
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -41,19 +42,25 @@ class EditUser extends Component {
         user_username: data.user.user_username,
         user_email: data.user.user_email
       });
-      
-      
+
     })
   }
   save(event) {
     event.preventDefault();
-    const user = { user_fullname: this.state.user_fullname, 
-                    user_email: this.state.user_email,
-                    user_oldpassword: this.state.user_oldpassword,
-                    user_password: this.state.user_password};
-    if((this.state.user_oldpassword.length >0 ) && (this.state.error=== false)){
-      postUserFromAdmin(this.props.match.params.id,user,this.props.role, this.props.token).then(data => {
-        if(data.status){
+    const user = {
+      user_fullname: this.state.user_fullname,
+      user_email: this.state.user_email,
+      user_oldpassword: this.state.user_oldpassword,
+      user_password: this.state.user_password
+    };
+    if(this.state.user_confirm_password !== this.state.user_password){
+      this.setState({
+        message: 'Please enter confirm new password'
+      })
+    }
+    else {
+      postUserFromAdmin(this.props.match.params.id, user, this.props.role, this.props.token).then(data => {
+        if (data.status) {
           this.setState({
             message: data.message
           })
@@ -63,34 +70,35 @@ class EditUser extends Component {
             message: data.message
           })
         }
-        
+  
       });
     }
-    else {
-      this.setState({
-        message: 'Please enter the old password'
-      })
-    }
+   
   }
   onChange(e) {
     e.preventDefault();
-    this.setState({  [e.target.name]: e.target.value,
-    disabled: false });
+    this.setState({
+      [e.target.name]: e.target.value,
+      disabled: false
+    });
   }
   confirmPassword(e) {
     e.preventDefault();
     this.setState({
-        [e.target.name]: e.target.value
+      [e.target.name]: e.target.value
     });
     if (e.target.value === this.state.user_password) {
       this.setState({
         message: '',
-        error: false
+        error: false,
+        disabled: false
+        
       })
     }
     else {
       this.setState({
-       error: true
+        error: true,
+        disabled: true
       })
     }
   }
@@ -105,13 +113,13 @@ class EditUser extends Component {
     if (redirect) {
       return <Redirect to='/admin' />;
     }
-    if ((this.props.role) || (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div style={{ marginTop: '2%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-              <Avatar style={{ backgroundColor: '#2196f3', margin: 1 }}>
+              <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
@@ -120,7 +128,7 @@ class EditUser extends Component {
               <Typography style={{ color: 'red' }}>
                 {this.state.message}
               </Typography>
-              <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editUser(event)}>
+              <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.save(event)}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <TextField
@@ -210,7 +218,6 @@ class EditUser extends Component {
                       variant="contained"
                       color="primary"
                       style={{ marginTop: '2%' }}
-                      onClick={this.save}
                       disabled={this.state.disabled}
                     >
                       Save
@@ -237,7 +244,7 @@ const mapStateToProps = (state) => {
   };
 }
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+  login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
 });
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditUser);
+export default connect(mapStateToProps, mapDispatchToProps)(EditUser);

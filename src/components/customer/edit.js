@@ -169,7 +169,6 @@ class EditCustomer extends Component {
         };
       });
       addPOCustomer(this.props.match.params.id,PoSave,this.props.token).then(data => {
-        console.log(data);
       });
     }
     else {
@@ -194,8 +193,6 @@ class EditCustomer extends Component {
         data: data,
       });
       updatePOCustomer(this.state.po_number_id,PoSave,this.props.token).then(data => {
-        console.log(data);
-        
       })
     }
 
@@ -212,7 +209,7 @@ class EditCustomer extends Component {
     if (redirect) {
       return <Redirect to='/customers' />;
     }
-    if ((this.props.role) || (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" >
@@ -220,17 +217,17 @@ class EditCustomer extends Component {
 
             <div style={{ marginTop: '20px', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
               <Paper elevation={0}   >
-                <Breadcrumbs aria-label="Breadcrumb" separator="›">
-                  <Link color="inherit" to="/" >
+                <Breadcrumbs aria-label="Breadcrumb" separator="/">
+                  <Link style={{ color: '#3f51b5' }} to="/" >
                     Home
           </Link>
-                  <Link to="/customers" >
+                  <Link style={{ color: '#3f51b5' }} to="/customers" >
                     Customers
           </Link>
                   <Typography color="textPrimary">Add customer</Typography>
                 </Breadcrumbs>
               </Paper>
-              <Avatar style={{ marginTop: '1%', backgroundColor: '#2196f3', }} >
+              <Avatar style={{ marginTop: '1%',backgroundColor: '#3f51b5', }} >
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5" style={{ marginTop: '1%', marginBottom: '3%' }}>

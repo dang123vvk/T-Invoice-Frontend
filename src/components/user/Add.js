@@ -13,80 +13,82 @@ import { loginAction } from '../reducers/action'
 import { Grid } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import {postInformationCurrent } from "../share/services/user.service";
-class Profile extends Component {
+import { postAddUserFromAdmin } from "../share/services/user.service";
+class AddUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_fullname: JSON.parse(localStorage.getItem("user_information")).user_fullname,
-      user_username: JSON.parse(localStorage.getItem("user_information")).user_username,
+      user_fullname: '',
+      user_username: '',
       user_oldpassword: '',
       user_password: '',
+      user_email: '',
       user_confirm_password: '',
       redirect: false,
       error: false,
-      disabled: true
+      disabled: true,
+      message: ''
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
-    document.title = 'Edit Profile';
-  }
-  componentDidMount() {
+    document.title = 'Add User';
   }
   save(event) {
     event.preventDefault();
-    const user = { user_fullname: this.state.user_fullname, 
-                    user_oldpassword: this.state.user_oldpassword,
-                    user_password: this.state.user_password};
-    if((this.state.user_oldpassword.length >0 ) && (this.state.error=== false)){
-      postInformationCurrent(this.state.user_username,user, this.props.token).then(data => {
-        if(data.status){
+    const user = {
+      user_fullname: this.state.user_fullname,
+      user_username: this.state.user_username,
+      user_email: this.state.user_email,
+      user_password: this.state.user_password
+    };
+    if(this.state.user_confirm_password !== this.state.user_password){
+      this.setState({
+        message: 'Please enter confirm  password'
+      })
+    }
+    else {
+      postAddUserFromAdmin( user, this.props.role, this.props.token).then(data => {
+        if (data.status) {
           this.setState({
             message: data.message
           })
-          var user_information = {};
-          user_information.user_fullname = this.state.user_fullname;
-          user_information.user_username = JSON.parse(localStorage.getItem("user_information")).user_username;
-          user_information.token = JSON.parse(localStorage.getItem("user_information")).token;
-          user_information.role = JSON.parse(localStorage.getItem("user_information")).role;
-          localStorage.setItem('user_information', JSON.stringify(user_information));
-          this.props.login(this.state.user_fullname,user_information.user_username,user_information.token, user_information.role)
         }
         else {
           this.setState({
             message: data.message
           })
         }
-        
+  
       });
     }
-    else {
-      this.setState({
-        message: 'Please enter the old password'
-      })
-    }
+   
   }
   onChange(e) {
     e.preventDefault();
-    this.setState({  [e.target.name]: e.target.value,
-    disabled: false });
+    this.setState({
+      [e.target.name]: e.target.value,
+      disabled: false
+    });
   }
   confirmPassword(e) {
     e.preventDefault();
     this.setState({
-        [e.target.name]: e.target.value
+      [e.target.name]: e.target.value
     });
     if (e.target.value === this.state.user_password) {
       this.setState({
         message: '',
-        error: false
+        error: false,
+        disabled: false
+        
       })
     }
     else {
       this.setState({
-       error: true
+        error: true,
+        disabled: true
       })
     }
   }
@@ -99,9 +101,9 @@ class Profile extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/' />;
+      return <Redirect to='/admin' />;
     }
-    if ((this.props.role) || (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" maxWidth="xs">
@@ -111,12 +113,12 @@ class Profile extends Component {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Edit Profile
+                Add User
               </Typography>
               <Typography style={{ color: 'red' }}>
                 {this.state.message}
               </Typography>
-              <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editUser(event)}>
+              <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.save(event)}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <TextField
@@ -128,7 +130,7 @@ class Profile extends Component {
                       label="User Full Name"
                       name="user_fullname"
                       type="text"
-                      defaultValue={this.state.user_fullname}
+                      value={this.state.user_fullname}
                       onChange={this.onChange}
                       size='small'
                     />
@@ -142,9 +144,10 @@ class Profile extends Component {
                       label="User Name"
                       name="user_username"
                       type="text"
-                      defaultValue={this.state.user_username}
-                      disabled
+                      value={this.state.user_username}
+                      required
                       size='small'
+                      onChange={this.onChange}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -152,10 +155,25 @@ class Profile extends Component {
                       variant="outlined"
                       margin="normal"
                       fullWidth
-                      name="user_oldpassword"
-                      label="Current Password"
+                      id="user_email"
+                      label="Email"
+                      name="user_email"
+                      type="email"
+                      value={this.state.user_email}
+                      size='small'
+                      required
+                      onChange={this.onChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      name="user_password"
+                      label="Password"
                       type="password"
-                      id="user_oldpassword"
+                      id="user_password"
                       onChange={this.onChange}
                       size='small'
                       required
@@ -166,25 +184,13 @@ class Profile extends Component {
                       variant="outlined"
                       margin="normal"
                       fullWidth
-                      name="user_password"
-                      label="New Password"
-                      type="password"
-                      id="user_password"
-                      onChange={this.onChange}
-                      size='small'
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      margin="normal"
-                      fullWidth
                       name="user_confirm_password"
-                      label="Confirm New Password"
+                      label="Confirm Password"
                       type="password"
                       onChange={this.confirmPassword}
                       error={this.state.error}
                       size='small'
+                      required
                     />
                   </Grid>
                   <Grid item xs={2}></Grid>
@@ -207,7 +213,6 @@ class Profile extends Component {
                       variant="contained"
                       color="primary"
                       style={{ marginTop: '2%' }}
-                      onClick={this.save}
                       disabled={this.state.disabled}
                     >
                       Save
@@ -234,7 +239,7 @@ const mapStateToProps = (state) => {
   };
 }
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+  login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
 });
 
-export default connect(mapStateToProps,mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(AddUser);

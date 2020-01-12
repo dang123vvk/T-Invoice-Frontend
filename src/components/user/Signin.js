@@ -9,20 +9,14 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action';
 import { signIn } from '../share/services/user.service';
+import { th } from "../share/config";
 
-const th = createMuiTheme({
-  palette: {
-    primary: { main: blue[500] }, // Purple and green play nicely together.
-    secondary: { main: '#2196f3' }, // This is just green.A700 as hex.
-  },
-});
+
 class Signin extends Component {
   constructor(props) {
     super(props);
@@ -102,7 +96,7 @@ class Signin extends Component {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div style={{ marginTop: '6%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-            <Avatar style={{ backgroundColor: '#2196f3', margin: 1 }}>
+            <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -143,7 +137,7 @@ class Signin extends Component {
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="secondary"
+                color="primary"
                 style={{ margin: '3,0,2' }}
               >
                 Sign In
