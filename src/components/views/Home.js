@@ -10,6 +10,7 @@ import logotma from '../share/img/logotma.png';
 import { connect } from 'react-redux';
 import { th } from "../share/config";
 import Dashboard from './Dashboard';
+import AdminDashboard from '../auth/admin';
 
 class HomePage extends Component {
     constructor(props) {
@@ -18,9 +19,15 @@ class HomePage extends Component {
         document.title = 'TMA Invoice Tracking Tool';
     }
     render() {
-        if ((this.props.role) || (localStorage.getItem('user_information'))) {
+        
+        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
             return (
          <Dashboard />
+            )
+        }
+        if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
+            return (
+         <AdminDashboard />
             )
         }
         return (
@@ -63,7 +70,7 @@ class HomePage extends Component {
 const mapStateToProps = state => {
     return {
       user_fullname: state.loginReducer.user_fullname,
-      isLogin: state.loginReducer.role
+      role: state.loginReducer.role
     };
   };
 export default  connect(mapStateToProps) (HomePage);

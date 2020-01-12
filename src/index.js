@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route,   Switch} from "react-router-dom";
 import HomePage from './components/views/Home';
 import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
+import AdminDashboard from './components/auth/admin';
 import Header from './components/views/Header';
 import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
@@ -22,6 +23,7 @@ import EditCustomer from './components/customer/edit';
 import DetailCustomer from './components/customer/detail';
 import AddAccountBank from './components/accountbank/Add';
 import EditAccountBank from './components/accountbank/Edit';
+import EditUser from './components/user/Edit';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -33,6 +35,8 @@ const routing = (
         <Route exact path="/accountbanks" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
+        <Route exact path="/admin" component={AdminDashboard} />
+        <Route exact path="/admin/users/edit/:id" component={EditUser} />
         <Route exact path="/bills" component={ListBill} />
         <Route exact path="/bills/search/customer/:customer_id?/(status)?/:status_id?/(date_from)?/:date_from?/(date_to)?/:date_to?" component={ResultBill} />
         <Route exact path="/bills/status/notsent" component={ResultBillNotSent} />

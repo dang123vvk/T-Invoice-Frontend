@@ -32,7 +32,8 @@ class Signin extends Component {
       redirect: false,
       tokenVN: '',
       isLoading: false,
-      message: ''
+      message: '',
+      link: '/'
     }
     this.signin = this.signin.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -43,18 +44,34 @@ class Signin extends Component {
     const user = { user_username: this.state.username, user_password: this.state.user_password };
     signIn(user).then(data => {
       if (data.status === true) {
-        this.setState({redirect: true});
-        var user_information = {};
-        user_information.user_fullname = data.user_fullname;
-        user_information.user_username = data.user_username;
-        user_information.token = data.token;
-        user_information.role = data.role;
-        localStorage.setItem('user_information', JSON.stringify(user_information));
-        localStorage.setItem('user_id',data.user_id);
-        this.props.login(data.user_fullname,data.user_username, data.token,data.role);
+        if (data.role === 'Admin') {
+          var user_information = {};
+          user_information.user_fullname = data.user_fullname;
+          user_information.user_username = data.user_username;
+          user_information.token = data.token;
+          user_information.role = data.role;
+          localStorage.setItem('user_information', JSON.stringify(user_information));
+          localStorage.setItem('user_id', data.user_id);
+          this.props.login(data.user_fullname, data.user_username, data.token, data.role);
+          window.location.replace('/admin')
+        }
+        else {
+          var user_information = {};
+          user_information.user_fullname = data.user_fullname;
+          user_information.user_username = data.user_username;
+          user_information.token = data.token;
+          user_information.role = data.role;
+          localStorage.setItem('user_information', JSON.stringify(user_information));
+          localStorage.setItem('user_id', data.user_id);
+          this.props.login(data.user_fullname, data.user_username, data.token, data.role);
+          this.setState({
+            redirect: true,
+            link: '/'
+          });
+        }
       }
       else {
-        this.setState({message: data.message})
+        this.setState({ message: data.message })
       }
     });
   }
@@ -66,7 +83,7 @@ class Signin extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/' />;
+      return <Redirect to={this.state.link} />;
     }
     if ((this.props.isLogin) || (localStorage.getItem('user_name'))) {
       return (
@@ -150,6 +167,6 @@ const mapStateToProps = (state) => {
   };
 }
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+  login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Signin);

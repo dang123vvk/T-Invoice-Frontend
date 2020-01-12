@@ -109,7 +109,7 @@ class Header extends Component {
     if (redirect) {
       return <Redirect to='/' />;
     }
-    if (localStorage.getItem('user_information') || (this.props.isLogin.length > 0)) {
+    if (localStorage.getItem('user_information') && (this.props.role === 'Director')) {
       return (
         <div style={{ flexGrow: 1 }}>
           <ThemeProvider theme={th}>
@@ -142,6 +142,23 @@ class Header extends Component {
         </div>
       );
     }
+    if(this.props.role === 'Admin'){
+      return (
+        <div style={{ flexGrow: 1 }}>
+          <ThemeProvider theme={th}>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1, color: 'white' }}>
+                  <Link to='/' style={{ color: 'white', textDecoration: 'none' }}>T-Invoice</Link>
+                </Typography>
+                <Link to='/profile' style={{ color: 'white', textDecoration: 'none' }}><Button color="inherit">{this.props.user_fullname}</Button></Link>
+                <Logout />
+              </Toolbar>
+            </AppBar>
+          </ThemeProvider>
+        </div>
+      );
+    }
     else {
       return (
         <div style={{ flexGrow: 1 }}>
@@ -163,7 +180,7 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     user_fullname: state.loginReducer.user_fullname,
-    isLogin: state.loginReducer.role
+    role: state.loginReducer.role
   };
 };
 const mapDispatchToProps = (dispatch) => ({
