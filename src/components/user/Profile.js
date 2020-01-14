@@ -13,19 +13,22 @@ import { loginAction } from '../reducers/action'
 import { Grid } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import {postInformationCurrent } from "../share/services/user.service";
+import {postInformationCurrent, getInformationCurrent } from "../share/services/user.service";
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_fullname: JSON.parse(localStorage.getItem("user_information")).user_fullname,
-      user_username: JSON.parse(localStorage.getItem("user_information")).user_username,
+      user_fullname: '',
+      user_username: '',
       user_oldpassword: '',
       user_password: '',
       user_confirm_password: '',
+      user_group: '',
       redirect: false,
       error: false,
-      disabled: true
+      disabled: true,
+      user_email: '',
+      message: ''
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -33,7 +36,16 @@ class Profile extends Component {
     this.cancel = this.cancel.bind(this);
     document.title = 'Edit Profile';
   }
-  componentDidMount() {
+  UNSAFE_componentWillMount(){
+    getInformationCurrent(this.props.user_username,this.props.token).then(data => {
+        this.setState({
+          user_fullname: data.user.user_fullname,
+          user_username: data.user.user_username,
+          user_email: data.user.user_email,
+          user_group: data.user.groups_user_name
+        })
+        
+    })
   }
   save(event) {
     event.preventDefault();
@@ -52,7 +64,7 @@ class Profile extends Component {
           user_information.token = JSON.parse(localStorage.getItem("user_information")).token;
           user_information.role = JSON.parse(localStorage.getItem("user_information")).role;
           localStorage.setItem('user_information', JSON.stringify(user_information));
-          this.props.login(this.state.user_fullname,user_information.user_username,user_information.token, user_information.role)
+          this.props.login(this.state.user_fullname,user_information.user_username,user_information.token, user_information.role, this.props.group)
         }
         else {
           this.setState({
@@ -64,7 +76,7 @@ class Profile extends Component {
     }
     else {
       this.setState({
-        message: 'Please enter the old password'
+        message: 'Please enter the password'
       })
     }
   }
@@ -128,7 +140,7 @@ class Profile extends Component {
                       label="User Full Name"
                       name="user_fullname"
                       type="text"
-                      defaultValue={this.state.user_fullname}
+                      value={this.state.user_fullname}
                       onChange={this.onChange}
                       size='small'
                     />
@@ -138,15 +150,43 @@ class Profile extends Component {
                       variant="outlined"
                       margin="normal"
                       fullWidth
-                      id="user_name"
+                      id="user_username"
                       label="User Name"
                       name="user_username"
                       type="text"
-                      defaultValue={this.state.user_username}
+                      value={this.state.user_username}
                       disabled
                       size='small'
                     />
                   </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="user_email"
+                      label="Email"
+                      name="user_email"
+                      type="email"
+                      value={this.state.user_email}
+                      disabled
+                      size='small'
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="user_group"
+                      label="Group"
+                      name="user_group"
+                      type="text"
+                      value={this.state.user_group}
+                      disabled
+                      size='small'
+                    />
+                  </Grid>    
                   <Grid item xs={12}>
                     <TextField
                       variant="outlined"
@@ -229,12 +269,14 @@ class Profile extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
+    user_username: state.loginReducer.user_username,
     role: state.loginReducer.role,
-    token: state.loginReducer.token
+    token: state.loginReducer.token,
+    group: state.loginReducer.group
   };
 }
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+  login: (user_fullname,user_username,token, role, group) => dispatch(loginAction(user_fullname,user_username, token,role, group))
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(Profile);

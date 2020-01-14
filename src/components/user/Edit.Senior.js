@@ -10,12 +10,11 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
-import { Grid, FormControl, Select, MenuItem, InputLabel } from '@material-ui/core';
+import { Grid, MenuItem } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import { postAddUserFromAdmin } from "../share/services/user.service";
-import { getGroupFromAdmin, getRoleFromAdmin } from "../share/services/group.service";
-class AddUser extends Component {
+import {  getDirectorFromSenior, postDirectorFromSenior } from "../share/services/user.service";
+class EditDirector extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,52 +28,49 @@ class AddUser extends Component {
       error: false,
       disabled: true,
       message: '',
-      groups_user_id: 1,
-      groups: [],
       roles: [],
-      role_id: 1
+      groups: [],
+      role_id: 1,
+      groups_user_id: 1,
+      group: 1,
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
-    document.title = 'Add User';
+    document.title = 'Edit Director';
     this.handleChangeGroup = this.handleChangeGroup.bind(this);
     this.handleChangeRole = this.handleChangeRole.bind(this);
   }
-  UNSAFE_componentWillMount(){
-    getGroupFromAdmin(this.props.role, this.props.token).then(data =>{
+  UNSAFE_componentWillMount() {
+    getDirectorFromSenior(this.props.match.params.id, this.props.role, this.props.token).then(data => {
       this.setState({
-        groups: data.groups,
-        groups_user_id: Number(data.groups[0].groups_user_id)
-      })
-  
-    })
-    getRoleFromAdmin(this.props.role, this.props.token).then(data =>{
-      this.setState({
-        roles: data.roles,
-        role_id: data.roles[0].role_id
-      })
-  
+        user_fullname: data.user.user_fullname,
+        user_username: data.user.user_username,
+        user_email: data.user.user_email,
+        groups_user_id:data.user.groups_user_id,
+        role_id:data.user.role_id,
+        group: data.user.groups_user_name,
+      });
     })
   }
   save(event) {
     event.preventDefault();
     const user = {
       user_fullname: this.state.user_fullname,
-      user_username: this.state.user_username,
       user_email: this.state.user_email,
+      user_oldpassword: this.state.user_oldpassword,
       user_password: this.state.user_password,
       groups_user_id: this.state.groups_user_id,
       role_id: this.state.role_id
     };
-    if (this.state.user_confirm_password !== this.state.user_password) {
+    if(this.state.user_confirm_password !== this.state.user_password){
       this.setState({
-        message: 'Please enter confirm  password'
+        message: 'Please enter confirm new password'
       })
     }
     else {
-      postAddUserFromAdmin(user, this.props.role, this.props.token).then(data => {
+      postDirectorFromSenior(this.props.match.params.id, user, this.props.role, this.props.token).then(data => {
         if (data.status) {
           this.setState({
             message: data.message
@@ -85,10 +81,9 @@ class AddUser extends Component {
             message: data.message
           })
         }
-
+  
       });
-    }
-
+    } 
   }
   onChange(e) {
     e.preventDefault();
@@ -107,7 +102,7 @@ class AddUser extends Component {
         message: '',
         error: false,
         disabled: false
-
+        
       })
     }
     else {
@@ -126,22 +121,24 @@ class AddUser extends Component {
   handleChangeGroup(event) {
     var value = event.target.value;
     this.setState({
-      groups_user_id: value
+      groups_user_id: value,
+      disabled: false
     });
   }
   handleChangeRole(event) {
     var value = event.target.value;
     this.setState({
-      role_id: value
+      role_id: value,
+      disabled: false
     });
 
   }
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/admin' />;
+      return <Redirect to='/senior/directors' />;
     }
-    if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" maxWidth="xs">
@@ -151,7 +148,7 @@ class AddUser extends Component {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Add User
+                Edit User
               </Typography>
               <Typography style={{ color: 'red' }}>
                 {this.state.message}
@@ -164,7 +161,7 @@ class AddUser extends Component {
                       margin="normal"
                       required
                       fullWidth
-                      id="user_fullname"
+                      id="user_name"
                       label="User Full Name"
                       name="user_fullname"
                       type="text"
@@ -183,9 +180,8 @@ class AddUser extends Component {
                       name="user_username"
                       type="text"
                       value={this.state.user_username}
-                      required
+                      disabled
                       size='small'
-                      onChange={this.onChange}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -199,35 +195,21 @@ class AddUser extends Component {
                       type="email"
                       value={this.state.user_email}
                       size='small'
-                      required
-                      onChange={this.onChange}
                     />
                   </Grid>
                   <Grid item xs={12}>
-                  <FormControl fullWidth >
-                      <InputLabel htmlFor="name-disabled">Role</InputLabel>
-                      <Select value={this.state.role_id}
-                        onChange={event => this.handleChangeRole(event)}>
-                        {this.state.roles.map(role => (
-                          <MenuItem key={role.role_id} value={role.role_id} >
-                            {role.role_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                  <FormControl fullWidth >
-                      <InputLabel htmlFor="name-disabled">Group</InputLabel>
-                      <Select value={this.state.groups_user_id}
-                        onChange={event => this.handleChangeGroup(event)}>
-                        {this.state.groups.map(group => (
-                          <MenuItem key={group.groups_user_id} value={group.groups_user_id} >
-                            {group.groups_user_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="groups_user_id"
+                      label="Group"
+                      name="groups_user_id"
+                      type="text"
+                      value={this.state.group}
+                      size='small'
+                      disabled
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
@@ -235,12 +217,11 @@ class AddUser extends Component {
                       margin="normal"
                       fullWidth
                       name="user_password"
-                      label="Password"
+                      label="New Password"
                       type="password"
                       id="user_password"
                       onChange={this.onChange}
                       size='small'
-                      required
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -249,12 +230,11 @@ class AddUser extends Component {
                       margin="normal"
                       fullWidth
                       name="user_confirm_password"
-                      label="Confirm Password"
+                      label="Confirm New Password"
                       type="password"
                       onChange={this.confirmPassword}
                       error={this.state.error}
                       size='small'
-                      required
                     />
                   </Grid>
                   <Grid item xs={2}></Grid>
@@ -298,12 +278,14 @@ class AddUser extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
+    user_username: state.loginReducer.user_username,
     role: state.loginReducer.role,
-    token: state.loginReducer.token
+    token: state.loginReducer.token,
+    grpup: state.loginReducer.group
   };
 }
 const mapDispatchToProps = (dispatch) => ({
   login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser);
+export default connect(mapStateToProps, mapDispatchToProps)(EditDirector);

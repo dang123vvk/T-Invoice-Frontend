@@ -101,7 +101,7 @@ class ResultBill extends React.Component {
             key.in = index +1;
             key.month= month(key.bill_monthly_cost.slice(5,7)) + " " + key.bill_monthly_cost.slice(0,4);
         });
-        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
+        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
             return (
                 <Container component="main">
                     <CssBaseline />

@@ -195,7 +195,7 @@ class DetailBill extends Component {
         if (redirect) {
             return <Redirect to='/bill-list' />;
         }
-        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
+        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
             return (
                 <div >
                     <div className="example-config">

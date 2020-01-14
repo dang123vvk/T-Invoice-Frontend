@@ -8,6 +8,8 @@ import HomePage from './components/views/Home';
 import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
 import AdminDashboard from './components/auth/admin';
+import SeniorDashboard from './components/views/Senior';
+import SeniorUser from './components/user/List.Senior';
 import Header from './components/views/Header';
 import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
@@ -18,6 +20,7 @@ import AddBill from './components/bill/add';
 import EditBill from './components/bill/edit';
 import AddBillCustomer from './components/bill/add.customer';
 import ListCustomer from './components/customer/list';
+import ListCustomerSenior from './components/customer/customer.senior';
 import AddCustomer from './components/customer/add';
 import EditCustomer from './components/customer/edit';
 import DetailCustomer from './components/customer/detail';
@@ -25,6 +28,8 @@ import AddAccountBank from './components/accountbank/Add';
 import EditAccountBank from './components/accountbank/Edit';
 import EditUser from './components/user/Edit';
 import AddUser from './components/user/Add';
+import AddDirector from './components/user/Add.Senior';
+import EditDirector from './components/user/Edit.Senior';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -50,6 +55,11 @@ const routing = (
         <Route exact path="/customers/add" component={AddCustomer} />
         <Route exact path="/customers/edit/:id" component={EditCustomer} />
         <Route exact path="/customers/detail/:id" component={DetailCustomer} />
+        <Route exact path="/senior" component={SeniorDashboard} />
+        <Route exact path="/senior/customers" component={ListCustomerSenior} />
+        <Route exact path="/senior/directors" component={SeniorUser} />
+        <Route exact path="/senior/directors/add" component={AddDirector} />
+        <Route exact path="/senior/directors/edit/:id" component={EditDirector} />
         <Route exact path="/signin" component={Signin} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/" component={HomePage} />

@@ -13,9 +13,8 @@ import { loginAction } from '../reducers/action'
 import { Grid, FormControl, Select, MenuItem, InputLabel } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import { postAddUserFromAdmin } from "../share/services/user.service";
-import { getGroupFromAdmin, getRoleFromAdmin } from "../share/services/group.service";
-class AddUser extends Component {
+import { postAddUserFromAdmin,getInformationCurrent, postAddUserFromSenior } from "../share/services/user.service";
+class AddDirector extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,34 +28,25 @@ class AddUser extends Component {
       error: false,
       disabled: true,
       message: '',
-      groups_user_id: 1,
-      groups: [],
-      roles: [],
-      role_id: 1
+      groups_user_id: this.props.group,
+      role_id: 1,
+      group: ''
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
-    document.title = 'Add User';
+    document.title = 'Add Director';
     this.handleChangeGroup = this.handleChangeGroup.bind(this);
     this.handleChangeRole = this.handleChangeRole.bind(this);
   }
   UNSAFE_componentWillMount(){
-    getGroupFromAdmin(this.props.role, this.props.token).then(data =>{
-      this.setState({
-        groups: data.groups,
-        groups_user_id: Number(data.groups[0].groups_user_id)
-      })
-  
-    })
-    getRoleFromAdmin(this.props.role, this.props.token).then(data =>{
-      this.setState({
-        roles: data.roles,
-        role_id: data.roles[0].role_id
-      })
-  
-    })
+   getInformationCurrent(this.props.user_username, this.props.token).then(data => {
+   
+     this.setState({
+       group: data.user.groups_user_name
+     })
+   })
   }
   save(event) {
     event.preventDefault();
@@ -74,7 +64,7 @@ class AddUser extends Component {
       })
     }
     else {
-      postAddUserFromAdmin(user, this.props.role, this.props.token).then(data => {
+      postAddUserFromSenior(user, this.props.role, this.props.token).then(data => {
         if (data.status) {
           this.setState({
             message: data.message
@@ -139,9 +129,9 @@ class AddUser extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/admin' />;
+      return <Redirect to='/senior/directors' />;
     }
-    if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" maxWidth="xs">
@@ -151,7 +141,7 @@ class AddUser extends Component {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Add User
+                Add Director
               </Typography>
               <Typography style={{ color: 'red' }}>
                 {this.state.message}
@@ -165,7 +155,7 @@ class AddUser extends Component {
                       required
                       fullWidth
                       id="user_fullname"
-                      label="User Full Name"
+                      label="Director Full Name"
                       name="user_fullname"
                       type="text"
                       value={this.state.user_fullname}
@@ -179,7 +169,7 @@ class AddUser extends Component {
                       margin="normal"
                       fullWidth
                       id="user_name"
-                      label="User Name"
+                      label="Director Name"
                       name="user_username"
                       type="text"
                       value={this.state.user_username}
@@ -204,30 +194,18 @@ class AddUser extends Component {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                  <FormControl fullWidth >
-                      <InputLabel htmlFor="name-disabled">Role</InputLabel>
-                      <Select value={this.state.role_id}
-                        onChange={event => this.handleChangeRole(event)}>
-                        {this.state.roles.map(role => (
-                          <MenuItem key={role.role_id} value={role.role_id} >
-                            {role.role_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                  <FormControl fullWidth >
-                      <InputLabel htmlFor="name-disabled">Group</InputLabel>
-                      <Select value={this.state.groups_user_id}
-                        onChange={event => this.handleChangeGroup(event)}>
-                        {this.state.groups.map(group => (
-                          <MenuItem key={group.groups_user_id} value={group.groups_user_id} >
-                            {group.groups_user_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="groups_user_id"
+                      label="Group"
+                      name="groups_user_id"
+                      type="text"
+                      value={this.state.group}
+                      size='small'
+                      disabled
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
@@ -298,12 +276,14 @@ class AddUser extends Component {
 const mapStateToProps = (state) => {
   return {
     user_fullname: state.loginReducer.user_fullname,
+    user_username: state.loginReducer.user_username,
     role: state.loginReducer.role,
-    token: state.loginReducer.token
+    token: state.loginReducer.token,
+    group: state.loginReducer.group
   };
 }
 const mapDispatchToProps = (dispatch) => ({
   login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser);
+export default connect(mapStateToProps, mapDispatchToProps)(AddDirector);

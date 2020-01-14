@@ -37,7 +37,7 @@ class Header extends Component {
     }
     if (localStorage.getItem('user_information')) {
       var user_information = JSON.parse(localStorage.getItem("user_information"));
-      this.props.login(user_information.user_fullname, user_information.user_username, user_information.token, user_information.role);
+      this.props.login(user_information.user_fullname, user_information.user_username, user_information.token, user_information.role, user_information.group);
     }
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
@@ -109,7 +109,7 @@ class Header extends Component {
     if (redirect) {
       return <Redirect to='/' />;
     }
-    if (localStorage.getItem('user_information') && (this.props.role === 'Director')) {
+    if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
       return (
         <div style={{ flexGrow: 1 }}>
           <ThemeProvider theme={th}>
@@ -184,6 +184,6 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
+  login: (user_fullname, user_username, token, role, group) => dispatch(loginAction(user_fullname, user_username, token, role, group))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

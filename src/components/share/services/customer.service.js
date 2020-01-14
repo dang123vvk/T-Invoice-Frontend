@@ -5,6 +5,9 @@ import { API_URL } from "../config";
 export function getCustomerUserCurrent(user_username,token){
     return axios.get(API_URL + 'customers/'+user_username,{ headers: { Authorization: token } } ).then(res => res.data);
 }
+export function getCustomerFromSenior(group,role,token){
+    return axios.get(API_URL + 'customers/role/senior/'+group,{ headers: { Authorization: token, role: role } } ).then(res => res.data);
+}
 export function getCustomer(user_username,token){
     return axios.get(API_URL + 'customers/'+user_username,{ headers: { Authorization: token } } ).then(res => res.data);
 }

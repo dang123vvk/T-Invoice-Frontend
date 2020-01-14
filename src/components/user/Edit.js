@@ -10,10 +10,11 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
-import { Grid } from '@material-ui/core';
+import { Grid, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
 import { postUserFromAdmin, getUserFromAdmin } from "../share/services/user.service";
+import { getGroupFromAdmin, getRoleFromAdmin } from '../share/services/group.service';
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -27,22 +28,41 @@ class EditUser extends Component {
       redirect: false,
       error: false,
       disabled: true,
-      message: ''
+      message: '',
+      roles: [],
+      groups: [],
+      role_id: 1,
+      groups_user_id: 1,
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
     document.title = 'Edit User';
+    this.handleChangeGroup = this.handleChangeGroup.bind(this);
+    this.handleChangeRole = this.handleChangeRole.bind(this);
   }
   UNSAFE_componentWillMount() {
     getUserFromAdmin(this.props.match.params.id, this.props.role, this.props.token).then(data => {
       this.setState({
         user_fullname: data.user.user_fullname,
         user_username: data.user.user_username,
-        user_email: data.user.user_email
+        user_email: data.user.user_email,
+        groups_user_id:data.user.groups_user_id,
+        role_id:data.user.role_id
       });
-
+    })
+    getGroupFromAdmin(this.props.role, this.props.token).then(data =>{
+      this.setState({
+        groups: data.groups
+      })
+  
+    })
+    getRoleFromAdmin(this.props.role, this.props.token).then(data =>{
+      this.setState({
+        roles: data.roles
+      })
+  
     })
   }
   save(event) {
@@ -51,7 +71,9 @@ class EditUser extends Component {
       user_fullname: this.state.user_fullname,
       user_email: this.state.user_email,
       user_oldpassword: this.state.user_oldpassword,
-      user_password: this.state.user_password
+      user_password: this.state.user_password,
+      groups_user_id: this.state.groups_user_id,
+      role_id: this.state.role_id
     };
     if(this.state.user_confirm_password !== this.state.user_password){
       this.setState({
@@ -72,8 +94,7 @@ class EditUser extends Component {
         }
   
       });
-    }
-   
+    } 
   }
   onChange(e) {
     e.preventDefault();
@@ -107,6 +128,21 @@ class EditUser extends Component {
     this.setState({
       redirect: true
     })
+  }
+  handleChangeGroup(event) {
+    var value = event.target.value;
+    this.setState({
+      groups_user_id: value,
+      disabled: false
+    });
+  }
+  handleChangeRole(event) {
+    var value = event.target.value;
+    this.setState({
+      role_id: value,
+      disabled: false
+    });
+
   }
   render() {
     const redirect = this.state.redirect;
@@ -171,6 +207,32 @@ class EditUser extends Component {
                       value={this.state.user_email}
                       size='small'
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                  <FormControl fullWidth >
+                      <InputLabel htmlFor="name-disabled">Role</InputLabel>
+                      <Select value={this.state.role_id}
+                        onChange={event => this.handleChangeRole(event)}>
+                        {this.state.roles.map(role => (
+                          <MenuItem key={role.role_id} value={role.role_id} >
+                            {role.role_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                  <FormControl fullWidth >
+                      <InputLabel htmlFor="name-disabled">Group</InputLabel>
+                      <Select value={this.state.groups_user_id}
+                        onChange={event => this.handleChangeGroup(event)}>
+                        {this.state.groups.map(group => (
+                          <MenuItem key={group.groups_user_id} value={group.groups_user_id} >
+                            {group.groups_user_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12}>
                     <TextField

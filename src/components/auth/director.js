@@ -45,6 +45,7 @@ class DirectorDashboard extends Component {
             date_to: '',
             redirect: false,
             customer_name: '',
+            isSenior: false,
         };
         this.classes = this.useStyles;
         this.handleChange = this.handleChange.bind(this);
@@ -79,7 +80,12 @@ class DirectorDashboard extends Component {
         })
         getCustomerLimit().then(data => {
             this.setState({ dataCustomer: data.customers });
-        })
+        });
+        if(this.props.role === 'Sr.Director'){
+            this.setState({
+                isSenior: true
+            })
+        }
     }
     onChange(e) {
         this.setState({
@@ -364,10 +370,11 @@ class DirectorDashboard extends Component {
                                         <Link to="/profile"><AccountBoxIcon style={{ fontSize: '50px', backgroundColor: '#2196f3', color: 'white' }} /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        My Account
+                                        My Account1
                             </Typography>
                                 </Paper>
                             </Grid>
+                            
                         </Grid>
                     </div>
                 </Container>

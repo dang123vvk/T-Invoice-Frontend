@@ -166,7 +166,7 @@ class ListAccountBank extends React.Component {
         if (redirectAddAccountBank) {
             return <Redirect to={'/accountbank'} />;
         }
-        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
+        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
             return (
                 <Container component="main" maxWidth="lg">
                     <CssBaseline />

@@ -67,7 +67,7 @@ class AddAccountBank extends Component {
     if (redirect) {
       return <Redirect to='/accountbanks' />;
     }
-    if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
+    if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
       return (
         <ThemeProvider theme={th} >
           <Container component="main" maxWidth="xs">

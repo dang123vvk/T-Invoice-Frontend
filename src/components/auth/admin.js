@@ -171,6 +171,8 @@ class AdminDashboard extends React.Component {
                                     <TableCell align='center'>Full Name</TableCell>
                                     <TableCell align="center" >User Name</TableCell>
                                     <TableCell align="center" >Email</TableCell>
+                                    <TableCell align="center" >Role</TableCell>
+                                    <TableCell align="center" >Group</TableCell>
                                     <TableCell align="center" >Date Added</TableCell>
                                     <TableCell align='center'></TableCell>
                                 </TableRow>
@@ -182,6 +184,8 @@ class AdminDashboard extends React.Component {
                                             <TableCell align='center'>{row.user_fullname}</TableCell>
                                             <TableCell align='center' >{row.user_username}</TableCell>
                                             <TableCell align='center' >{row.user_email}</TableCell>
+                                            <TableCell align='center' >{row.role_name}</TableCell>
+                                            <TableCell align='center' >{row.groups_user_name}</TableCell>
                                             <TableCell align='center' >{row.user_dateAdd}</TableCell>
                                             <TableCell align="center">
                                             <Link to={'/admin/users/edit/'+row.user_id } style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
@@ -232,6 +236,12 @@ class AdminDashboard extends React.Component {
                                 textAlign: 'center'
                             }} />
                             <ExcelExportColumn title="Email" field="user_email" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                              <ExcelExportColumn title="Role" field="role_name" width={200} cellOptions={{
+                                textAlign: 'center'
+                            }} />
+                              <ExcelExportColumn title="Group" field="groups_user_name" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
                             <ExcelExportColumn title="Date Added" field="user_dateAdd" width={200} cellOptions={{

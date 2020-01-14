@@ -22,8 +22,11 @@ import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit, getBillU
 import { getCustomerLength, getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
 import {  th} from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import { getDashboardSenior } from "../share/services/group.service";
+import NotFound from "../views/NotFound";
 
-class Dashboard extends Component {
+class SeniorDashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -43,6 +46,9 @@ class Dashboard extends Component {
             customer_id: 1,
             dataCustomersSearch: [],
             isSenior: false,
+            directorNumber: 0,
+            dataDirector: []
+
         };
         this.classes = this.useStyles;
         this.handleChange = this.handleChange.bind(this);
@@ -51,6 +57,7 @@ class Dashboard extends Component {
         this.search = this.search.bind(this);
         this.selectCustomer = this.selectCustomer.bind(this);
         this.onChangeSearchCustomer = this.onChangeSearchCustomer.bind(this);
+        document.title = 'Dashboard Senior';
     }
     componentDidMount() {
         var date = new Date().getDate();
@@ -62,29 +69,19 @@ class Dashboard extends Component {
             date_from: year + '-' + month1 + '-' + date,
             date_to: year + '-' + month1 + '-' + date,
         });
-        getBillLength(this.props.token).then(data => {
-            this.setState({ billNumber: data.length });
+        getDashboardSenior(this.props.group, this.props.role, this.props.token).then(data => {
+            console.log(data);
+            
+            this.setState({ 
+                directorNumber: data.directorNumber,
+                customerNumber: data.customerNumber,
+                billNumber: data.billNumber,
+                total: data.total,
+                dataBill: data.dataBill,
+                dataCustomer: data.dataCustomer,
+                dataDirector: data.dataDirector,
+             })  
         })
-        getBillSum(this.props.token).then(data => {
-            this.setState({ total: data.total });
-        })
-        getCustomerLength(this.props.token).then(data => {
-            this.setState({ customerNumber: data.length });
-        })
-        getBillNotSendLength(this.props.token).then(data => {
-            this.setState({ billNotSent: data.length });
-        })
-        getBillLimit(this.props.token).then(data => {
-            this.setState({ dataBill: data.bill });
-        })
-        getCustomerLimit(this.props.token).then(data => {
-            this.setState({ dataCustomer: data.customers });
-        })
-        if(this.props.role === 'Sr.Director'){
-            this.setState({
-                isSenior: true
-            })
-        }
     }
     onChange(e) {
         this.setState({
@@ -160,6 +157,7 @@ class Dashboard extends Component {
         if (redirect) {
             return <Redirect to={'bills/search/customer/'+ this.state.customer_id+ '/status/' + this.state.status_bill_id + '/date_from/'+this.state.date_from+ '/date_to/'+ this.state.date_to}/>;
           }
+          if ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information'))) {
         return (
             <ThemeProvider theme={th}>
                 <Container component="main" maxWidth="md">
@@ -169,40 +167,40 @@ class Dashboard extends Component {
                             <Grid item xs >
                                 <Paper style={{ height: '80px', textAlign: 'center' }} >
                                     <br />
-                                   Bills
+                                    Directors
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bills" style={{ color: 'black', textDecoration: 'none' }}> {this.state.billNumber}</Link>
+                                        <Link to="/senior/directors" style={{ color: 'black', textDecoration: 'none' }}> {this.state.directorNumber}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs >
                                 <Paper style={{ height: '80px', textAlign: 'center' }} >
                                     <br />
-                                    Total Bills
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        $ {this.state.total}
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }}>
-                                    <br />
                                     Customers
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/customers" style={{ color: 'black', textDecoration: 'none' }}>{this.state.customerNumber}</Link>
+                                    <Link to="/senior/director" style={{ color: 'black', textDecoration: 'none' }}> {this.state.customerNumber}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs >
                                 <Paper style={{ height: '80px', textAlign: 'center' }}>
                                     <br />
-                                    Not Sent
+                                    Bills
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bills/status/notsent" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNotSent}</Link>
+                                        <Link to="/senior/bills" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNumber}</Link>
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs >
+                                <Paper style={{ height: '80px', textAlign: 'center' }}>
+                                    <br />
+                                    Total of Bills
+                            <br />
+                                    <Typography variant="h5" className={this.classes.title} align="center">
+                                    ${this.state.total}
                                     </Typography>
                                 </Paper>
                             </Grid>
@@ -310,27 +308,30 @@ class Dashboard extends Component {
                             <Grid item xs >
                                 <Paper style={{ height: 'auto', textAlign: 'center' }}>
                                     <br />
-                                    Current Activity
-                            <Table>
+                                    Recent Bills
+                                    <Table>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell align="center" >Customer</TableCell>
-                                                <TableCell align="center" >Total</TableCell>
-                                                <TableCell align="center" >Status</TableCell>
+                                                <TableCell align="left" >Date</TableCell>
+                                                <TableCell align="left" >Customer</TableCell>
+                                                <TableCell align="left" >Director</TableCell>
+                                                <TableCell align="left" >Total</TableCell>
+                                                <TableCell align="left" >Status</TableCell>
 
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {this.state.dataBill.map((row, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell align="right" >{row.customer_name}</TableCell>
-                                                    <TableCell align="right"> {row.bills_sum}</TableCell>
-                                                    <TableCell align="center" >{row.status_bill_name}</TableCell>
-
-                                                </TableRow>
+                                        {this.state.dataBill.map((row, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell align="left" >{row.bill_date}</TableCell>
+                                                <TableCell align="left"> {row.customer_name}</TableCell>
+                                                <TableCell align="left" >{row.user_fullname}</TableCell>
+                                                <TableCell align="left"> {row.bills_sum}</TableCell>
+                                                <TableCell align="left" >{row.status_bill_name}</TableCell>
+                                            </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link style={{ color: '#3f51b5' }} to="/bills">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={5} ><Link style={{ color: '#3f51b5' }} to="/senior/bills">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -343,23 +344,25 @@ class Dashboard extends Component {
                                     <Table>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell align="center" >Name</TableCell>
-                                                <TableCell align="center" >Company</TableCell>
-                                                <TableCell align="center" >Address</TableCell>
+                                                <TableCell align="left" >Name</TableCell>
+                                                <TableCell align="left" >Company</TableCell>
+                                                <TableCell align="left" >Country</TableCell>
+                                                <TableCell align="left" >Director</TableCell>
 
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {this.state.dataCustomer.map((row, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell align="right" >{row.customer_name}</TableCell>
-                                                    <TableCell align="right"> {row.customer_details_company}</TableCell>
-                                                    <TableCell align="center" >{row.customer_address}</TableCell>
+                                        {this.state.dataCustomer.map((row, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell align="left" >{row.customer_name}</TableCell>
+                                                <TableCell align="left"> {row.customer_details_company}</TableCell>
+                                                <TableCell align="left" >{row.customer_details_country}</TableCell>
+                                                <TableCell align="left" >{row.user_fullname}</TableCell>
 
-                                                </TableRow>
+                                            </TableRow>
                                             ))}
                                             <TableRow>
-                                                <TableCell align="right" colSpan={3} ><Link style={{ color: '#3f51b5' }} to="/customers">View all </Link></TableCell>
+                                                <TableCell align="right" colSpan={4} ><Link  style={{ color: '#3f51b5' }} to="/senior/customers">View all </Link></TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -371,10 +374,10 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/customers"><SupervisorAccountIcon style={{ fontSize: '50px' }} color='primary' /></Link>
+                                        <Link to="/"><DashboardIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        Customers
+                                        Dashboard
                             </Typography>
                                 </Paper>
                             </Grid>
@@ -382,10 +385,10 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/accountbanks"><AccountBalanceIcon style={{ fontSize: '50px' }} color='primary' /></Link>
+                                        <Link to="/senior/directors"><GroupWorkIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        Account Bank
+                                        Directors
                         </Typography>
                                 </Paper>
                             </Grid>
@@ -393,10 +396,10 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/bills"><ReceiptIcon style={{ fontSize: '50px' }} color='primary' /></Link>
+                                        <Link to="/senior/customers"><SupervisorAccountIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        Bills
+                                        Customers
                              </Typography>
                                 </Paper>
                             </Grid>
@@ -404,10 +407,10 @@ class Dashboard extends Component {
                                 <Paper style={{ height: '100px', textAlign: 'center' }}>
                                     <br />
                                     <Typography align="center">
-                                        <Link to="/senior"><GroupWorkIcon style={{ fontSize: '50px' }} color='primary' /></Link>
+                                        <Link to="/senior/bills"><ReceiptIcon style={{ fontSize: '50px' }} color='primary' /></Link>
                                     </Typography>
                                     <Typography variant="caption" className={this.classes.title} align="center">
-                                        Manage Group
+                                       Bills
                             </Typography>
                                 </Paper>
                             </Grid>
@@ -428,13 +431,17 @@ class Dashboard extends Component {
             </ThemeProvider>
         );
     }
+    return( <NotFound />)
+ 
+}
 }
 const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
         user_username: state.loginReducer.user_username,
         role: state.loginReducer.role,
-        token: state.loginReducer.token
+        token: state.loginReducer.token,
+        group: state.loginReducer.group
     };
 }
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(SeniorDashboard);

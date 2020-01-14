@@ -12,7 +12,7 @@ class Logout extends Component
   logout(){
       localStorage.removeItem('user_information');
       localStorage.removeItem('user_id');
-      this.props.login('','','','');
+      this.props.login('','','','', '');
   }
 render()
 {
@@ -30,6 +30,6 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = (dispatch) => ({
-    login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+    login: (user_fullname,user_username,token, role, group) => dispatch(loginAction(user_fullname,user_username, token,role, group))
    });
 export default connect(mapStateToProps, mapDispatchToProps) (Logout) ;

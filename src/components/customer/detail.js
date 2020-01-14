@@ -103,8 +103,7 @@ class DetailCustomer extends Component {
         if (redirect) {
             return <Redirect to='/customers' />;
         }
-        if ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) {
-            return (
+        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){            return (
                 <ThemeProvider theme={th}>
                     <Container component="main" >
                         <CssBaseline />

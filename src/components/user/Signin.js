@@ -44,9 +44,10 @@ class Signin extends Component {
           user_information.user_username = data.user_username;
           user_information.token = data.token;
           user_information.role = data.role;
+          user_information.group = data.group;
           localStorage.setItem('user_information', JSON.stringify(user_information));
           localStorage.setItem('user_id', data.user_id);
-          this.props.login(data.user_fullname, data.user_username, data.token, data.role);
+          this.props.login(data.user_fullname, data.user_username, data.token, data.role, data.group);
           window.location.replace('/admin')
         }
         else {
@@ -55,9 +56,10 @@ class Signin extends Component {
           user_information.user_username = data.user_username;
           user_information.token = data.token;
           user_information.role = data.role;
+          user_information.group = data.group;
           localStorage.setItem('user_information', JSON.stringify(user_information));
           localStorage.setItem('user_id', data.user_id);
-          this.props.login(data.user_fullname, data.user_username, data.token, data.role);
+          this.props.login(data.user_fullname, data.user_username, data.token, data.role, data.group);
           this.setState({
             redirect: true,
             link: '/'
@@ -161,6 +163,6 @@ const mapStateToProps = (state) => {
   };
 }
 const mapDispatchToProps = (dispatch) => ({
-  login: (user_fullname, user_username, token, role) => dispatch(loginAction(user_fullname, user_username, token, role))
+  login: (user_fullname, user_username, token, role, group) => dispatch(loginAction(user_fullname, user_username, token, role, group))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Signin);

@@ -1,25 +1,28 @@
-import React from 'react';
-import {  Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, TablePagination, TableFooter, AppBar, Toolbar, Grid, Button, TextField } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { Redirect } from 'react-router'
+import React from 'react'
+import { Container, CssBaseline, Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, TablePagination, TableFooter, AppBar, Toolbar, Grid, Button, TextField } from '@material-ui/core';
 import { connect } from "react-redux";
+import { Redirect } from 'react-router'
 import NotFound from '../views/NotFound';
-import { Link } from "react-router-dom";
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import GetAppIcon from '@material-ui/icons/GetAppSharp';
+import IconButton from '@material-ui/core/IconButton';
+import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
+import BuildIcon from '@material-ui/icons/BuildOutlined';
+import AddIcon from '@material-ui/icons/Add';
+import { getAllUserGroup, getUserFromAdminSearch, getUserFromSeniorSearch } from '../share/services/user.service';
+import { Link } from "react-router-dom";
 import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
 import {
     ExcelExport,
     ExcelExportColumn,
     ExcelExportColumnGroup
 } from '@progress/kendo-react-excel-export';
-import {month} from '../share/month';
-import { getBillUserCurrent, getBillUserCurrentSearch } from '../share/services/bill.service';
-class ListBill extends React.Component {
+import { loginAction } from '../reducers/action';
+// import _ from 'lodash';
+
+
+class SeniorUser extends React.Component {
     _exporter;
     export = () => {
         this._exporter.save();
@@ -28,55 +31,40 @@ class ListBill extends React.Component {
         super(props);
         this.state = {
             data: [],
+            account_bank_id: null,
             redirect: false,
-            bill_id: null,
-            redirectAdd: false,
-            reactDetail: false,
+            redirectAddAccountBank: false,
             page: 0,
             rowsPerPage: 5,
-        };
-        document.title = 'Bills';
-        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        }
         this.handleChangePage = this.handleChangePage.bind(this);
-        this.handleChangeSearch = this.handleChangeSearch.bind(this);  
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        document.title = 'Directors';
+        this.openEdit = this.openEdit.bind(this);
+        this.closeEdit = this.closeEdit.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
     }
     componentDidMount() {
-        getBillUserCurrent(this.props.user_username,this.props.token).then(data => {
-            this.setState({
-                data: data.bill
-            })
-        })
- 
+        getAllUserGroup(this.props.group,this.props.role,this.props.token).then(data => {
+           this.setState({
+               data: data.users
+           })
+           
+        });
     }
-    handleSubmit(event, bill_id) {
+    handleSubmit(event, account_bank_id) {
         event.preventDefault();
         this.setState({
             redirect: true,
-            bill_id: bill_id,
-        })
-    }
-    handleSubmitExport(event, bill_id) {
-        event.preventDefault();
-        this.setState({
-            reactDetail: true,
-            bill_id: bill_id,
+            account_bank_id: account_bank_id,
         })
     }
     handleSubmitAdd(event) {
         event.preventDefault();
         this.setState({
-            redirectAdd: true,
-        })
-    }
-    handleSubmitExportExcel(event,data) {
-        event.preventDefault();
-        this._exporter.save();
-    }
-    handleChangeRowsPerPage(event) {
-        this.setState({
-            rowsPerPage: +event.target.value,
-            page: 0
+            redirectAddAccountBank: true,
         })
     }
     handleChangePage(event, newPage) {
@@ -84,12 +72,48 @@ class ListBill extends React.Component {
             page: newPage,
         })
     }
-    handleChangeSearch(event){  
-        getBillUserCurrentSearch(event.target.value,this.props.user_username,this.props.token).then(data=> {
-            this.setState({
-                data: data.bill
-            })     
+    handleChangeRowsPerPage(event) {
+        this.setState({
+            rowsPerPage: +event.target.value,
+            page: 0
         })
+    }
+    handleChangeSearch(event){  
+        event.preventDefault();
+        if(event.target.value === '')
+        {
+            getAllUserGroup(this.props.group,this.props.role,this.props.token).then(data => {
+                this.setState({
+                    data: data.users
+                })
+                
+             });
+            
+        }else {
+            getUserFromSeniorSearch(this.props.group,event.target.value,this.props.role,this.props.token).then(data=> {
+                this.setState({
+                    data: data.users
+                })     
+            })
+        }
+      
+    
+    }
+
+    openEdit(e, account_bank_id) {
+        e.preventDefault();
+        
+    }
+    closeEdit(e) {
+        e.preventDefault();
+        this.setState({
+            edit: false
+        })
+    }
+    onChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value,
+        });
     }
     reload(e){
         e.preventDefault();
@@ -98,11 +122,10 @@ class ListBill extends React.Component {
     render() {
         this.state.data.map((key,index)=>{
             key.in = index +1;
-            key.month= month(key.bill_monthly_cost.slice(5,7)) + " " + key.bill_monthly_cost.slice(0,4);
         });
-        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
+        if ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information'))) {
             return (
-                <Container component="main">
+                <Container component="main" maxWidth="lg">
                     <CssBaseline />
                     <div style={{ marginTop: '1%' }}  >
                         <AppBar position="static" color="default" elevation={0}>
@@ -114,7 +137,7 @@ class ListBill extends React.Component {
                                     <Grid item xs>
                                         <TextField
                                             fullWidth
-                                            placeholder="Search by customer, status, date"
+                                            placeholder="Search by full name, user name or email"
                                             InputProps={{
                                                 disableUnderline: true
                                             }}
@@ -122,8 +145,8 @@ class ListBill extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Link to='/bills/add' style={{ color: 'white', textDecoration: 'none' }}><Button variant="contained" color="primary" className="btn-without-border" >
-                                            Add Bill
+                                        <Link to='/senior/directors/add' style={{ color: 'white', textDecoration: 'none' }}><Button variant="contained" color="primary" className="btn-without-border" >
+                                            Add Director
                                     </Button>
                                         </Link>
                                         <Tooltip title="Reload">
@@ -142,39 +165,31 @@ class ListBill extends React.Component {
                         </AppBar>
                     </div>
                     <div style={{ marginTop: '2%' }}>
-                    <Table style={{ width: '100%' }}>
+                        <Table style={{ width: '100%' }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align='center'>Month</TableCell>
-                                    <TableCell align="center" >Customer</TableCell>
-                                    <TableCell align="center">Status</TableCell>
-                                    <TableCell align="center">Sum</TableCell>
-                                    <TableCell align="center">Date</TableCell>
+                                    <TableCell align='center'>Full Name</TableCell>
+                                    <TableCell align="center" >User Name</TableCell>
+                                    <TableCell align="center" >Email</TableCell>
+                                   
+                                    <TableCell align="center" >Date Added</TableCell>
                                     <TableCell align='center'></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {(this.state.rowsPerPage > 0 ? this.state.data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage) : this.state.data).map(row => {
                                     return (
-                                        <TableRow hover role="checkbox" key={row.bills_sum} tabIndex={-1} >
-                                            <TableCell align='center'>{row.month}</TableCell>
-                                            <TableCell align='center' >{row.customer_name}</TableCell>
-                                            <TableCell align='center' >{row.status_bill_name}</TableCell>
-                                            <TableCell align='center' >{row.bills_sum}</TableCell>
-                                            <TableCell align='center' >{row.bill_date}</TableCell>
+                                        <TableRow hover role="checkbox" key={row.user_fullname} tabIndex={-1} >
+                                            <TableCell align='center'>{row.user_fullname}</TableCell>
+                                            <TableCell align='center' >{row.user_username}</TableCell>
+                                            <TableCell align='center' >{row.user_email}</TableCell>
+                                            <TableCell align='center' >{row.user_dateAdd}</TableCell>
                                             <TableCell align="center">
-                                            <Link to={'/bills/edit/'+ row.bill_id} style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
+                                            <Link to={'/senior/directors/edit/'+row.user_id } style={{ color: 'white', textDecoration: 'none' }}><Tooltip title="Edit" aria-label="add">
                                                  <Fab size="small" color="primary"  className="btn-without-border">
                                                        <EditIcon style={{ display: 'block' }} />
                                                     </Fab>
                                                     
-                                                </Tooltip>
-                                                </Link>
-                                                <Link to={'/bills/export/'+ row.bill_id} style={{ color: 'white', textDecoration: 'none' }}>
-                                                <Tooltip title="Export" aria-label="add">
-                                                 <Fab size="small"   className="btn-without-border" style={{ marginLeft: '5%', backgroundColor:'white'}}>
-                                                       <GetAppIcon style={{ display: 'block', color: '#65819D' }} />
-                                                    </Fab>
                                                 </Tooltip>
                                                 </Link>
                                             </TableCell>
@@ -204,35 +219,35 @@ class ListBill extends React.Component {
                     </div>
                     <ExcelExport
                         data={this.state.data}
-                        fileName="bills.xlsx"
+                        fileName="directors.xlsx"
                         ref={(exporter) => { this._exporter = exporter; }}
                     >
-                        <ExcelExportColumnGroup title="List Bill" headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
+                        <ExcelExportColumnGroup title="Users" headerCellOptions={{ background: '#2196f3', textAlign: 'center' }}>
                             <ExcelExportColumn title="#" field="in" width={100} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="Month" field="month" width={200} cellOptions={{
+                            <ExcelExportColumn title="Full Name" field="user_fullname" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="Customer" field="customer_name" width={200} cellOptions={{
+                            <ExcelExportColumn title="User Name" field="user_username" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="Status" field="status_bill_name" width={200} cellOptions={{
+                            <ExcelExportColumn title="Email" field="user_email" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="Sum" field="bills_sum" width={200} cellOptions={{
+                              <ExcelExportColumn title="Role" field="role_name" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="People Enter The Bill" field="user_fullname" width={250} cellOptions={{
+                              <ExcelExportColumn title="Group" field="groups_user_name" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
-                            <ExcelExportColumn title="Date" field="bill_date" width={200} cellOptions={{
+                            <ExcelExportColumn title="Date Added" field="user_dateAdd" width={200} cellOptions={{
                                 textAlign: 'center'
                             }} />
                         </ExcelExportColumnGroup>
                     </ExcelExport>
                 </Container>
-            );
+            )
         }
         return (
             <NotFound />
@@ -244,7 +259,12 @@ const mapStateToProps = (state) => {
         user_fullname: state.loginReducer.user_fullname,
         user_username: state.loginReducer.user_username,
         role: state.loginReducer.role,
-        token: state.loginReducer.token
+        token: state.loginReducer.token,
+        group: state.loginReducer.group
     };
 }
-export default connect(mapStateToProps)(ListBill);
+const mapDispatchToProps = (dispatch) => ({
+    login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
+  });
+  
+export default connect(mapStateToProps,mapDispatchToProps)(SeniorUser);
