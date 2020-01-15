@@ -22,7 +22,7 @@ import { loginAction } from '../reducers/action';
 // import _ from 'lodash';
 
 
-class AdminDashboard extends React.Component {
+class AdminDashboardUser extends React.Component {
     _exporter;
     export = () => {
         this._exporter.save();
@@ -269,4 +269,4 @@ const mapDispatchToProps = (dispatch) => ({
     login: (user_fullname,user_username,token, role) => dispatch(loginAction(user_fullname,user_username, token,role))
   });
   
-export default connect(mapStateToProps,mapDispatchToProps)(AdminDashboard);
+export default connect(mapStateToProps,mapDispatchToProps)(AdminDashboardUser);

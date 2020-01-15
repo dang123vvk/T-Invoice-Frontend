@@ -11,7 +11,7 @@ import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
 import BuildIcon from '@material-ui/icons/BuildOutlined';
 import AddIcon from '@material-ui/icons/Add';
 import './style.css';
-import {  getCustomerSearch, getCustomerFromSenior } from '../share/services/customer.service';
+import {  getCustomerSearch, getCustomerFromSenior, getCustomerSearchSenior } from '../share/services/customer.service';
 import { Link } from "react-router-dom";
 import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
 import {
@@ -78,7 +78,7 @@ class ListCustomerSenior extends React.Component {
         })
     }
     handleChangeSearch(event){  
-        getCustomerSearch(event.target.value,this.props.user_username,this.props.token).then(data=> {
+        getCustomerSearchSenior(event.target.value,this.props.group,this.props.role,this.props.token).then(data=> {
             this.setState({
                 data: data.customers
             })     
@@ -160,6 +160,7 @@ class ListCustomerSenior extends React.Component {
                                     <TableCell align="center" >Email</TableCell>
                                     <TableCell align="center">Phone Number</TableCell>
                                     <TableCell align="center">Address</TableCell>
+                                    <TableCell align="center">Director</TableCell>
                                     <TableCell align='center'></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -171,6 +172,7 @@ class ListCustomerSenior extends React.Component {
                                             <TableCell align='center' >{row.customer_email}</TableCell>
                                             <TableCell align='center' >{row.customer_number_phone}</TableCell>
                                             <TableCell align='center' >{row.customer_address}</TableCell>
+                                            <TableCell align='center' >{row.user_fullname}</TableCell>
                                             <TableCell align="center">
                                                 <Link to={'/senior/customers/detail/'+ row.customer_id} style={{ color: 'white', textDecoration: 'none' }}>
                                                 <Tooltip title="Detail customer" aria-label="add">

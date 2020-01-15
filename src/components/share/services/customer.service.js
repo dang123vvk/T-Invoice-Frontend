@@ -14,6 +14,9 @@ export function getCustomer(user_username,token){
 export function getCustomerSearch( text_search,user_username,token){
     return axios.get(API_URL + 'customers/'+user_username+'/search/'+text_search,{ headers: { Authorization: token } } ).then(res => res.data);
 }
+export function getCustomerSearchSenior( text_search,group,role,token){
+    return axios.get(API_URL + 'customers/role/'+group+'/search/'+text_search,{ headers: { Authorization: token, role: role } } ).then(res => res.data);
+}
 
 export function getCustomerPO(customer_id,token){
     return axios.get(API_URL + 'customers/list/po_no/'+customer_id,{ headers: { Authorization: token } } ).then(res => res.data);
@@ -33,6 +36,9 @@ export function getCustomerLimit(token){
 }
 export function getCustomerEdit(customer_id,token){
     return axios.get(API_URL + 'customers/edit/'+customer_id + '/'+localStorage.getItem('user_id'),{ headers: { Authorization: token } } ).then(res => res.data);
+}
+export function getCustomerEditSenior(customer_id,group,role,token){
+    return axios.get(API_URL + 'customers/role/edit/'+customer_id + '/'+group,{ headers: { Authorization: token, role: role } } ).then(res => res.data);
 }
 export function postCustomerEdit(customer_id,customer,token){
     return axios.post(API_URL + 'customers/edit/'+customer_id ,customer,{ headers: { Authorization: token } } ).then(res => res.data);

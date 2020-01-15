@@ -70,8 +70,6 @@ class SeniorDashboard extends Component {
             date_to: year + '-' + month1 + '-' + date,
         });
         getDashboardSenior(this.props.group, this.props.role, this.props.token).then(data => {
-            console.log(data);
-            
             this.setState({ 
                 directorNumber: data.directorNumber,
                 customerNumber: data.customerNumber,
@@ -180,7 +178,7 @@ class SeniorDashboard extends Component {
                                     Customers
                             <br />
                                     <Typography variant="h5" className={this.classes.title} align="center">
-                                    <Link to="/senior/director" style={{ color: 'black', textDecoration: 'none' }}> {this.state.customerNumber}</Link>
+                                    <Link to="/senior/customers" style={{ color: 'black', textDecoration: 'none' }}> {this.state.customerNumber}</Link>
                                     </Typography>
                                 </Paper>
                             </Grid>

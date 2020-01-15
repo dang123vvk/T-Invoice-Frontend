@@ -6,23 +6,16 @@ import TextField from '@material-ui/core/TextField';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import Axios from 'axios';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { API } from '../share/api';
-import ErrorAdmin from '../share/error.admin'
-const API_URL = API + 'groups/edit/';
-const th = createMuiTheme({
-  palette: {
-    primary: { main: blue[500] }, // Purple and green play nicely together.
-    secondary: { main: '#2196f3' }, // This is just green.A700 as hex.
-  },
-});
-
-class EditUser extends Component {
+import NotFound from '../views/NotFound'
+import { th } from "../share/config";
+import { getGroupEdit } from "../share/services/group.service";
+import { Link } from "react-router-dom";
+import { Breadcrumbs } from '@material-ui/core';
+class EditGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,17 +30,17 @@ class EditUser extends Component {
     //this.editUser = this.editUser.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
+    document.title = 'Edit Group';
   }
   componentDidMount() {
-    Axios.get(API_URL + this.props.match.params.id, { headers: { Authorization: localStorage.getItem('token') } })
-        .then(response => {
-            this.setState({
-                groups_user_name: response.data.group.groups_user_name,
-                groups_user_description: response.data.group.groups_user_description,
-            });
-        })
-        .catch(err => console.log(err));
+ getGroupEdit(this.props.match.params.id, this.props.role, this.props.token).then(data =>{
+   this.setState({
+    groups_user_description: data.group.groups_user_description,
+    groups_user_name: data.group.groups_user_name,
+   })
 
+   
+ })
 }
   editUser(event) {
     event.preventDefault();
@@ -57,21 +50,7 @@ class EditUser extends Component {
         groups_user_id: this.props.match.params.id,
       
     };
-    Axios.post(API_URL, user, { headers: { Authorization: localStorage.getItem('token') } })
-      .then(response => {
-        if (response.data.status == true) {
-          this.setState({
-            redirect: true
-          })
-        }
-        else {
-          this.setState({
-            message: 'Group already exists',
-          })
-        }
 
-      })
-      .catch(err => console.log(err));
   }
   onChange(e) {
     this.setState({
@@ -96,17 +75,22 @@ class EditUser extends Component {
     }
   }
   render() {
-    const redirect = this.state.redirect;
-    if (redirect) {
-      return <Redirect to='/group-list' />;
-    }
-    if ((((this.props.isLogin)  &&  (localStorage.getItem('role_id')==1))) || ((localStorage.getItem('user_name')) &&  (localStorage.getItem('role_id')==1))) {
+    if((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
+          <Breadcrumbs aria-label="Breadcrumb" separator="/" style={{ marginTop: '5%'}}>
+                  <Link style={{ color: '#3f51b5' }} to="/" >
+                    Home
+          </Link>
+                  <Link style={{ color: '#3f51b5' }} to="/admin/groups" >
+                    Groups
+          </Link>
+                  <Typography color="textPrimary">Edit</Typography>
+                </Breadcrumbs>
           <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-            <Avatar style={{ backgroundColor: '#2196f3', margin: 1 }}>
+            <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -115,7 +99,7 @@ class EditUser extends Component {
             <Typography style={{ color: 'red' }}>
               {this.state.message}
             </Typography>
-            <form style={{ width: '100%', marginTop: 1 }} validate onSubmit={event => this.editUser(event)}>
+            <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editUser(event)}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -131,7 +115,6 @@ class EditUser extends Component {
               <TextField
                 variant="outlined"
                 margin="normal"
-                required
                 fullWidth
                 id="groups_user_description"
                 label="Group Description"
@@ -140,33 +123,33 @@ class EditUser extends Component {
                 value={this.state.groups_user_description}
                 onChange={this.onChange}
               />
-              
-
-              <Button
+                         <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="secondary"
+                color="primary"
                 style={{ margin: '3,0,2' }}
               >
                 Save
           </Button>
             </form>
           </div>
-
         </Container>
       </ThemeProvider>
       );
     }
     return (
-   <ErrorAdmin />
+   <NotFound />
     )
   }
 }
 const mapStateToProps = (state) => {
   return {
-    title: state.loginReducer.username,
-    isLogin: state.loginReducer.isLogin
+    user_fullname: state.loginReducer.user_fullname,
+    user_username: state.loginReducer.user_username,
+    role: state.loginReducer.role,
+    token: state.loginReducer.token,
+    group: state.loginReducer.group
   };
 }
-export default connect(mapStateToProps)(EditUser);
+export default connect(mapStateToProps)(EditGroup);

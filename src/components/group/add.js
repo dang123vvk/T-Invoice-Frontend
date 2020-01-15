@@ -6,24 +6,14 @@ import TextField from '@material-ui/core/TextField';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import Axios from 'axios';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { loginAction } from '../actions/index'
-import { API } from '../share/api';
-import ErrorAdmin from '../share/error.admin'
-const API_URL = API + 'groups/add/';
-const th = createMuiTheme({
-  palette: {
-    primary: { main: blue[500] }, // Purple and green play nicely together.
-    secondary: { main: '#2196f3' }, // This is just green.A700 as hex.
-  },
-});
-
-class EditUser extends Component {
+import NotFound from '../views/NotFound'
+import { th } from "../share/config";
+import { Breadcrumbs } from '@material-ui/core';
+import {Link} from "react-router-dom";
+class AddGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,12 +25,13 @@ class EditUser extends Component {
       isLoading: false,
       message: '',
     }
-    this.addUser = this.addUser.bind(this);
+    this.addGroup = this.addGroup.bind(this);
     this.onChange = this.onChange.bind(this);
+    document.title = 'Add Group';
     
   }
   
-  addUser(event) {
+  addGroup(event) {
     event.preventDefault();
     const user = {
         groups_user_description: this.state.groups_user_description,
@@ -48,21 +39,6 @@ class EditUser extends Component {
         //groups_user_id: this.props.match.params.id,
       
     };
-    Axios.post(API_URL, user, { headers: { Authorization: localStorage.getItem('token') } })
-      .then(response => {
-        if (response.data.status == true) {
-          this.setState({
-            redirect: true
-          })
-        }
-        else {
-          this.setState({
-            message: 'Group already exists',
-          })
-        }
-
-      })
-      .catch(err => console.log(err));
   }
   onChange(e) {
     this.setState({
@@ -73,16 +49,25 @@ class EditUser extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/group-list' />;
+      return <Redirect to='/admin/groups' />;
     }
-    if ((((this.props.isLogin)  &&  (localStorage.getItem('role_id')==1))) || ((localStorage.getItem('user_name')) &&  (localStorage.getItem('role_id')==1))) {
+    if((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
+          <Breadcrumbs aria-label="Breadcrumb" separator="/" style={{ marginTop: '5%'}}>
+                  <Link style={{ color: '#3f51b5' }} to="/" >
+                    Home
+          </Link>
+                  <Link style={{ color: '#3f51b5' }} to="/admin/groups" >
+                    Groups
+          </Link>
+                  <Typography color="textPrimary">Add</Typography>
+                </Breadcrumbs>
           <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-            <Avatar style={{ backgroundColor: '#2196f3', margin: 1 }}>
-              <LockOutlinedIcon />
+            <Avatar style={{ margin: 1, backgroundColor: '#3f51b5' }}>
+              <LockOutlinedIcon  />
             </Avatar>
             <Typography component="h1" variant="h5">
               Add Group
@@ -90,7 +75,7 @@ class EditUser extends Component {
             <Typography style={{ color: 'red' }}>
               {this.state.message}
             </Typography>
-            <form style={{ width: '100%', marginTop: 1 }} validate onSubmit={event => this.addUser(event)}>
+            <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.addGroup(event)}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -116,12 +101,11 @@ class EditUser extends Component {
                 onChange={this.onChange}
               />
               
-
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="secondary"
+                color="primary"
                 style={{ margin: '3,0,2' }}
               >
                 Save
@@ -134,15 +118,18 @@ class EditUser extends Component {
       );
     }
     return (
-   <ErrorAdmin />
+   <NotFound />
     )
   }
 }
 const mapStateToProps = (state) => {
   return {
-    title: state.loginReducer.username,
-    isLogin: state.loginReducer.isLogin
+    user_fullname: state.loginReducer.user_fullname,
+    user_username: state.loginReducer.user_username,
+    role: state.loginReducer.role,
+    token: state.loginReducer.token,
+    group: state.loginReducer.group
   };
 }
 
-export default connect(mapStateToProps)(EditUser);
+export default connect(mapStateToProps)(AddGroup);

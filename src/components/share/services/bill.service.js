@@ -5,9 +5,16 @@ import { API_URL } from "../config";
 export function getBillUserCurrent(user_username,token){
     return axios.get(API_URL + 'bills/list/user/'+user_username,{ headers: { Authorization: token } } ).then(res => res.data);
 }
+
+export function getBillSenior(group,role,token){
+    return axios.get(API_URL + 'bills/list/all/senior/'+group,{ headers: { Authorization: token, role: role } } ).then(res => res.data);
+}
 //function get bill by id
 export function getBillUserCurrentSearch(text_search, user_username,token){
     return axios.get(API_URL + 'bills/list/user/'+user_username+'/search/'+text_search,{ headers: { Authorization: token } } ).then(res => res.data);
+}
+export function getBillSeniorSearch(text_search, group, role,token){
+    return axios.get(API_URL + 'bills/list/all/senior/group/'+group+'/search/'+text_search,{ headers: { Authorization: token, role: role } } ).then(res => res.data);
 }
 //function filter
 export function getBillUserCurrentFilter(customer_id, status_bill_id, date_start, date_end, user_username, token){
@@ -15,6 +22,9 @@ export function getBillUserCurrentFilter(customer_id, status_bill_id, date_start
 }
 export function getBill(id,user_username, token){
     return axios.get(API_URL + 'bills/edit/'+ id + '/' +user_username,{ headers: { Authorization: token } } ).then(res => res.data);
+}
+export function getBillSeniorId(id,user_username, role, token){
+    return axios.get(API_URL + 'bills/detail/senior/'+ id + '/' +user_username,{ headers: { Authorization: token, role } } ).then(res => res.data);
 }
 //function get status bill
 export function getStatusBill(token){

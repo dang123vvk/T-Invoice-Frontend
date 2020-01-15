@@ -147,7 +147,7 @@ class EditUser extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/admin' />;
+      return <Redirect to='/admin/users' />;
     }
     if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (

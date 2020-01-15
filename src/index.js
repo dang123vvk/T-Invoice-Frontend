@@ -7,15 +7,19 @@ import { BrowserRouter as Router, Route,   Switch} from "react-router-dom";
 import HomePage from './components/views/Home';
 import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
-import AdminDashboard from './components/auth/admin';
+import AdminDashboardUser from './components/auth/admin';
 import SeniorDashboard from './components/views/Senior';
 import SeniorUser from './components/user/List.Senior';
 import Header from './components/views/Header';
+import AdminDashboard from './components/views/Admin';
+import NotFound from './components/views/NotFound';
 import ListAccountBank from './components/accountbank/List';
 import ListBill from './components/bill/list';
+import ListBillSenior from './components/bill/bill.senior';
 import ResultBill from './components/bill/bill.result';
 import ResultBillNotSent from './components/bill/bill.not.sent';
 import DetailBill from './components/bill/detail';
+import DetailBillSenior from './components/bill/detail.senior';
 import AddBill from './components/bill/add';
 import EditBill from './components/bill/edit';
 import AddBillCustomer from './components/bill/add.customer';
@@ -24,12 +28,16 @@ import ListCustomerSenior from './components/customer/customer.senior';
 import AddCustomer from './components/customer/add';
 import EditCustomer from './components/customer/edit';
 import DetailCustomer from './components/customer/detail';
+import DetailCustomerSenior from './components/customer/detail.senior';
 import AddAccountBank from './components/accountbank/Add';
 import EditAccountBank from './components/accountbank/Edit';
 import EditUser from './components/user/Edit';
 import AddUser from './components/user/Add';
 import AddDirector from './components/user/Add.Senior';
 import EditDirector from './components/user/Edit.Senior';
+import ListGroup from './components/group/list';
+import AddGroup from './components/group/add';
+import EditGroup from './components/group/edit';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -41,7 +49,11 @@ const routing = (
         <Route exact path="/accountbanks" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
         <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
-        <Route exact path="/admin" component={AdminDashboard} />
+        <Route exact path="/admin/" component={AdminDashboard} />
+        <Route exact path="/admin/groups/add" component={AddGroup} />
+        <Route exact path="/admin/groups/edit/:id" component={EditGroup} />
+        <Route exact path="/admin/groups" component={ListGroup} />
+        <Route exact path="/admin/users" component={AdminDashboardUser} />
         <Route exact path="/admin/users/edit/:id" component={EditUser} />
         <Route exact path="/admin/users/add" component={AddUser} />
         <Route exact path="/bills" component={ListBill} />
@@ -56,13 +68,17 @@ const routing = (
         <Route exact path="/customers/edit/:id" component={EditCustomer} />
         <Route exact path="/customers/detail/:id" component={DetailCustomer} />
         <Route exact path="/senior" component={SeniorDashboard} />
+        <Route exact path="/senior/bills" component={ListBillSenior} />
+        <Route exact path="/senior/bills/export/:id" component={DetailBillSenior} />
         <Route exact path="/senior/customers" component={ListCustomerSenior} />
+        <Route exact path="/senior/customers/detail/:id" component={DetailCustomerSenior} />
         <Route exact path="/senior/directors" component={SeniorUser} />
         <Route exact path="/senior/directors/add" component={AddDirector} />
         <Route exact path="/senior/directors/edit/:id" component={EditDirector} />
         <Route exact path="/signin" component={Signin} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/" component={HomePage} />
+        <Route component={NotFound} />
         </Switch>
       </div>
     </Router>

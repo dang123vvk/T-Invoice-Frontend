@@ -10,7 +10,7 @@ import logotma from '../share/img/logotma.png';
 import { connect } from 'react-redux';
 import { th } from "../share/config";
 import Dashboard from './Dashboard';
-import AdminDashboard from '../auth/admin';
+import AdminDashboard from './Admin';
 
 class HomePage extends Component {
     constructor(props) {
