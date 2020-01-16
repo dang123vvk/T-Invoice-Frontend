@@ -14,7 +14,8 @@ import NotFound from '../views/NotFound'
 import { th } from "../share/config";
 import { getGroupEdit } from "../share/services/group.service";
 import { Link } from "react-router-dom";
-import { Breadcrumbs } from '@material-ui/core';
+import { Breadcrumbs, Grid } from '@material-ui/core';
+import { postGroupUpdate } from "../share/services/group.service";
 class EditGroup extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +28,7 @@ class EditGroup extends Component {
       isLoading: false,
       message: '',
     }
-    //this.editUser = this.editUser.bind(this);
+    this.editGroup = this.editGroup.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     document.title = 'Edit Group';
@@ -42,14 +43,18 @@ class EditGroup extends Component {
    
  })
 }
-  editUser(event) {
+  editGroup(event) {
     event.preventDefault();
-    const user = {
+    const group = {
         groups_user_description: this.state.groups_user_description,
         groups_user_name: this.state.groups_user_name,
         groups_user_id: this.props.match.params.id,
-      
     };
+    postGroupUpdate(this.props.match.params.id,group,this.props.role,this.props.token).then(data=>{
+      this.setState({
+        message:data.message
+      })
+    })
 
   }
   onChange(e) {
@@ -99,8 +104,10 @@ class EditGroup extends Component {
             <Typography style={{ color: 'red' }}>
               {this.state.message}
             </Typography>
-            <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editUser(event)}>
-              <TextField
+            <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editGroup(event)}>
+              
+            <Grid container spacing={1}>
+                  <Grid item xs={12}><TextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -111,7 +118,8 @@ class EditGroup extends Component {
                 type="text"
                 value={this.state.groups_user_name}
                 onChange={this.onChange}
-              />
+              /></Grid>
+              <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -123,15 +131,33 @@ class EditGroup extends Component {
                 value={this.state.groups_user_description}
                 onChange={this.onChange}
               />
-                         <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                style={{ margin: '3,0,2' }}
-              >
-                Save
+              </Grid>
+              <Grid item xs={2}></Grid>
+                  <Grid item xs={4}>
+                    <Link to='/admin/groups'  style={{ textDecoration: 'none'}} >
+                    <Button style={{ marginTop: '2%', color: 'white', backgroundColor: 'red' }}
+                      type="button"
+                      fullWidth
+                      variant="contained"
+                      color="secondary"
+                      
+                    >
+                      Cancel
           </Button>
+          </Link>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button style={{ marginTop: '2%' }}
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color='primary'
+                    >
+                      Save
+          </Button>
+                  </Grid>
+                  <Grid item xs={2}></Grid>
+          </Grid>
             </form>
           </div>
         </Container>
