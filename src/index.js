@@ -38,6 +38,7 @@ import EditDirector from './components/user/Edit.Senior';
 import ListGroup from './components/group/list';
 import AddGroup from './components/group/add';
 import EditGroup from './components/group/edit';
+import ListUserGroup from './components/group/usergroup';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -53,6 +54,7 @@ const routing = (
         <Route exact path="/admin/groups/add" component={AddGroup} />
         <Route exact path="/admin/groups/edit/:id" component={EditGroup} />
         <Route exact path="/admin/groups" component={ListGroup} />
+        <Route exact path="/admin/groups/users/:id" component={ListUserGroup} />
         <Route exact path="/admin/users" component={AdminDashboardUser} />
         <Route exact path="/admin/users/edit/:id" component={EditUser} />
         <Route exact path="/admin/users/add" component={AddUser} />

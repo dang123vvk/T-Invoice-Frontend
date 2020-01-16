@@ -18,6 +18,10 @@ export function getAllUser(role,token){
 export function getAllUserGroup(group,role,token){
     return axios.get(API_URL + 'users/role/senior/group/'+group,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
 }
+
+export function getAllUserGroupAdmin(group,role,token){
+    return axios.get(API_URL + 'users/role/admin/group/'+group,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
+}
 export function getUserFromAdmin(user_id,role,token){
     return axios.get(API_URL + 'users/role/'+user_id,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
 }
@@ -26,6 +30,9 @@ export function getDirectorFromSenior(user_id,role,token){
 }
 export function getUserFromSeniorSearch(group,text_search,role,token){
     return axios.get(API_URL + 'users/role/senior/search/'+group +'/'+text_search,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
+}
+export function getUserFromAdminGroupSearch(group,text_search,role,token){
+    return axios.get(API_URL + 'users/role/admin/search/'+group +'/'+text_search,{ headers: {role: role, Authorization: token } } ).then(res => res.data);
 }
 export function getUserFromAdminSearch(text_search,role,token){
     return axios.get(API_URL + 'users/role/search/'+text_search,{ headers: {role: role, Authorization: token } } ).then(res => res.data);

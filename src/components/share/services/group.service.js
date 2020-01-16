@@ -12,6 +12,9 @@ export function getRoleFromAdmin(role,token){
 export function getDashboardSenior(group_id,role,token){
     return axios.get(API_URL + 'groups/senior/'+ group_id,{ headers: { Authorization: token , role: role} } ).then(res => res.data);
 }
+export function getDashboardAdmin(role,token){
+    return axios.get(API_URL + 'groups/admin/dashboard',{ headers: { Authorization: token , role: role} } ).then(res => res.data);
+}
 export function postGroupAdd(group,role,token){
     return axios.post(API_URL + 'groups/add',group,{ headers: { Authorization: token , role: role} } ).then(res => res.data);
 }

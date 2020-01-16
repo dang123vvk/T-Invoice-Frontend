@@ -11,7 +11,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import { getCustomerSearch } from '../share/services/customer.service';
 import { th } from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
-import { getDashboardSenior } from "../share/services/group.service";
+import {  getDashboardAdmin } from "../share/services/group.service";
 import NotFound from "./NotFound";
 
 class AdminDashboard extends Component {
@@ -19,32 +19,11 @@ class AdminDashboard extends Component {
         super(props)
         this.state = {
             isSenior: this.props.isSenior,
-            billNumber: 0,
-            customerNumber: 0,
-            total: 0,
-            billNotSent: 0,
-            dataBill: [],
-            dataCustomer: [],
-            expanded: false,
-            status_bill_id: 1,
-            date_from: '',
-            date_to: '',
-            redirect: false,
-            customer_name: '',
-            customer_id: 1,
-            dataCustomersSearch: [],
-            isSenior: false,
-            directorNumber: 0,
-            dataDirector: []
+            users: 0,
+            groups: 0
 
         };
         this.classes = this.useStyles;
-        this.handleChange = this.handleChange.bind(this);
-        this.handleChangeStatus = this.handleChangeStatus.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.search = this.search.bind(this);
-        this.selectCustomer = this.selectCustomer.bind(this);
-        this.onChangeSearchCustomer = this.onChangeSearchCustomer.bind(this);
         document.title = 'Admin Dashboard';
     }
     componentDidMount() {
@@ -57,33 +36,16 @@ class AdminDashboard extends Component {
             date_from: year + '-' + month1 + '-' + date,
             date_to: year + '-' + month1 + '-' + date,
         });
-        getDashboardSenior(this.props.group, this.props.role, this.props.token).then(data => {
+        getDashboardAdmin(this.props.role, this.props.token).then(data => {
+            console.log(data);
+            
             this.setState({
-                directorNumber: data.directorNumber,
-                customerNumber: data.customerNumber,
-                billNumber: data.billNumber,
-                total: data.total,
-                dataBill: data.dataBill,
-                dataCustomer: data.dataCustomer,
-                dataDirector: data.dataDirector,
+                users: data.users,
+                groups: data.groups
             })
         })
     }
-    onChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-    }
-    onChangeSearchCustomer(e) {
-        getCustomerSearch(e.target.value, this.props.user_username, this.props.token).then(data => {
-            this.setState({
-                dataCustomersSearch: data.customers
-            });
-        })
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-    }
+  
     useStyles = makeStyles(theme => ({
         root: {
             marginTop: theme.spacing(8),
@@ -107,37 +69,8 @@ class AdminDashboard extends Component {
             padding: theme.spacing(3, 2),
         }
     }));
-    handleChange(event, panel1) {
-        event.preventDefault();
-        if (this.state.expanded == false) {
-            this.setState({ expanded: true });
-        }
-        else {
-            this.setState({ expanded: false });
 
-        }
-
-    }
-    handleChangeStatus(event) {
-        event.preventDefault();
-        this.setState({ status_bill_id: event.target.value });
-
-
-    }
-    search(e) {
-        e.preventDefault();
-        this.setState({
-            redirect: true
-        })
-    }
-    selectCustomer(e, customer_name, customer_id) {
-        e.preventDefault();
-        this.setState({
-            customer_name: customer_name,
-            dataCustomersSearch: [],
-            customer_id: customer_id,
-        })
-    }
+ 
     render() {
         if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
             return (
@@ -152,7 +85,7 @@ class AdminDashboard extends Component {
                                         Users
                             <br />
                                         <Typography variant="h5" className={this.classes.title} align="center">
-                                            <Link to="/admin/users" style={{ color: 'black', textDecoration: 'none' }}> {this.state.directorNumber}</Link>
+                                            <Link to="/admin/users" style={{ color: 'black', textDecoration: 'none' }}> {this.state.users}</Link>
                                         </Typography>
                                     </Paper>
                                 </Grid>
@@ -162,7 +95,7 @@ class AdminDashboard extends Component {
                                         Groups
                             <br />
                                         <Typography variant="h5" className={this.classes.title} align="center">
-                                            <Link to="/admin/groups" style={{ color: 'black', textDecoration: 'none' }}> {this.state.customerNumber}</Link>
+                                            <Link to="/admin/groups" style={{ color: 'black', textDecoration: 'none' }}> {this.state.groups}</Link>
                                         </Typography>
                                     </Paper>
                                 </Grid>

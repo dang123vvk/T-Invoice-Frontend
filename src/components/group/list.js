@@ -104,11 +104,13 @@ class ListGroup extends React.Component {
                                                         <EditIcon style={{ display: 'block' }} />
                                                     </Fab></Link>
                                                 </Tooltip>
-                                                {/* <Tooltip title="View Users" aria-label="add">
-                                                    <Fab size="small" color="primary" style={{marginLeft: '5%'}} onClick={e => this.openEdit(e,row.groups_user_id)} className="btn-without-border">
+                                                <Tooltip title="View Users" aria-label="add">
+                                                <Link to={'/admin/groups/users/'+ row.groups_user_id}>
+                                                    <Fab size="small" color="primary" style={{marginLeft: '5%'}} className="btn-without-border">
                                                         <ViewColumnButton style={{ display: 'block' }} />
                                                     </Fab>
-                                                </Tooltip> */}
+                                                    </Link>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );

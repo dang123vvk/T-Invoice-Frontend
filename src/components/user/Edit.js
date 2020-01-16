@@ -10,11 +10,12 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
-import { Grid, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Grid, FormControl, InputLabel, Select, MenuItem, Breadcrumbs } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
 import { postUserFromAdmin, getUserFromAdmin } from "../share/services/user.service";
 import { getGroupFromAdmin, getRoleFromAdmin } from '../share/services/group.service';
+import {Link} from "react-router-dom";
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -154,6 +155,15 @@ class EditUser extends Component {
         <ThemeProvider theme={th}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
+            <Breadcrumbs aria-label="Breadcrumb" separator="/" style={{ marginTop: '5%'}}>
+                  <Link style={{ color: '#3f51b5' }} to="/" >
+                    Home
+          </Link>
+                  <Link style={{ color: '#3f51b5' }} to="/admin/users" >
+                    Users
+          </Link>
+                  <Typography color="textPrimary">Edit</Typography>
+                </Breadcrumbs>
             <div style={{ marginTop: '2%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
               <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
                 <LockOutlinedIcon />

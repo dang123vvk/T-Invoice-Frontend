@@ -28,13 +28,15 @@ class Profile extends Component {
       error: false,
       disabled: true,
       user_email: '',
-      message: ''
+      message: '',
+      isAdmin: false
     }
     this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.confirmPassword = this.confirmPassword.bind(this);
     this.cancel = this.cancel.bind(this);
     document.title = 'Edit Profile';
+    
   }
   UNSAFE_componentWillMount(){
     getInformationCurrent(this.props.user_username,this.props.token).then(data => {
@@ -45,7 +47,13 @@ class Profile extends Component {
           user_group: data.user.groups_user_name
         })
         
-    })
+    });
+    if(this.props.role === 'Admin'){
+      this.setState({
+        isAdmin: true
+      })
+
+    }
   }
   save(event) {
     event.preventDefault();
@@ -173,7 +181,7 @@ class Profile extends Component {
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} hidden ={this.state.isAdmin}>
                     <TextField
                       variant="outlined"
                       margin="normal"
