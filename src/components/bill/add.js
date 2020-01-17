@@ -89,6 +89,8 @@ class AddBill extends Component {
             errorCost: false,
             messageItem: ' ',
             errorItem: false,
+            isCustomers: false,
+            disabled: false,
         }
         this.componentWillMount = this.componentDidMount.bind(this);
         this.cancel = this.cancel.bind(this);
@@ -143,29 +145,41 @@ class AddBill extends Component {
             });
         })
         getCustomerUserCurrent(this.props.user_username, this.props.token).then(data => {
-            if (data.length_po_nos_add > 0) {
+            if(data.length === 0){
                 this.setState({
-                    customers: data.customers,
-                    customer_id: data.customers[0].customer_id,
-                    swiftcode: data.customers[0].customer_swift_code,
-                    bill_reference: (this.state.month_1 + data.customers[0].customer_swift_code).toUpperCase(),
-                    customer_address: data.customers[0].customer_address,
-                    bill_no: data.po_nos_add[0].po_number_id,
-                    bill_display_po: data.po_nos_add[0].po_number_no,
-                    po_nos: data.po_nos_add,
-                    display_po: false,
+                    display_po: true,
+                    isCustomers: true,
+                    disabled: true
                 });
             }
             else {
-                this.setState({
-                    customers: data.customers,
-                    customer_id: data.customers[0].customer_id,
-                    swiftcode: data.customers[0].customer_swift_code,
-                    bill_reference: (this.state.month_1 + data.customers[0].customer_swift_code).toUpperCase(),
-                    customer_address: data.customers[0].customer_address,
-                    display_po: true,
-                });
+                if (data.length_po_nos_add > 0) {
+                    this.setState({
+                        customers: data.customers,
+                        customer_id: data.customers[0].customer_id,
+                        swiftcode: data.customers[0].customer_swift_code,
+                        bill_reference: (this.state.month_1 + data.customers[0].customer_swift_code).toUpperCase(),
+                        customer_address: data.customers[0].customer_address,
+                        bill_no: data.po_nos_add[0].po_number_id,
+                        bill_display_po: data.po_nos_add[0].po_number_no,
+                        po_nos: data.po_nos_add,
+                        display_po: false,
+                        isCustomers: false,
+                    });
+                }
+                else {
+                    this.setState({
+                        customers: data.customers,
+                        customer_id: data.customers[0].customer_id,
+                        swiftcode: data.customers[0].customer_swift_code,
+                        bill_reference: (this.state.month_1 + data.customers[0].customer_swift_code).toUpperCase(),
+                        customer_address: data.customers[0].customer_address,
+                        display_po: true,
+                        isCustomers: false
+                    });
+                }
             }
+            
         })
         getStatusBill(this.props.token).then(data => {
             this.setState({
@@ -382,18 +396,26 @@ class AddBill extends Component {
             };
             let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.bill_item_description; });
             if (index === -1) {
-                this.setState(state => {
-                    const list = state.data.push(item);
-                    return {
-                        list,
-                        isDialog: false,
-                        bill_item_description: '',
-                        bill_item_cost: 0,
-                        dialogTitle: 'Add PO No',
-                        messageItem: ' ',
-                        errorItem: false
-                    };
-                });
+                if(this.state.bill_item_description === ''){
+                    this.setState({
+                        messageItem: 'Item does not empty',
+                        errorItem: true
+                    })
+                }
+                else {
+                    this.setState(state => {
+                        const list = state.data.push(item);
+                        return {
+                            list,
+                            isDialog: false,
+                            bill_item_description: '',
+                            bill_item_cost: 0,
+                            dialogTitle: 'Add PO No',
+                            messageItem: ' ',
+                            errorItem: false
+                        };
+                    });
+                }
             }
             else {
                 this.setState({
@@ -538,7 +560,7 @@ class AddBill extends Component {
                                                     </FormControl>
                                                 </div>
                                                 <div className="col-sm-4" hidden={!(this.state.display_po)}>
-                                                    There isn't an active PO. Please add in <Link to={'/customers/edit/' + this.state.customer_id}>this customer</Link>
+                                                    There isn't an active PO. Please add at this customer
                                                 </div>
                                             </div>
                                             <div className="row" style={{ marginTop: '10px' }}>
@@ -559,7 +581,7 @@ class AddBill extends Component {
                                         <Grid item xs={4} >
                                             <div className="row">
                                                 <div className="col-sm-4" style={{ fontWeight: 'bold' }}>To:</div>
-                                                <div className="col-sm-8" >
+                                                <div className="col-sm-8" hidden={this.state.isCustomers}>
 
                                                     <Select
                                                         value={this.state.customer_id}
@@ -571,7 +593,10 @@ class AddBill extends Component {
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
-
+                                                
+                                                </div>
+                                                <div className="col-sm-8" hidden={!(this.state.isCustomers)}>
+                                                    There isn't a customer. Please <Link to={'/customers/add'}>add</Link>
                                                 </div>
                                             </div>
                                             <div className="row">
@@ -877,7 +902,7 @@ class AddBill extends Component {
                                         </Grid>
                                         <Grid item xs={4} >
                                             <Typography style={{ fontSize: '15px', fontWeight: 'bold' }} align='center'>
-                                                <Button className='btn-without-border' fullWidth type="submit" size="large" color="primary" variant="contained" >Save</Button>
+                                                <Button className='btn-without-border' disabled={this.state.disabled} fullWidth type="submit" size="large" color="primary" variant="contained" >Save</Button>
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2} >

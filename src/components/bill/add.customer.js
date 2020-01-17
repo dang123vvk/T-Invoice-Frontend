@@ -328,7 +328,6 @@ class AddBillCustomer extends Component {
         });
     }
 }
-
     onChangeNumber(e) {
     if(!e.target.value){
         this.setState({
@@ -346,10 +345,6 @@ class AddBillCustomer extends Component {
     }
    
 }       
-            
-        
-      
-
     openAdd(e) {
         e.preventDefault();
         this.setState({
@@ -366,8 +361,6 @@ class AddBillCustomer extends Component {
     openEdit(e, bill_item_description) {
         e.preventDefault();
         let index = _.findIndex(this.state.data, it => { return it.bill_item_description === bill_item_description; });
-        console.log(index);
-
         var data = this.state.data;
         this.setState({
             isDialog: true,
@@ -390,18 +383,27 @@ class AddBillCustomer extends Component {
             };
             let index = _.findIndex(this.state.data, it => { return it.bill_item_description === this.state.bill_item_description; });
             if(index === -1 ){
-                this.setState(state => {
-                    const list = state.data.push(item);
-                    return {
-                        list,
-                        isDialog: false,
-                        bill_item_description: '',
-                        bill_item_cost: 0,
-                        dialogTitle: 'Add PO No',
-                        messageItem: ' ',
-                        errorItem: false
-                    };
-                });
+                if(this.state.bill_item_description === ''){
+                    this.setState({
+                        messageItem: 'Item does not empty',
+                        errorItem: true
+                   })
+                }
+                else {
+                    this.setState(state => {
+                        const list = state.data.push(item);
+                        return {
+                            list,
+                            isDialog: false,
+                            bill_item_description: '',
+                            bill_item_cost: 0,
+                            dialogTitle: 'Add PO No',
+                            messageItem: ' ',
+                            errorItem: false
+                        };
+                    });
+                }
+              
             }
             else {
                 this.setState({

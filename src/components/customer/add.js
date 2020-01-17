@@ -137,24 +137,31 @@ class AddCustomer extends Component {
       var status1 = status(this.state.status_po_id.toString());
       let index = _.findIndex(this.state.data, po => { return po.po_number_no === this.state.po_number_no; });
       if (index === -1) {
-        const Po = {
-          po_number_description: this.state.po_number_description,
-          status_po_id: this.state.status_po_id,
-          po_number_no: this.state.po_number_no,
-          status_po_name: status1
-        };
-        this.setState(state => {
-          const list = state.data.push(Po);
-          return {
-            list,
-            isDialog: false,
-            po_number_no: '',
-            po_number_description: '',
-            status_po_id: 1,
-            dialogTitle: 'Add PO No',
-            messagePO: '',
+        if(this.state.po_number_no === ''){
+          this.setState({
+            messagePO: 'PO No does not empty'
+          })
+        }else {
+          const Po = {
+            po_number_description: this.state.po_number_description,
+            status_po_id: this.state.status_po_id,
+            po_number_no: this.state.po_number_no,
+            status_po_name: status1
           };
-        });
+          this.setState(state => {
+            const list = state.data.push(Po);
+            return {
+              list,
+              isDialog: false,
+              po_number_no: '',
+              po_number_description: '',
+              status_po_id: 1,
+              dialogTitle: 'Add PO No',
+              messagePO: '',
+            };
+          });
+        }
+      
       }
       else {
         this.setState({
