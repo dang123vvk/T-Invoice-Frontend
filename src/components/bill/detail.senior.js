@@ -23,14 +23,13 @@ import {
 } from '@progress/kendo-react-excel-export';
 import { aggregateBy } from '@progress/kendo-data-query';
 import { Tooltip, Paper, Breadcrumbs } from '@material-ui/core';
-import { getCustomerUserCurrent } from '../share/services/customer.service';
 import { getBillSeniorId } from '../share/services/bill.service';
 import { th } from "../share/config";
 
 
 const aggregates = [{ field: 'bill_item_cost', aggregate: 'SUM' }];
 const total = (props) => (aggregateBy(props.data, aggregates));
-const URL_EDIT = "/bills/edit/";
+
 
 const CustomFooter = (props) =>
     (`Total `);

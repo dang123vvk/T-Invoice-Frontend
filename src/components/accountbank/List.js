@@ -127,9 +127,7 @@ class ListAccountBank extends React.Component {
             account_bank_address: this.state.account_bank_address,
             account_bank_swift: this.state.account_bank_swift,
           };
-        updateAccountBank(account_bank_id,accountbank,this.props.token).then(data => {
-            console.log(data); 
-        });
+        updateAccountBank(account_bank_id,accountbank,this.props.token).then(data => {});
         var index = _.findIndex(this.state.data, function (ac) { return ac.account_bank_id === account_bank_id; });
         var temp = this.state.data;
         const accountbank_1 = {
@@ -161,10 +159,10 @@ class ListAccountBank extends React.Component {
         });
         const { redirect, redirectAddAccountBank } = this.state;
         if (redirect) {
-            return <Redirect to={'/accountbank/' + this.state.account_bank_id} />;
+            return <Redirect to={'/accountbanks/' + this.state.account_bank_id} />;
         }
         if (redirectAddAccountBank) {
-            return <Redirect to={'/accountbank'} />;
+            return <Redirect to={'/accountbanks'} />;
         }
         if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
             return (

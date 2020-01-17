@@ -26,7 +26,7 @@ import Draggable from 'react-draggable';
 import _ from 'lodash';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { isNumber } from 'util';
+
 function PaperComponent(props) {
     return (
         <Draggable cancel={'[class*="MuiDialogContent-root"]'}>

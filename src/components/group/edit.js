@@ -22,7 +22,7 @@ class EditGroup extends Component {
     this.state = {
       groups_user_name: '',
       groups_user_description: '',
-      
+
       redirect: false,
       tokenVN: '',
       isLoading: false,
@@ -34,25 +34,25 @@ class EditGroup extends Component {
     document.title = 'Edit Group';
   }
   componentDidMount() {
- getGroupEdit(this.props.match.params.id, this.props.role, this.props.token).then(data =>{
-   this.setState({
-    groups_user_description: data.group.groups_user_description,
-    groups_user_name: data.group.groups_user_name,
-   })
+    getGroupEdit(this.props.match.params.id, this.props.role, this.props.token).then(data => {
+      this.setState({
+        groups_user_description: data.group.groups_user_description,
+        groups_user_name: data.group.groups_user_name,
+      })
 
-   
- })
-}
+
+    })
+  }
   editGroup(event) {
     event.preventDefault();
     const group = {
-        groups_user_description: this.state.groups_user_description,
-        groups_user_name: this.state.groups_user_name,
-        groups_user_id: this.props.match.params.id,
+      groups_user_description: this.state.groups_user_description,
+      groups_user_name: this.state.groups_user_name,
+      groups_user_id: this.props.match.params.id,
     };
-    postGroupUpdate(this.props.match.params.id,group,this.props.role,this.props.token).then(data=>{
+    postGroupUpdate(this.props.match.params.id, group, this.props.role, this.props.token).then(data => {
       this.setState({
-        message:data.message
+        message: data.message
       })
     })
 
@@ -66,85 +66,83 @@ class EditGroup extends Component {
     this.setState({
       [e.target.name]: e.target.value,
     });
-    if(e.target.value == this.state.user_password)
-    {
+    if (e.target.value == this.state.user_password) {
       this.setState({
         message: '',
       })
     }
-    else 
-    {
+    else {
       this.setState({
         message: 'Those passwords didn\'t match. Try again',
       })
     }
   }
   render() {
-    if((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
+    if ((this.props.role === 'Admin') && (localStorage.getItem('user_information'))) {
       return (
         <ThemeProvider theme={th}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Breadcrumbs aria-label="Breadcrumb" separator="/" style={{ marginTop: '5%'}}>
-                  <Link style={{ color: '#3f51b5' }} to="/" >
-                    Home
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Breadcrumbs aria-label="Breadcrumb" separator="/" style={{ marginTop: '5%' }}>
+              <Link style={{ color: '#3f51b5' }} to="/" >
+                Home
           </Link>
-                  <Link style={{ color: '#3f51b5' }} to="/admin/groups" >
-                    Groups
+              <Link style={{ color: '#3f51b5' }} to="/admin/groups" >
+                Groups
           </Link>
-                  <Typography color="textPrimary">Edit</Typography>
-                </Breadcrumbs>
-          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-            <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Edit Group
+              <Typography color="textPrimary">Edit</Typography>
+            </Breadcrumbs>
+            <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+              <Avatar style={{ backgroundColor: '#3f51b5', margin: 1 }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Edit Group
         </Typography>
-            <Typography style={{ color: 'red' }}>
-              {this.state.message}
-            </Typography>
-            <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editGroup(event)}>
-              
-            <Grid container spacing={1}>
+              <Typography style={{ color: 'red' }}>
+                {this.state.message}
+              </Typography>
+              <form style={{ width: '100%', marginTop: 1 }} validate="true" onSubmit={event => this.editGroup(event)}>
+
+                <Grid container spacing={1}>
                   <Grid item xs={12}><TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="groups_user_name"
-                label="Group Name"
-                name="groups_user_name"
-                type="text"
-                value={this.state.groups_user_name}
-                onChange={this.onChange}
-              /></Grid>
-              <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="groups_user_description"
-                label="Group Description"
-                name="groups_user_description"
-                type="text"
-                value={this.state.groups_user_description}
-                onChange={this.onChange}
-              />
-              </Grid>
-              <Grid item xs={2}></Grid>
-                  <Grid item xs={4}>
-                    <Link to='/admin/groups'  style={{ textDecoration: 'none'}} >
-                    <Button style={{ marginTop: '2%', color: 'white', backgroundColor: 'red' }}
-                      type="button"
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="groups_user_name"
+                    label="Group Name"
+                    name="groups_user_name"
+                    type="text"
+                    value={this.state.groups_user_name}
+                    onChange={this.onChange}
+                  /></Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
                       fullWidth
-                      variant="contained"
-                      color="secondary"
-                      
-                    >
-                      Cancel
+                      id="groups_user_description"
+                      label="Group Description"
+                      name="groups_user_description"
+                      type="text"
+                      value={this.state.groups_user_description}
+                      onChange={this.onChange}
+                    />
+                  </Grid>
+                  <Grid item xs={2}></Grid>
+                  <Grid item xs={4}>
+                    <Link to='/admin/groups' style={{ textDecoration: 'none' }} >
+                      <Button style={{ marginTop: '2%', color: 'white', backgroundColor: 'red' }}
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+
+                      >
+                        Cancel
           </Button>
-          </Link>
+                    </Link>
                   </Grid>
                   <Grid item xs={4}>
                     <Button style={{ marginTop: '2%' }}
@@ -157,15 +155,15 @@ class EditGroup extends Component {
           </Button>
                   </Grid>
                   <Grid item xs={2}></Grid>
-          </Grid>
-            </form>
-          </div>
-        </Container>
-      </ThemeProvider>
+                </Grid>
+              </form>
+            </div>
+          </Container>
+        </ThemeProvider>
       );
     }
     return (
-   <NotFound />
+      <NotFound />
     )
   }
 }

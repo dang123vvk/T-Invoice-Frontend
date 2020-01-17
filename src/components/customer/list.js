@@ -8,7 +8,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
-import BuildIcon from '@material-ui/icons/BuildOutlined';
 import AddIcon from '@material-ui/icons/Add';
 import './style.css';
 import { getCustomerUserCurrent, getCustomerSearch } from '../share/services/customer.service';

@@ -65,7 +65,7 @@ class EditAccountBank extends Component {
   render() {
     const redirect = this.state.redirect;
     if (redirect) {
-      return <Redirect to='/accountbank' />;
+      return <Redirect to='/accountbanks' />;
     }
     if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
       return (
