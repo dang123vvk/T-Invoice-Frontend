@@ -355,7 +355,7 @@ class DetailBill extends Component {
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Bank Name :</div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>{this.state.account_bank_name}</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px' }}></div>
-                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'DejaVu Sans' }} >{this.state.account_bank_address}</div>
+                                                        <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }} >{this.state.account_bank_address}</div>
                                                         <div className="col-sm-4" ></div>
                                                         <div className="col-sm-8" style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Times New Roman' }}>(SWIFT code: {this.state.account_bank_swift})</div>
                                                         <div className="col-sm-4" style={{ fontSize: '11px', fontFamily: 'Times New Roman' }}>Tel:</div>
