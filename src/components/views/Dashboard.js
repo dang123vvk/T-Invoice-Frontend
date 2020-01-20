@@ -114,15 +114,11 @@ class Dashboard extends Component {
         }
         else {
             this.setState({ expanded: false });
-
         }
-
     }
     handleChangeStatus(event) {
         event.preventDefault();
         this.setState({ status_bill_id: event.target.value });
-
-
     }
     search(e) {
         e.preventDefault();

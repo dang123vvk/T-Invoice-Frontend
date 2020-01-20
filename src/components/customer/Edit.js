@@ -18,7 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import _ from 'lodash';
 import Draggable from 'react-draggable';
 import { status } from './status';
-import {getCustomerEdit, postCustomerEdit, updatePOCustomer, addPOCustomer } from '../share/services/customer.service';
+import { getCustomerEdit, postCustomerEdit, updatePOCustomer, addPOCustomer } from '../share/services/customer.service';
 
 
 function PaperComponent(props) {
@@ -65,21 +65,21 @@ class EditCustomer extends Component {
     this.addPoNo = this.addPoNo.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
   }
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     getCustomerEdit(this.props.match.params.id, this.props.token).then(data => {
-     this.setState({
-      customer_name: data.customers.customer_name,
-      customer_email: data.customers.customer_email,
-      customer_address: data.customers.customer_address,
-      customer_number_phone: data.customers.customer_number_phone,
-      customer_details_id: data.customers.customer_details_id,
-      customer_details_company: data.customerDetail.customer_details_company,
-      customer_details_project: data.customerDetail.customer_details_project,
-      customer_details_country: data.customerDetail.customer_details_country,
-      customer_details_note: data.customerDetail.customer_details_note,
-      customer_swift_code: data.customers.customer_swift_code,
-      data: data.po_nos
-     })
+      this.setState({
+        customer_name: data.customers.customer_name,
+        customer_email: data.customers.customer_email,
+        customer_address: data.customers.customer_address,
+        customer_number_phone: data.customers.customer_number_phone,
+        customer_details_id: data.customers.customer_details_id,
+        customer_details_company: data.customerDetail.customer_details_company,
+        customer_details_project: data.customerDetail.customer_details_project,
+        customer_details_country: data.customerDetail.customer_details_country,
+        customer_details_note: data.customerDetail.customer_details_note,
+        customer_swift_code: data.customers.customer_swift_code,
+        data: data.po_nos
+      })
     })
   }
   handleSubmitForm(event) {
@@ -98,7 +98,7 @@ class EditCustomer extends Component {
       po_nos: this.state.data,
 
     };
-    postCustomerEdit(this.props.match.params.id, customer, this.props.token).then(data=> {
+    postCustomerEdit(this.props.match.params.id, customer, this.props.token).then(data => {
       this.setState({
         message: data.message
       })
@@ -110,12 +110,12 @@ class EditCustomer extends Component {
     });
   }
   clear(e) {
-  this.setState({
-    redirect: true
-  })
+    this.setState({
+      redirect: true
+    })
 
   }
-  openEdit(e, po_number_no,po_number_id) {
+  openEdit(e, po_number_no, po_number_id) {
     e.preventDefault();
     var index = _.findIndex(this.state.data, function (ac) { return ac.po_number_no === po_number_no; });
     var temp = this.state.data;
@@ -168,7 +168,7 @@ class EditCustomer extends Component {
           dialogTitle: 'Add PO No',
         };
       });
-      addPOCustomer(this.props.match.params.id,PoSave,this.props.token).then(data => {
+      addPOCustomer(this.props.match.params.id, PoSave, this.props.token).then(data => {
       });
     }
     else {
@@ -192,7 +192,7 @@ class EditCustomer extends Component {
         isAdd: true,
         data: data,
       });
-      updatePOCustomer(this.state.po_number_id,PoSave,this.props.token).then(data => {
+      updatePOCustomer(this.state.po_number_id, PoSave, this.props.token).then(data => {
       })
     }
 
@@ -209,7 +209,7 @@ class EditCustomer extends Component {
     if (redirect) {
       return <Redirect to='/customers' />;
     }
-    if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
+    if (((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" >
@@ -227,7 +227,7 @@ class EditCustomer extends Component {
                   <Typography color="textPrimary">Add customer</Typography>
                 </Breadcrumbs>
               </Paper>
-              <Avatar style={{ marginTop: '1%',backgroundColor: '#3f51b5', }} >
+              <Avatar style={{ marginTop: '1%', backgroundColor: '#3f51b5', }} >
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5" style={{ marginTop: '1%', marginBottom: '3%' }}>
@@ -394,6 +394,9 @@ class EditCustomer extends Component {
                         <TableRow>
                           <TableCell align='center'></TableCell>
                           <TableCell align='center'>PO No</TableCell>
+                          <TableCell align="center">Amount</TableCell>
+                          <TableCell align="center">Used Amount</TableCell>
+                          <TableCell align="center">Remaining Amount</TableCell>
                           <TableCell align="center" >Description</TableCell>
                           <TableCell align="center">Status</TableCell>
                         </TableRow>
@@ -403,12 +406,15 @@ class EditCustomer extends Component {
                           <TableRow hover role="checkbox" key={row.po_number_no} tabIndex={-1} >
                             <TableCell align="center">
                               <Tooltip title="Edit" aria-label="add">
-                                <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.po_number_no,row.po_number_id)} className="btn-without-border">
+                                <Fab size="small" color="primary" onClick={e => this.openEdit(e, row.po_number_no, row.po_number_id)} className="btn-without-border">
                                   <EditIcon />
                                 </Fab>
                               </Tooltip>
                             </TableCell>
                             <TableCell align='center'>{row.po_number_no}</TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
                             <TableCell align='center' >{row.po_number_description}</TableCell>
                             <TableCell align='center' >{row.status_po_name}</TableCell>
                           </TableRow>

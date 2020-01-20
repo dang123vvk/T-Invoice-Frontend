@@ -350,7 +350,8 @@ const mapStateToProps = (state) => {
     return {
         user_fullname: state.loginReducer.user_fullname,
         role: state.loginReducer.role,
-        token: state.loginReducer.token
+        token: state.loginReducer.token,
+        group: state.loginReducer.group
     };
 }
 export default connect(mapStateToProps)(ListAccountBank);

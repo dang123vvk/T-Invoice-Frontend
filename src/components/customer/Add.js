@@ -20,6 +20,7 @@ import Draggable from 'react-draggable';
 import { status } from './status';
 import { postCustomerAdd } from "../share/services/customer.service";
 import DeleteIcon from '@material-ui/icons/Delete';
+import './style.css';
 
 function PaperComponent(props) {
   return (
