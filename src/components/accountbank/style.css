@@ -2,3 +2,39 @@
     border: none;
     outline: none;
 }
+.magrinTop {
+    margin-top: 2%;
+}
+.magrinTopButton {
+    margin-top: 2%;
+    color: white;
+    background-color: red;
+}
+.linkColor {
+    color: #3f51b5;
+}
+.divClass {
+    margin-top: 2%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+#avtClass{
+    margin-top: 1%;
+    background-color: #3f51b5;
+}
+.typography{
+    margin-top: 1%;
+    margin-bottom: 2%;
+}
+.messageError {
+    color: red;
+}
+#linkList {
+    color: white;
+    text-decoration: none;
+}
+#buttonCancel {
+    color: white;
+    background-color: red;
+}

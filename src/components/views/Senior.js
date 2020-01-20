@@ -3,23 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { ThemeProvider } from '@material-ui/styles';
-import { Container, CssBaseline, createMuiTheme, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab, List, ListItem, ListItemText } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
+import { Container, CssBaseline, Paper, Table, TableHead, TableRow, TableCell, TableBody} from '@material-ui/core';
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
-import Divider from '@material-ui/core/Divider';
-import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit, getBillUserCurrentFilter } from '../share/services/bill.service';
-import { getCustomerLength, getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
+import { getCustomerSearch } from '../share/services/customer.service';
 import {  th} from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -161,48 +151,6 @@ class SeniorDashboard extends Component {
                 <Container component="main" maxWidth="md">
                     <CssBaseline />
                     <div style={{ flexFlow: 1 }}>
-                        <Grid container spacing={3} style={{ marginTop: '10px' }}>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }} >
-                                    <br />
-                                    Directors
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/senior/directors" style={{ color: 'black', textDecoration: 'none' }}> {this.state.directorNumber}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }} >
-                                    <br />
-                                    Customers
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                    <Link to="/senior/customers" style={{ color: 'black', textDecoration: 'none' }}> {this.state.customerNumber}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }}>
-                                    <br />
-                                    Bills
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/senior/bills" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNumber}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }}>
-                                    <br />
-                                    Total of Bills
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                    ${this.state.total}
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                        </Grid>
                         <Grid container spacing={3} style={{ marginTop: '10px' }}>
                             <Grid item xs >
                                 <Paper style={{ height: 'auto', textAlign: 'center' }}>

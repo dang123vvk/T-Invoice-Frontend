@@ -7,8 +7,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { ThemeProvider } from '@material-ui/styles';
-import Axios from 'axios';
-import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import NotFound from '../views/NotFound'
 import { th } from "../share/config";
@@ -66,7 +64,7 @@ class EditGroup extends Component {
     this.setState({
       [e.target.name]: e.target.value,
     });
-    if (e.target.value == this.state.user_password) {
+    if (e.target.value === this.state.user_password) {
       this.setState({
         message: '',
       })

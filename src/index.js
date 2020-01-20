@@ -7,38 +7,37 @@ import { BrowserRouter as Router, Route,   Switch} from "react-router-dom";
 import HomePage from './components/views/Home';
 import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
-import AdminDashboardUser from './components/auth/admin';
+import AdminDashboardUser from './components/auth/Admin';
 import SeniorDashboard from './components/views/Senior';
 import SeniorUser from './components/user/List.Senior';
 import Header from './components/views/Header';
 import AdminDashboard from './components/views/Admin';
 import NotFound from './components/views/NotFound';
 import ListAccountBank from './components/accountbank/List';
-import ListBill from './components/bill/list';
-import ListBillSenior from './components/bill/bill.senior';
-import ResultBill from './components/bill/bill.result';
-import ResultBillNotSent from './components/bill/bill.not.sent';
-import DetailBill from './components/bill/detail';
-import DetailBillSenior from './components/bill/detail.senior';
-import AddBill from './components/bill/add';
-import EditBill from './components/bill/edit';
-import AddBillCustomer from './components/bill/add.customer';
-import ListCustomer from './components/customer/list';
-import ListCustomerSenior from './components/customer/customer.senior';
-import AddCustomer from './components/customer/add';
-import EditCustomer from './components/customer/edit';
-import DetailCustomer from './components/customer/detail';
-import DetailCustomerSenior from './components/customer/detail.senior';
+import ListBill from './components/bill/List';
+import ListBillSenior from './components/bill/Bill.Senior';
+import ResultBill from './components/bill/Bill.Reseult';
+import ResultBillNotSent from './components/bill/Bill.Not.Sent';
+import DetailBill from './components/bill/Detail';
+import DetailBillSenior from './components/bill/Detail.Senior';
+import AddBill from './components/bill/Add';
+import EditBill from './components/bill/Edit';
+import AddBillCustomer from './components/bill/Add.Customer';
+import ListCustomer from './components/customer/List';
+import ListCustomerSenior from './components/customer/Customer.Senior';
+import AddCustomer from './components/customer/Add';
+import EditCustomer from './components/customer/Edit';
+import DetailCustomer from './components/customer/Detail';
+import DetailCustomerSenior from './components/customer/Detail.Senior';
 import AddAccountBank from './components/accountbank/Add';
-import EditAccountBank from './components/accountbank/Edit';
 import EditUser from './components/user/Edit';
 import AddUser from './components/user/Add';
 import AddDirector from './components/user/Add.Senior';
 import EditDirector from './components/user/Edit.Senior';
-import ListGroup from './components/group/list';
-import AddGroup from './components/group/add';
-import EditGroup from './components/group/edit';
-import ListUserGroup from './components/group/usergroup';
+import ListGroup from './components/group/List';
+import AddGroup from './components/group/Add';
+import EditGroup from './components/group/Edit';
+import ListUserGroup from './components/group/User.Group';
 import { Provider } from 'react-redux'
 import store from './components/reducers/store';
 const routing = (
@@ -49,7 +48,6 @@ const routing = (
         <Switch>
         <Route exact path="/accountbanks" component={ListAccountBank} />
         <Route exact path="/accountbanks/add" component={AddAccountBank} />
-        <Route exact path="/accountbanks/edit/" component={EditAccountBank} />
         <Route exact path="/admin/" component={AdminDashboard} />
         <Route exact path="/admin/groups/add" component={AddGroup} />
         <Route exact path="/admin/groups/edit/:id" component={EditGroup} />

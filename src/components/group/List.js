@@ -7,7 +7,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import { Link } from "react-router-dom";
-import DescriptionSharpIcon from '@material-ui/icons/DescriptionSharp';
 import EditIcon from '@material-ui/icons/Edit';
 import ViewColumnButton from '@material-ui/icons/DescriptionOutlined';
 class ListGroup extends React.Component {

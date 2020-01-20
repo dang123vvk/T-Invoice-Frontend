@@ -19,7 +19,7 @@ import './style.css';
 import { getTemplate, getTemplateCustomer, getTemplateBill } from '../share/services/template.service';
 import { getAccountBankCurrent } from '../share/services/accountbank.service';
 import { getCustomerUserCurrent, getCustomerPO } from '../share/services/customer.service';
-import { getStatusBill, postBill, getBill, postBillUpdate } from '../share/services/bill.service';
+import { getStatusBill, getBill, postBillUpdate } from '../share/services/bill.service';
 import { th } from "../share/config";
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Draggable from 'react-draggable';
@@ -141,7 +141,7 @@ class EditBill extends Component {
         getBill(this.props.match.params.id,this.props.user_username, this.props.token).then(data => {
             if( data.status==true)
                 {
-                    if(( data.length > 0) && ( data.po_number.status_po_id == 2))
+                    if(( data.length > 0) && ( data.po_number.status_po_id === 2))
                     {
                         this.setState({ 
                             data:  data.items,

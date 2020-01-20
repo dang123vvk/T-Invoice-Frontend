@@ -10,10 +10,10 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
-import { Grid, FormControl, Select, MenuItem, InputLabel } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
-import { postAddUserFromAdmin,getInformationCurrent, postAddUserFromSenior } from "../share/services/user.service";
+import { getInformationCurrent, postAddUserFromSenior } from "../share/services/user.service";
 class AddDirector extends Component {
   constructor(props) {
     super(props);

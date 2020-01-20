@@ -8,7 +8,6 @@ import { Link  } from "react-router-dom";
 import { connect } from "react-redux";
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import { getCustomerSearch } from '../share/services/customer.service';
 import { th } from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import {  getDashboardAdmin } from "../share/services/group.service";
@@ -37,8 +36,6 @@ class AdminDashboard extends Component {
             date_to: year + '-' + month1 + '-' + date,
         });
         getDashboardAdmin(this.props.role, this.props.token).then(data => {
-            console.log(data);
-            
             this.setState({
                 users: data.users,
                 groups: data.groups

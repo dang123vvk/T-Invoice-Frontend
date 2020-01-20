@@ -15,6 +15,7 @@ import NotFound from '../views/NotFound';
 import { postAccountBank } from '../share/services/accountbank.service';
 import { th } from "../share/config";
 import { Link } from 'react-router-dom';
+import './style.css';
 
 class AddAccountBank extends Component {
   constructor(props) {
@@ -72,25 +73,25 @@ class AddAccountBank extends Component {
         <ThemeProvider theme={th} >
           <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <Paper elevation={0} style={{ marginTop: '2%' }} >
+            <Paper elevation={0} className='magrinTop' >
               <Breadcrumbs aria-label="Breadcrumb" separator="/">
-                <Link style={{ color: '#3f51b5' }} to="/" >
+                <Link className='linkColor' to="/" >
                   Home
                                         </Link>
-                <Link style={{ color: '#3f51b5' }} to="/accountbanks" >
+                <Link  className='linkColor' to="/accountbanks" >
                   Account Bank
                                         </Link>
                 <Typography color="textPrimary">Add</Typography>
               </Breadcrumbs>
             </Paper>
-            <div style={{ marginTop: '2%', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
-              <Avatar style={{ marginTop: '2%', backgroundColor: '#3f51b5', }} >
+            <div className='divClass'>
+              <Avatar id='avtClass'  >
                 <AccountBalanceIcon />
               </Avatar>
-              <Typography component="h1" variant="h5" style={{ marginTop: '1%', marginBottom: '3%' }}>
+              <Typography component="h1" variant="h5" className='typography'>
                 Add an Account Bank
         </Typography>
-              <Typography style={{ color: 'red' }}>
+              <Typography className='messageError'>
                 {this.state.message}
               </Typography>
               <form validate="true" onSubmit={event => this.handleSubmitForm(event)}>
@@ -160,25 +161,10 @@ class AddAccountBank extends Component {
                   </Grid>
                   <Grid item xs={2}></Grid>
                   <Grid item xs={4}>
-                    <Button style={{ marginTop: '2%', color: 'white', backgroundColor: 'red' }}
-                      type="button"
-                      fullWidth
-                      variant="contained"
-                      color="secondary"
-                      onClick={this.clear}
-                    >
-                      Clear
-          </Button>
+                    <Button className='magrinTopButton' type="button" fullWidth variant="contained" color="secondary" onClick={this.clear}>Clear</Button>
                   </Grid>
                   <Grid item xs={4}>
-                    <Button style={{ marginTop: '2%' }}
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color='primary'
-                    >
-                      Save
-          </Button>
+                    <Button className='magrinTop' type="submit" fullWidth variant="contained" color='primary'>Save</Button>
                   </Grid>
                   <Grid item xs={2}></Grid>
                 </Grid>

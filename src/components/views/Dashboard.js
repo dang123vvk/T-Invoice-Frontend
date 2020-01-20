@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { ThemeProvider } from '@material-ui/styles';
-import { Container, CssBaseline, createMuiTheme, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab, List, ListItem, ListItemText } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
+import { Container, CssBaseline, Paper, Table, TableHead, TableRow, TableCell, TableBody, TextField, MenuItem, FormControl, Select, InputLabel, Fab, List, ListItem, ListItemText } from '@material-ui/core';
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
@@ -18,9 +17,9 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Divider from '@material-ui/core/Divider';
-import { getBillLength, getBillSum, getBillNotSendLength, getBillLimit, getBillUserCurrentFilter } from '../share/services/bill.service';
-import { getCustomerLength, getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
-import {  th} from "../share/config";
+import { getBillLimit } from '../share/services/bill.service';
+import { getCustomerLimit, getCustomerSearch } from '../share/services/customer.service';
+import { th } from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 
 class Dashboard extends Component {
@@ -28,10 +27,6 @@ class Dashboard extends Component {
         super(props)
         this.state = {
             isSenior: this.props.isSenior,
-            billNumber: 0,
-            customerNumber: 0,
-            total: 0,
-            billNotSent: 0,
             dataBill: [],
             dataCustomer: [],
             expanded: false,
@@ -62,25 +57,13 @@ class Dashboard extends Component {
             date_from: year + '-' + month1 + '-' + date,
             date_to: year + '-' + month1 + '-' + date,
         });
-        getBillLength(this.props.token).then(data => {
-            this.setState({ billNumber: data.length });
-        })
-        getBillSum(this.props.token).then(data => {
-            this.setState({ total: data.total });
-        })
-        getCustomerLength(this.props.token).then(data => {
-            this.setState({ customerNumber: data.length });
-        })
-        getBillNotSendLength(this.props.token).then(data => {
-            this.setState({ billNotSent: data.length });
-        })
         getBillLimit(this.props.token).then(data => {
             this.setState({ dataBill: data.bill });
         })
         getCustomerLimit(this.props.token).then(data => {
             this.setState({ dataCustomer: data.customers });
         })
-        if(this.props.role === 'Sr.Director'){
+        if (this.props.role === 'Sr.Director') {
             this.setState({
                 isSenior: true
             })
@@ -92,14 +75,14 @@ class Dashboard extends Component {
         });
     }
     onChangeSearchCustomer(e) {
-        getCustomerSearch(e.target.value, this.props.user_username, this.props.token).then(data=>{
+        getCustomerSearch(e.target.value, this.props.user_username, this.props.token).then(data => {
             this.setState({
                 dataCustomersSearch: data.customers
             });
         })
         this.setState({
             [e.target.name]: e.target.value
-        });     
+        });
     }
     useStyles = makeStyles(theme => ({
         root: {
@@ -145,7 +128,7 @@ class Dashboard extends Component {
         e.preventDefault();
         this.setState({
             redirect: true
-           })
+        })
     }
     selectCustomer(e, customer_name, customer_id) {
         e.preventDefault();
@@ -158,55 +141,13 @@ class Dashboard extends Component {
     render() {
         const redirect = this.state.redirect;
         if (redirect) {
-            return <Redirect to={'bills/search/customer/'+ this.state.customer_id+ '/status/' + this.state.status_bill_id + '/date_from/'+this.state.date_from+ '/date_to/'+ this.state.date_to}/>;
-          }
+            return <Redirect to={'bills/search/customer/' + this.state.customer_id + '/status/' + this.state.status_bill_id + '/date_from/' + this.state.date_from + '/date_to/' + this.state.date_to} />;
+        }
         return (
             <ThemeProvider theme={th}>
                 <Container component="main" maxWidth="md">
                     <CssBaseline />
                     <div style={{ flexFlow: 1 }}>
-                        <Grid container spacing={3} style={{ marginTop: '10px' }}>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }} >
-                                    <br />
-                                   Bills
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bills" style={{ color: 'black', textDecoration: 'none' }}> {this.state.billNumber}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }} >
-                                    <br />
-                                    Total Bills
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        $ {this.state.total}
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }}>
-                                    <br />
-                                    Customers
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/customers" style={{ color: 'black', textDecoration: 'none' }}>{this.state.customerNumber}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs >
-                                <Paper style={{ height: '80px', textAlign: 'center' }}>
-                                    <br />
-                                    Not Sent
-                            <br />
-                                    <Typography variant="h5" className={this.classes.title} align="center">
-                                        <Link to="/bills/status/notsent" style={{ color: 'black', textDecoration: 'none' }}>{this.state.billNotSent}</Link>
-                                    </Typography>
-                                </Paper>
-                            </Grid>
-                        </Grid>
                         <Grid container spacing={3} style={{ marginTop: '10px' }}>
                             <Grid item xs >
                                 <Paper style={{ height: 'auto', textAlign: 'center' }}>
@@ -216,7 +157,7 @@ class Dashboard extends Component {
                                             aria-controls="panel1bh-content"
                                             id="panel1bh-header"
                                         >
-                                            Filter Bills
+                                            Search
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails>
                                             <div style={{ width: '100%' }} className="row">
@@ -236,7 +177,7 @@ class Dashboard extends Component {
                                                             this.state.dataCustomersSearch.map((customer) => (
                                                                 <ListItem key={customer.customer_name}
                                                                     button
-                                                                    onClick={event => this.selectCustomer(event,customer.customer_name, customer.customer_id)}
+                                                                    onClick={event => this.selectCustomer(event, customer.customer_name, customer.customer_id)}
                                                                 >
                                                                     <ListItemText primary={customer.customer_name} />
                                                                 </ListItem>
@@ -299,7 +240,7 @@ class Dashboard extends Component {
                                                 aria-label="Add"
                                             >
                                                 <SearchIcon />
-                                                Filter
+                                                Seach
                                                         </Fab>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>

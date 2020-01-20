@@ -2,23 +2,18 @@ import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/AccountCircleSharp';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { FormControl, Paper, Breadcrumbs, Table, TableHead, TableCell, TableBody, TableRow, Fab } from '@material-ui/core';
+import { Paper, Breadcrumbs, Table, TableHead, TableCell, TableBody, TableRow } from '@material-ui/core';
 import { Redirect } from 'react-router'
 import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
 import { Link } from "react-router-dom";
-import Icon from '@material-ui/core/Icon';
 import { getCustomerEditSenior } from '../share/services/customer.service';
 import { th } from "../share/config";
-
 
 class DetailCustomerSenior extends Component {
     constructor(props) {
@@ -39,59 +34,28 @@ class DetailCustomerSenior extends Component {
             user_customer: null,
             disable: null,
             message: '',
-            columns: [
-                { title: 'PO No', field: 'po_number_no', type: 'numberic' },
-                { title: 'Description', field: 'po_number_description' },
-                { title: 'Status', field: 'status_po_id', lookup: { 1: 'New', 2: 'Active', 3: 'Used' } },
-            ],
             data: [],
             dataBill: [],
         }
-        this.onChange = this.onChange.bind(this);
         this.cancel = this.cancel.bind(this);
         document.title = 'Detail Customer';
     }
-    UNSAFE_componentWillMount () {
+    UNSAFE_componentWillMount() {
         getCustomerEditSenior(this.props.match.params.id, this.props.group, this.props.role, this.props.token).then(data => {
-         this.setState({
-          customer_name: data.customers.customer_name,
-          customer_email: data.customers.customer_email,
-          customer_address: data.customers.customer_address,
-          customer_number_phone: data.customers.customer_number_phone,
-          customer_details_company: data.customerDetail.customer_details_company,
-          customer_details_project: data.customerDetail.customer_details_project,
-          customer_details_country: data.customerDetail.customer_details_country,
-          customer_details_note: data.customerDetail.customer_details_note,
-          customer_swift_code: data.customers.customer_swift_code,
-          data: data.po_nos,
-          dataBill: data.bill
-
-         })
+            this.setState({
+                customer_name: data.customers.customer_name,
+                customer_email: data.customers.customer_email,
+                customer_address: data.customers.customer_address,
+                customer_number_phone: data.customers.customer_number_phone,
+                customer_details_company: data.customerDetail.customer_details_company,
+                customer_details_project: data.customerDetail.customer_details_project,
+                customer_details_country: data.customerDetail.customer_details_country,
+                customer_details_note: data.customerDetail.customer_details_note,
+                customer_swift_code: data.customers.customer_swift_code,
+                data: data.po_nos,
+                dataBill: data.bill
+            })
         })
-        
-      }
-    handleSubmitForm(event) {
-        event.preventDefault();
-        const customer = {
-            customer_details_company: this.state.customer_details_company,
-            customer_details_project: this.state.customer_details_project,
-            customer_details_country: this.state.customer_details_country,
-            customer_details_id: this.state.customer_details_id,
-            customer_details_note: this.state.customer_details_note,
-            customer_name: this.state.customer_name,
-            customer_email: this.state.customer_email,
-            customer_address: this.state.customer_address,
-            customer_number_phone: this.state.customer_number_phone,
-            po_nos: this.state.data,
-
-
-        };
-    }
-    onChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value,
-        });
-        console.log(this.state)
     }
     cancel(e) {
         this.setState({
@@ -103,7 +67,8 @@ class DetailCustomerSenior extends Component {
         if (redirect) {
             return <Redirect to='/customers' />;
         }
-        if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){            return (
+        if (((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))) {
+            return (
                 <ThemeProvider theme={th}>
                     <Container component="main" >
                         <CssBaseline />
@@ -218,7 +183,7 @@ class DetailCustomerSenior extends Component {
                                 <Grid item xs={8}>
                                     <Typography align="left" style={{ fontWeight: 'bold' }}>
                                         PO Nos
-                                </Typography>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={2}></Grid>
@@ -282,7 +247,7 @@ class DetailCustomerSenior extends Component {
                                 <Grid item xs={2}></Grid>
                                 <Grid item xs={5}></Grid>
                                 <Grid item xs={2}>
-                                    <Link to={"/senior/customers" }>
+                                    <Link to={"/senior/customers"}>
                                         <Button style={{ marginTop: '20px' }}
                                             type="button"
                                             fullWidth
@@ -290,11 +255,11 @@ class DetailCustomerSenior extends Component {
                                             color="primary"
                                         >
                                             Back
-          </Button></Link>
+                                        </Button>
+                                    </Link>
                                 </Grid>
                                 <Grid item xs={5}></Grid>
                             </Grid>
-
                         </div>
                     </Container>
                 </ThemeProvider>
@@ -307,10 +272,10 @@ class DetailCustomerSenior extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-      user_fullname: state.loginReducer.user_fullname,
-      role: state.loginReducer.role,
-      token: state.loginReducer.token,
-      group: state.loginReducer.group
+        user_fullname: state.loginReducer.user_fullname,
+        role: state.loginReducer.role,
+        token: state.loginReducer.token,
+        group: state.loginReducer.group
     };
-  }
+}
 export default connect(mapStateToProps)(DetailCustomerSenior);

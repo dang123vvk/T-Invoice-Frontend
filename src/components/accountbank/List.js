@@ -19,6 +19,7 @@ import {
     ExcelExportColumn,
     ExcelExportColumnGroup
 } from '@progress/kendo-react-excel-export';
+import './style.css';
 
 function PaperComponent(props) {
     return (
@@ -27,7 +28,6 @@ function PaperComponent(props) {
         </Draggable>
     );
 }
-
 class ListAccountBank extends React.Component {
     _exporter;
     export = () => {
@@ -168,7 +168,7 @@ class ListAccountBank extends React.Component {
             return (
                 <Container component="main" maxWidth="lg">
                     <CssBaseline />
-                    <div style={{ marginTop: '1%' }}  >
+                    <div className ='divClass'  >
                         <AppBar position="static" color="default" elevation={0}>
                             <Toolbar>
                                 <Grid container spacing={2} alignItems="center">
@@ -186,7 +186,7 @@ class ListAccountBank extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Link to='/accountbanks/add' style={{ color: 'white', textDecoration: 'none' }}><Button variant="contained" color="primary" className="btn-without-border" >
+                                        <Link to='/accountbanks/add' id='linkList'><Button variant="contained" color="primary" className="btn-without-border" >
                                             Add Account Bank
                                     </Button>
                                         </Link>
@@ -310,7 +310,7 @@ class ListAccountBank extends React.Component {
 
                             </DialogContent>
                             <DialogActions>
-                                <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={this.closeEdit}>Cancel</Button>
+                                <Button variant="contained" id='buttonCancel' onClick={this.closeEdit}>Cancel</Button>
                                 <Button color="primary" variant="contained" onClick={e => this.save(e,this.state.account_bank_id)} >Save</Button>
                             </DialogActions>
                         </Dialog>

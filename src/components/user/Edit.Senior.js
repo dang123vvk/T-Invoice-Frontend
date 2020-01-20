@@ -10,7 +10,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { loginAction } from '../reducers/action'
-import { Grid, MenuItem } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import NotFound from "../views/NotFound";
 import { th } from "../share/config";
 import {  getDirectorFromSenior, postDirectorFromSenior } from "../share/services/user.service";
