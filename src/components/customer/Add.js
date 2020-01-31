@@ -56,7 +56,9 @@ class AddCustomer extends Component {
       status_po_id: 1,
       isAdd: true,
       po_id: '',
-      messagePO: ''
+      messagePO: '',
+      po_number_payment_id: 1,
+      po_number_amount: 0,
     }
     this.onChange = this.onChange.bind(this);
     this.clear = this.clear.bind(this);
@@ -80,6 +82,8 @@ class AddCustomer extends Component {
       customer_swift_code: this.state.customer_swift_code,
       user_id: localStorage.getItem('user_id'),
       po_nos: this.state.data,
+      po_number_payment_id: this.state.po_number_payment_id,
+      po_number_amount: this.state.po_number_amount,
     };
     postCustomerAdd(customer, this.props.token).then(data => {
       this.setState({
@@ -118,6 +122,8 @@ class AddCustomer extends Component {
       isAdd: false,
       po_id: po_number_no,
       messagePO: '',
+      po_number_payment_id: temp[index].po_number_payment_id,
+      po_number_amount: temp[index].po_number_amount,
     })
   }
   openAdd(e) {
@@ -138,16 +144,19 @@ class AddCustomer extends Component {
       var status1 = status(this.state.status_po_id.toString());
       let index = _.findIndex(this.state.data, po => { return po.po_number_no === this.state.po_number_no; });
       if (index === -1) {
-        if(this.state.po_number_no === ''){
+        if (this.state.po_number_no === '') {
           this.setState({
             messagePO: 'PO No does not empty'
           })
-        }else {
+        } else {
           const Po = {
             po_number_description: this.state.po_number_description,
             status_po_id: this.state.status_po_id,
             po_number_no: this.state.po_number_no,
-            status_po_name: status1
+            status_po_name: status1,
+            po_number_payment_id: this.state.po_number_payment_id,
+            po_number_amount: this.state.po_number_amount,
+
           };
           this.setState(state => {
             const list = state.data.push(Po);
@@ -159,10 +168,12 @@ class AddCustomer extends Component {
               status_po_id: 1,
               dialogTitle: 'Add PO No',
               messagePO: '',
+              po_number_payment_id: 1,
+              po_number_amount: 0,
             };
           });
         }
-      
+
       }
       else {
         this.setState({
@@ -177,6 +188,8 @@ class AddCustomer extends Component {
         po_number_description: this.state.po_number_description,
         status_po_id: this.state.status_po_id,
         po_number_no: this.state.po_number_no,
+        po_number_payment_id: this.state.po_number_payment_id,
+        po_number_amount: this.state.po_number_amount,
         status_po_name: status2
       };
       let index = _.findIndex(this.state.data, po => { return po.po_number_no === this.state.po_id; });
@@ -212,7 +225,7 @@ class AddCustomer extends Component {
     if (redirect) {
       return <Redirect to='/customers' />;
     }
-    if( ((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))){
+    if (((this.props.role === 'Director') && (localStorage.getItem('user_information'))) || ((this.props.role === 'Sr.Director') && (localStorage.getItem('user_information')))) {
       return (
         <ThemeProvider theme={th}>
           <Container component="main" >
@@ -402,7 +415,7 @@ class AddCustomer extends Component {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {this.state.data.map((row,index) => (
+                        {this.state.data.map((row, index) => (
                           <TableRow hover role="checkbox" key={row.po_number_no} tabIndex={-1} >
                             <TableCell align="center">
                               <Tooltip title="Edit" aria-label="add">
@@ -482,6 +495,28 @@ class AddCustomer extends Component {
                           name="po_number_description"
                           onChange={this.onChange}
                         />
+                      </div>
+                      <div className="col-sm-5" style={{ marginBottom: '3%' }}>Amount</div>
+                      <div className="col-sm-7" style={{ marginBottom: '3%' }}>
+                        <TextField
+                          margin="dense"
+                          variant="outlined"
+                          value={this.state.po_number_amount}
+                          fullWidth
+                          name="po_number_amount"
+                          type='number'
+                          onChange={this.onChange}
+                        />
+                      </div>
+                      <div className="col-sm-5" style={{ marginBottom: '3%' }}>Payment</div>
+                      <div className="col-sm-7" style={{ marginBottom: '3%' }}>
+                        <select className="form-control"
+                          value={this.state.po_number_payment_id} name='po_number_payment_id' onChange={this.onChange}
+                        >
+                          <option value={1}>USD</option>
+                          <option value={2}>VND</option>
+                          <option value={3}>Yen</option>
+                        </select>
                       </div>
                       <div className="col-sm-5">Status</div>
                       <div className="col-sm-7">

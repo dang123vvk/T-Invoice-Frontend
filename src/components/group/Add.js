@@ -20,7 +20,6 @@ class AddGroup extends Component {
     this.state = {
       groups_user_name: '',
       groups_user_description: '',
-      
       redirect: false,
       tokenVN: '',
       isLoading: false,

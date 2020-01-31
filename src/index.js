@@ -8,6 +8,7 @@ import HomePage from './components/views/Home';
 import Signin from './components/user/Signin';
 import Profile from './components/user/Profile';
 import AdminDashboardUser from './components/auth/Admin';
+import Listpayment from './components/payment/List';
 import SeniorDashboard from './components/views/Senior';
 import SeniorUser from './components/user/List.Senior';
 import Header from './components/views/Header';
@@ -53,6 +54,7 @@ const routing = (
         <Route exact path="/admin/groups/edit/:id" component={EditGroup} />
         <Route exact path="/admin/groups" component={ListGroup} />
         <Route exact path="/admin/groups/users/:id" component={ListUserGroup} />
+        <Route exact path="/admin/exchange-rates" component={Listpayment} />
         <Route exact path="/admin/users" component={AdminDashboardUser} />
         <Route exact path="/admin/users/edit/:id" component={EditUser} />
         <Route exact path="/admin/users/add" component={AddUser} />

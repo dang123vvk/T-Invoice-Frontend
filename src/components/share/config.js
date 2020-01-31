@@ -7,4 +7,4 @@ export const th = createMuiTheme({
     },
 });
 
-export const API_URL = 'http://10.1.0.226:5001/';
+export const API_URL = 'http://127.0.0.1:5001/';

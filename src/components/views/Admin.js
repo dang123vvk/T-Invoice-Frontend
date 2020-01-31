@@ -8,6 +8,7 @@ import { Link  } from "react-router-dom";
 import { connect } from "react-redux";
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import PaymentIcon from '@material-ui/icons/Payment';
 import { th } from "../share/config";
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import {  getDashboardAdmin } from "../share/services/group.service";
@@ -117,6 +118,17 @@ class AdminDashboard extends Component {
                                         </Typography>
                                         <Typography variant="caption" className={this.classes.title} align="center">
                                             Groups
+                        </Typography>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs >
+                                    <Paper style={{ height: '100px', textAlign: 'center' }}>
+                                        <br />
+                                        <Typography align="center">
+                                            <Link to="/admin/exchange-rates"><PaymentIcon style={{ fontSize: '50px' }} color='primary' /></Link>
+                                        </Typography>
+                                        <Typography variant="caption" className={this.classes.title} align="center">
+                                        Exchange rates
                         </Typography>
                                     </Paper>
                                 </Grid>

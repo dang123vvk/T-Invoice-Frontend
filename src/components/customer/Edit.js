@@ -57,6 +57,8 @@ class EditCustomer extends Component {
       isAdd: true,
       po_id: '',
       po_number_id: 1,
+      po_number_payment_id: 1,
+      po_number_amount: 0,
     }
     this.onChange = this.onChange.bind(this);
     this.clear = this.clear.bind(this);
@@ -469,8 +471,8 @@ class EditCustomer extends Component {
                           onChange={this.onChange}
                         />
                       </div>
-                      <div className="col-sm-5">Description </div>
-                      <div className="col-sm-7">
+                      <div className="col-sm-5" >Description </div>
+                      <div className="col-sm-7" >
                         <TextField
                           margin="dense"
                           variant="outlined"
@@ -479,6 +481,28 @@ class EditCustomer extends Component {
                           name="po_number_description"
                           onChange={this.onChange}
                         />
+                      </div>
+                      <div className="col-sm-5" style={{ marginBottom: '3%' }}>Amount</div>
+                      <div className="col-sm-7" style={{ marginBottom: '3%' }}>
+                        <TextField
+                          margin="dense"
+                          variant="outlined"
+                          value={this.state.po_number_amount}
+                          fullWidth
+                          name="po_number_amount"
+                          type='number'
+                          onChange={this.onChange}
+                        />
+                      </div>
+                      <div className="col-sm-5" style={{ marginBottom: '3%' }}>Payment</div>
+                      <div className="col-sm-7" style={{ marginBottom: '3%' }}>
+                        <select className="form-control"
+                          value={this.state.po_number_payment_id} name='po_number_payment_id' onChange={this.onChange}
+                        >
+                          <option value={1}>USD</option>
+                          <option value={2}>VND</option>
+                          <option value={3}>Yen</option>
+                        </select>
                       </div>
                       <div className="col-sm-5">Status</div>
                       <div className="col-sm-7">
