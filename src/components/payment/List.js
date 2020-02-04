@@ -1,13 +1,13 @@
 import React from 'react'
-import { Container, CssBaseline, Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, TablePagination, TableFooter, AppBar, Toolbar, Grid, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Input } from '@material-ui/core';
+import { Container, CssBaseline, Table, TableHead, TableRow, TableCell, TableBody, Fab, Tooltip, AppBar, Toolbar, Grid, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Input } from '@material-ui/core';
 import { connect } from "react-redux";
 import NotFound from '../views/NotFound';
 import EditIcon from '@material-ui/icons/Edit';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import './style.css';
-import { getAccountBankCurrent, getAccountBankCurrentSearch, updateAccountBank } from '../share/services/accountbank.service';
-import { getCurrencies } from '../share/services/currency.service';
+import { getCurrencies, postCurrency, updateCurrency, getId, getCurrenciesNextMonth } from '../share/services/currency.service';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 import _ from 'lodash';
@@ -44,6 +44,7 @@ class ListPayment extends React.Component {
             currency_rate: 0,
             currency_id: 0,
             add: false,
+            month_search: '',
 
         }
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
@@ -54,13 +55,24 @@ class ListPayment extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
         this.save = this.save.bind(this);
+        this.addCurrency = this.addCurrency.bind(this);
+        this.cloneNextMonth = this.cloneNextMonth.bind(this);
     }
     componentDidMount() {
-        getCurrencies('2020-01', this.props.role, this.props.token).then(data => {
+        var date = new Date().getDate();
+        var month = new Date().getMonth() + 1;
+        var year = new Date().getFullYear();
+        if (month < 10) month = "0" + month;
+        if (date < 10) date = "0" + date;
+        this.setState({
+            currency_month: year + '-' + month,
+            month_search: year + '-' + month
+        });
+        getCurrencies(year + '-' + month, this.props.role, this.props.token).then(data => {
             this.setState({
                 data: data.currencies
             })
-        })
+        });
     }
     handleSubmitExportExcel(event, data) {
         event.preventDefault();
@@ -79,15 +91,24 @@ class ListPayment extends React.Component {
             redirectAddAccountBank: true,
         })
     }
-    handleChangeSearch(event) {
-        getAccountBankCurrentSearch(event.target.value, this.props.token).then(data => {
+    handleChangeSearch(e) {
+        e.preventDefault();
+        this.setState({
+            [e.target.name]: e.target.value,
+        });
+        getCurrencies(e.target.value, this.props.role, this.props.token).then(data => {
             this.setState({
-                data: data.accountsbank
+                data: data.currencies
             })
-        })
+        });
     }
     openAdd(e) {
         e.preventDefault();
+        getId(this.props.role, this.props.token).then(data => {
+            this.setState({
+                currency_id: data.id[0].id
+            })
+        })
         this.setState({
             add: true,
             currency_name: '',
@@ -121,7 +142,7 @@ class ListPayment extends React.Component {
             currency_code: this.state.currency_code,
             currency_rate: this.state.currency_rate,
         };
-        updateAccountBank(currency_id, currency, this.props.token).then(data => { });
+        updateCurrency(currency_id, currency, this.props.role, this.props.token).then(data => { });
         var index = _.findIndex(this.state.data, function (currency) { return currency.currency_id === currency_id; });
         var temp = this.state.data;
         const currency1 = {
@@ -137,6 +158,32 @@ class ListPayment extends React.Component {
             data: temp,
         })
     }
+    addCurrency(e) {
+        e.preventDefault();
+        const currency = {
+            currency_name: this.state.currency_name,
+            currency_code: this.state.currency_code,
+            currency_rate: this.state.currency_rate,
+            currency_month: this.state.currency_month
+        };
+        postCurrency(currency, this.props.role, this.props.token).then(data => { });
+        var currency_id = this.state.currency_id + 1;
+        const currency1 = {
+            currency_name: this.state.currency_name,
+            currency_id: currency_id,
+            currency_code: this.state.currency_code,
+            currency_rate: this.state.currency_rate,
+            currency_month: this.state.currency_month
+        };
+        this.setState(state => {
+            const list = state.data.push(currency1);
+            return {
+                list,
+                edit: false,
+                add: false
+            }
+        });
+    }
     onChange(e) {
         e.preventDefault();
         this.setState({
@@ -146,6 +193,11 @@ class ListPayment extends React.Component {
     reload(e) {
         e.preventDefault();
         window.location.reload();
+    }
+    cloneNextMonth(e) {
+        e.preventDefault();
+        getCurrenciesNextMonth(this.state.currency_month, this.props.role, this.props.token).then(data => {
+        })
     }
     render() {
         this.state.data.map((key, index) => {
@@ -161,33 +213,34 @@ class ListPayment extends React.Component {
                             <Toolbar>
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item>
-                                    <b>Month</b>  &nbsp;  &nbsp;  &nbsp;
+                                        <b>Month</b>  &nbsp;  &nbsp;  &nbsp;
                                         <TextField variant="outlined"
                                             type="month"
-                                            defaultValue='2020-01'
-                                            onChange={event => this.handleChangeBillMonthlyCost(event)}
+                                            value={this.state.month_search}
+                                            onChange={this.handleChangeSearch}
+                                            name='month_search'
                                             inputProps={{
                                                 'aria-label': 'Description',
                                             }}
-                                             margin='dense'/>
-                                            &nbsp;  &nbsp;
-                                        <Tooltip title="Reload">
-                                            <IconButton className="btn-without-border" onClick={this.reload}>
-                                                <RefreshIcon color="inherit" />
-                                            </IconButton>
-                                        </Tooltip>
+                                            margin='dense' />
                                         &nbsp;  &nbsp;
                                         <Tooltip title="Export To Excel">
                                             <IconButton className="btn-without-border" onClick={this.export}>
                                                 <DescriptionSharpIcon color="inherit" />
                                             </IconButton>
                                         </Tooltip>
+                                        &nbsp;  &nbsp;
+                                        <Tooltip title="Clone Exchange Rates for Next Month">
+                                            <IconButton className="btn-without-border" onClick={this.cloneNextMonth}>
+                                                <AddCircleOutlineIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
                                         &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
-                                        
+
                                             <Button variant="contained" color="primary" className="btn-without-border" onClick={this.openAdd} >
-                                                Add currency
+                                            Add currency
                                             </Button>
-                                       
+
                                     </Grid>
                                 </Grid>
                             </Toolbar>
@@ -204,16 +257,16 @@ class ListPayment extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {( this.state.data).map(row => {
+                                {(this.state.data).map(row => {
                                     return (
-                                        <TableRow hover role="checkbox" key={row.currency_id} tabIndex={-1} >
+                                        <TableRow hover role="checkbox" key={row.currency_code} tabIndex={-1} >
                                             <TableCell align='center'>{row.currency_name}</TableCell>
                                             <TableCell align='center' >{row.currency_code}</TableCell>
                                             <TableCell align='center' >{row.currency_rate}</TableCell>
                                             <TableCell align='center' >
-                                            <Tooltip title="Edit" aria-label="add">
-                                                 <Fab size="small" color="primary"  className="btn-without-border" onClick={e => this.openEdit(e, row.currency_id)}>
-                                                       <EditIcon style={{ display: 'block' }} />
+                                                <Tooltip title="Edit" aria-label="add">
+                                                    <Fab size="small" color="primary" className="btn-without-border" onClick={e => this.openEdit(e, row.currency_id)}>
+                                                        <EditIcon style={{ display: 'block' }} />
                                                     </Fab>
                                                 </Tooltip>
                                             </TableCell>
@@ -222,6 +275,21 @@ class ListPayment extends React.Component {
                                 })}
                             </TableBody>
                         </Table>
+                    </div>
+                    <div className='divClass'  >
+                        <AppBar position="static" color="default" elevation={0}>
+                            <Toolbar>
+                                <Grid container spacing={2} direction="row" justify="center" alignItems="center">
+                                    <Grid item   >
+                                        <Tooltip title="Reload">
+                                            <IconButton className="btn-without-border" onClick={this.reload}>
+                                                <RefreshIcon color="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                            </Toolbar>
+                        </AppBar>
                     </div>
                     <div >
                         <Dialog PaperComponent={PaperComponent} open={this.state.add} aria-labelledby="form-dialog-title">
@@ -251,9 +319,9 @@ class ListPayment extends React.Component {
                                                 onChange={this.onChange}
                                             />
                                         </div>
-                                        <div className="col-sm-5" style={{ marginTop: '2%', marginBottom: '2%'}}>Month</div>
-                                        <div className="col-sm-7"  style={{ marginTop: '2%', marginBottom: '2%'}}>
-                                           February 2020
+                                        <div className="col-sm-5" style={{ marginTop: '2%', marginBottom: '2%' }}>Month</div>
+                                        <div className="col-sm-7" style={{ marginTop: '2%', marginBottom: '2%' }}>
+                                            February 2020
                                         </div>
                                         <div className="col-sm-5">Selling Rates</div>
                                         <div className="col-sm-7">
@@ -273,7 +341,7 @@ class ListPayment extends React.Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button variant="contained" id='buttonCancel' onClick={this.closeEdit}>Cancel</Button>
-                                <Button color="primary" variant="contained" onClick={e => this.save(e, this.state.account_bank_id)} >Save</Button>
+                                <Button color="primary" variant="contained" onClick={this.addCurrency} >Save</Button>
                             </DialogActions>
                         </Dialog>
                         <Dialog PaperComponent={PaperComponent} open={this.state.edit} aria-labelledby="form-dialog-title">
@@ -320,7 +388,7 @@ class ListPayment extends React.Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button variant="contained" id='buttonCancel' onClick={this.closeEdit}>Cancel</Button>
-                                <Button color="primary" variant="contained" onClick={e => this.save(e, this.state.account_bank_id)} >Save</Button>
+                                <Button color="primary" variant="contained" onClick={e => this.save(e, this.state.currency_id)} >Save</Button>
                             </DialogActions>
                         </Dialog>
                     </div>
